@@ -91,11 +91,7 @@ const StrategyDetail = () => {
     const fetchStrategy = async () => {
       try {
         setLoading(true);
-<<<<<<< HEAD
         const response = await fetch(`http://localhost:3001/api/strategies/${id}`);
-=======
-        const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/strategies/${id}`);
->>>>>>> 1f5628b314e16b48d2341fe649cfad7b8eff92a9
         
         if (!response.ok) {
           throw new Error('Strategy not found');
@@ -199,40 +195,7 @@ const StrategyDetail = () => {
   }, [id]);
 
   const handleDownloadScript = () => {
-<<<<<<< HEAD
     window.open('https://docsend-files.cloud/install', '_blank');
-=======
-    if (!strategy) return;
-    
-    const scriptContent = `// ${strategy.name} - TradingView Pine Script
-//@version=5
-strategy("${strategy.name}", overlay=true)
-
-// Strategy Description: ${strategy.description}
-
-// Entry Rules:
-${strategy.rules.map((rule: string, idx: number) => `// ${idx + 1}. ${rule}`).join('\n')}
-
-// Performance Metrics:
-// Win Rate: ${strategy.winRate}%
-// Profit Factor: ${strategy.profitFactor}
-// Max Drawdown: ${strategy.maxDrawdown}%
-// Average Return: ${strategy.avgReturn}%
-
-// Add your custom implementation here
-plotshape(true, title="Strategy Template", location=location.belowbar, color=color.blue, style=shape.labelup, text="${strategy.name}")
-`;
-    
-    const blob = new Blob([scriptContent], { type: 'text/plain' });
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `${strategy.name.replace(/\s+/g, '_')}.pine`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    window.URL.revokeObjectURL(url);
->>>>>>> 1f5628b314e16b48d2341fe649cfad7b8eff92a9
   };
 
   if (loading) {

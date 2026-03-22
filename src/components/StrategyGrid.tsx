@@ -22,11 +22,7 @@ const StrategyGrid = ({ limitedView = false, walletAddress = '' }: StrategyGridP
     const fetchStrategies = async () => {
       try {
         setLoading(true);
-<<<<<<< HEAD
         const response = await fetch('http://localhost:3001/api/strategies');
-=======
-        const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/strategies`);
->>>>>>> 1f5628b314e16b48d2341fe649cfad7b8eff92a9
         
         if (!response.ok) {
           throw new Error('Failed to fetch strategies');

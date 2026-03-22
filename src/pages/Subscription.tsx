@@ -267,11 +267,7 @@ const Subscription = () => {
         }
       `}</style>
       <Header />
-<<<<<<< HEAD
       <div className="container mx-auto px-4 pt-28 pb-12">
-=======
-      <div className="container mx-auto px-4 py-12">
->>>>>>> 1f5628b314e16b48d2341fe649cfad7b8eff92a9
         {/* Current Subscription Status */}
         {subscriptionStatus && subscriptionStatus.active && !subscriptionStatus.expired && (
           <Alert className="mb-8 max-w-4xl mx-auto border-green-500/50 bg-green-500/10">

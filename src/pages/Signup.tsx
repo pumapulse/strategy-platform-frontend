@@ -1,24 +1,13 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-<<<<<<< HEAD
 import { useToast } from '@/hooks/use-toast';
 import { Eye, EyeOff, TrendingUp, ShieldCheck, Zap } from 'lucide-react';
-=======
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { useToast } from '@/hooks/use-toast';
->>>>>>> 1f5628b314e16b48d2341fe649cfad7b8eff92a9
 
 export default function Signup() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-<<<<<<< HEAD
   const [showPass, setShowPass] = useState(false);
-=======
->>>>>>> 1f5628b314e16b48d2341fe649cfad7b8eff92a9
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -26,24 +15,16 @@ export default function Signup() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-<<<<<<< HEAD
     try {
-      const response = await fetch('http://localhost:3001/api/auth/signup', {
-=======
-
-    try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/auth/signup`, {
->>>>>>> 1f5628b314e16b48d2341fe649cfad7b8eff92a9
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001'}/api/auth/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, password }),
       });
-<<<<<<< HEAD
       const data = await response.json();
       if (response.ok) {
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
-        // Auto-assign free plan so new users go straight to dashboard
         localStorage.setItem('subscription', JSON.stringify({
           plan: 'free',
           active: true,
@@ -58,59 +39,14 @@ export default function Signup() {
       }
     } catch {
       toast({ title: 'Error', description: 'Failed to connect to server', variant: 'destructive' });
-=======
-
-      const data = await response.json();
-
-      if (response.ok) {
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('user', JSON.stringify(data.user));
-        
-        // Automatically create free trial for new users
-        const trialEndDate = new Date();
-        trialEndDate.setDate(trialEndDate.getDate() + 30);
-        
-        const subscription = {
-          active: true,
-          isTrial: true,
-          startDate: new Date().toISOString(),
-          endDate: trialEndDate.toISOString(),
-          plan: 'Free Trial'
-        };
-        
-        localStorage.setItem('subscription', JSON.stringify(subscription));
-        
-        toast({
-          title: 'Welcome!',
-          description: 'Your 30-day free trial has started automatically',
-        });
-        
-        // New users go directly to dashboard with free trial
-        navigate('/dashboard');
-      } else {
-        toast({
-          title: 'Error',
-          description: data.error || 'Signup failed',
-          variant: 'destructive',
-        });
-      }
-    } catch (error) {
-      toast({
-        title: 'Error',
-        description: 'Failed to connect to server',
-        variant: 'destructive',
-      });
->>>>>>> 1f5628b314e16b48d2341fe649cfad7b8eff92a9
     } finally {
       setLoading(false);
     }
   };
 
   return (
-<<<<<<< HEAD
     <div className="min-h-screen flex">
-
-      {/* Left — background image panel */}
+      {/* Left panel */}
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
         <img
           src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1200&q=90"
@@ -118,9 +54,7 @@ export default function Signup() {
           className="absolute inset-0 w-full h-full object-cover object-center"
         />
         <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-black/60 to-[#0a0e1a]/90" />
-
         <div className="relative z-10 flex flex-col justify-between p-12 w-full">
-          {/* Logo */}
           <Link to="/" className="flex items-center gap-2.5">
             <svg width="22" height="30" viewBox="0 0 24 32" fill="none">
               <defs>
@@ -139,8 +73,6 @@ export default function Signup() {
               Tradex<span className="text-violet-400">Strategies</span>
             </span>
           </Link>
-
-          {/* Center quote */}
           <div>
             <span className="text-5xl font-black text-white leading-tight mb-5 block">
               Join thousands<br />
@@ -149,13 +81,11 @@ export default function Signup() {
             <p className="text-white/60 text-lg max-w-sm leading-relaxed mt-4">
               Access 730+ backtested strategies trusted by traders worldwide. Start your free trial today.
             </p>
-
-            {/* Stats row */}
             <div className="flex gap-10 mt-10">
               {[
-                { icon: TrendingUp,  label: 'Avg. Win Rate', value: '68%' },
-                { icon: Zap,         label: 'Strategies',    value: '730+' },
-                { icon: ShieldCheck, label: 'Backtested',    value: '100%' },
+                { icon: TrendingUp, label: 'Avg. Win Rate', value: '68%' },
+                { icon: Zap, label: 'Strategies', value: '730+' },
+                { icon: ShieldCheck, label: 'Backtested', value: '100%' },
               ].map(({ icon: Icon, label, value }) => (
                 <div key={label}>
                   <div className="flex items-center gap-1.5 text-violet-400 mb-1">
@@ -167,8 +97,6 @@ export default function Signup() {
               ))}
             </div>
           </div>
-
-          {/* Bottom testimonial */}
           <div className="border border-white/10 rounded-2xl p-5 bg-white/5 backdrop-blur-sm">
             <p className="text-white/70 text-sm leading-relaxed italic">
               "I signed up and within a week I had my first profitable trade using one of their crypto strategies. Incredible platform."
@@ -187,8 +115,6 @@ export default function Signup() {
       {/* Right — signup form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center bg-[#0a0e1a] px-6 py-12">
         <div className="w-full max-w-md">
-
-          {/* Mobile logo */}
           <Link to="/" className="flex items-center gap-2 mb-10 lg:hidden">
             <svg width="20" height="26" viewBox="0 0 24 32" fill="none">
               <defs>
@@ -210,8 +136,6 @@ export default function Signup() {
           <p className="text-white/40 text-sm mb-8">Start your free trial — no credit card required</p>
 
           <form onSubmit={handleSubmit} className="space-y-5">
-
-            {/* Full Name */}
             <div>
               <label className="block text-xs font-semibold text-white/50 uppercase tracking-widest mb-2">Full Name</label>
               <input
@@ -220,11 +144,9 @@ export default function Signup() {
                 onChange={e => setName(e.target.value)}
                 placeholder="John Doe"
                 required
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/20 text-sm focus:outline-none focus:border-emerald-500/60 focus:bg-white/8 transition-all"
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/20 text-sm focus:outline-none focus:border-violet-500/60 transition-all"
               />
             </div>
-
-            {/* Email */}
             <div>
               <label className="block text-xs font-semibold text-white/50 uppercase tracking-widest mb-2">Email</label>
               <input
@@ -233,11 +155,9 @@ export default function Signup() {
                 onChange={e => setEmail(e.target.value)}
                 placeholder="you@example.com"
                 required
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/20 text-sm focus:outline-none focus:border-emerald-500/60 focus:bg-white/8 transition-all"
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/20 text-sm focus:outline-none focus:border-violet-500/60 transition-all"
               />
             </div>
-
-            {/* Password */}
             <div>
               <label className="block text-xs font-semibold text-white/50 uppercase tracking-widest mb-2">Password</label>
               <div className="relative">
@@ -248,7 +168,7 @@ export default function Signup() {
                   placeholder="••••••••"
                   required
                   minLength={6}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 pr-11 text-white placeholder-white/20 text-sm focus:outline-none focus:border-emerald-500/60 focus:bg-white/8 transition-all"
+                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 pr-11 text-white placeholder-white/20 text-sm focus:outline-none focus:border-violet-500/60 transition-all"
                 />
                 <button
                   type="button"
@@ -260,8 +180,6 @@ export default function Signup() {
               </div>
               <p className="text-xs text-white/25 mt-1.5">Must be at least 6 characters</p>
             </div>
-
-            {/* Submit */}
             <button
               type="submit"
               disabled={loading}
@@ -271,7 +189,6 @@ export default function Signup() {
             </button>
           </form>
 
-          {/* Divider */}
           <div className="flex items-center gap-3 my-6">
             <div className="flex-1 h-px bg-white/8" />
             <span className="text-white/20 text-xs">or</span>
@@ -286,69 +203,6 @@ export default function Signup() {
           </p>
         </div>
       </div>
-=======
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold text-center">Create Account</CardTitle>
-          <CardDescription className="text-center">
-            Enter your information to get started
-          </CardDescription>
-        </CardHeader>
-        <form onSubmit={handleSubmit}>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="name">Full Name</Label>
-              <Input
-                id="name"
-                type="text"
-                placeholder="John Doe"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="you@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                minLength={6}
-              />
-              <p className="text-xs text-muted-foreground">
-                Must be at least 6 characters
-              </p>
-            </div>
-          </CardContent>
-          <CardFooter className="flex flex-col space-y-4">
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? 'Creating account...' : 'Sign Up'}
-            </Button>
-            <p className="text-sm text-center text-muted-foreground">
-              Already have an account?{' '}
-              <Link to="/login" className="text-primary hover:underline font-medium">
-                Login
-              </Link>
-            </p>
-          </CardFooter>
-        </form>
-      </Card>
->>>>>>> 1f5628b314e16b48d2341fe649cfad7b8eff92a9
     </div>
   );
 }

@@ -1,14 +1,9 @@
-<<<<<<< HEAD
 import { useEffect, useRef, useState } from 'react';
-=======
-import { useEffect, useState } from 'react';
->>>>>>> 1f5628b314e16b48d2341fe649cfad7b8eff92a9
 import Header from '@/components/Header';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-<<<<<<< HEAD
 import { Textarea } from '@/components/ui/textarea';
 import { User, Mail, Calendar, Camera, Loader2, Check } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
@@ -37,7 +32,6 @@ const Profile = () => {
       setBio(u.bio || '');
       setAvatarPreview(u.avatar_url || null);
     }
-    // Fetch fresh from server
     if (token) {
       api.getProfile(token).then(data => {
         const u = data.user;
@@ -67,14 +61,13 @@ const Profile = () => {
       setSaving(true);
       let avatar_url = user?.avatar_url;
 
-      // Upload avatar first if changed
       if (avatarFile) {
         setUploadingAvatar(true);
         const reader = new FileReader();
         const base64 = await new Promise<string>((resolve, reject) => {
           reader.onload = e => {
             const result = e.target?.result as string;
-            resolve(result.split(',')[1]); // strip data:...;base64,
+            resolve(result.split(',')[1]);
           };
           reader.onerror = reject;
           reader.readAsDataURL(avatarFile);
@@ -89,10 +82,7 @@ const Profile = () => {
       setUser(updated);
       localStorage.setItem('user', JSON.stringify(updated));
       setAvatarFile(null);
-
-      // Dispatch event so Header picks up the change immediately
       window.dispatchEvent(new Event('user-updated'));
-
       toast({ title: 'Saved!', description: 'Your profile has been updated.' });
     } catch {
       toast({ title: 'Error', description: 'Failed to save profile', variant: 'destructive' });
@@ -109,40 +99,18 @@ const Profile = () => {
     <div className="min-h-screen bg-background">
       <Header />
       <div className="container mx-auto px-4 pt-28 pb-8 max-w-4xl">
-=======
-import { User, Mail, Calendar } from 'lucide-react';
-
-const Profile = () => {
-  const [user, setUser] = useState<any>(null);
-
-  useEffect(() => {
-    const userData = localStorage.getItem('user');
-    if (userData) {
-      setUser(JSON.parse(userData));
-    }
-  }, []);
-
-  return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
->>>>>>> 1f5628b314e16b48d2341fe649cfad7b8eff92a9
         <div className="mb-8">
           <h1 className="text-4xl font-bold mb-2">Profile Settings</h1>
           <p className="text-muted-foreground">Manage your account information</p>
         </div>
 
         <div className="grid gap-6">
-<<<<<<< HEAD
-          {/* Avatar + Personal Info */}
           <Card>
             <CardHeader>
               <CardTitle>Personal Information</CardTitle>
               <CardDescription>Update your profile photo and details</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-
-              {/* Avatar upload */}
               <div className="flex items-center gap-6">
                 <div className="relative shrink-0">
                   <div className="w-24 h-24 rounded-full overflow-hidden bg-muted border-2 border-border flex items-center justify-center">
@@ -173,7 +141,6 @@ const Profile = () => {
                 </div>
               </div>
 
-              {/* Fields */}
               <div className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="name">Full Name</Label>
@@ -182,7 +149,6 @@ const Profile = () => {
                     <Input id="name" value={name} onChange={e => setName(e.target.value)} />
                   </div>
                 </div>
-
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
                   <div className="flex items-center gap-2">
@@ -190,7 +156,6 @@ const Profile = () => {
                     <Input id="email" type="email" value={user?.email || ''} disabled />
                   </div>
                 </div>
-
                 <div className="space-y-2">
                   <Label htmlFor="bio">Bio</Label>
                   <Textarea
@@ -201,7 +166,6 @@ const Profile = () => {
                     rows={3}
                   />
                 </div>
-
                 <div className="space-y-2">
                   <Label>Member Since</Label>
                   <div className="flex items-center gap-2">
@@ -220,40 +184,6 @@ const Profile = () => {
             </CardContent>
           </Card>
 
-          {/* Trading Preferences */}
-=======
-          <Card>
-            <CardHeader>
-              <CardTitle>Personal Information</CardTitle>
-              <CardDescription>Update your personal details</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="name">Full Name</Label>
-                <div className="flex items-center gap-2">
-                  <User className="w-4 h-4 text-muted-foreground" />
-                  <Input id="name" defaultValue={user?.name} />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <div className="flex items-center gap-2">
-                  <Mail className="w-4 h-4 text-muted-foreground" />
-                  <Input id="email" type="email" defaultValue={user?.email} disabled />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label>Member Since</Label>
-                <div className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-muted-foreground" />
-                  <Input value={new Date().toLocaleDateString()} disabled />
-                </div>
-              </div>
-              <Button>Save Changes</Button>
-            </CardContent>
-          </Card>
-
->>>>>>> 1f5628b314e16b48d2341fe649cfad7b8eff92a9
           <Card>
             <CardHeader>
               <CardTitle>Trading Preferences</CardTitle>
@@ -268,11 +198,7 @@ const Profile = () => {
                 <Label htmlFor="capital">Trading Capital</Label>
                 <Input id="capital" placeholder="$10,000" />
               </div>
-<<<<<<< HEAD
               <Button variant="outline">Update Preferences</Button>
-=======
-              <Button>Update Preferences</Button>
->>>>>>> 1f5628b314e16b48d2341fe649cfad7b8eff92a9
             </CardContent>
           </Card>
         </div>
