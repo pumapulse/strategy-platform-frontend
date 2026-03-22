@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+<<<<<<< HEAD
+=======
+
+.vercel
+>>>>>>> 1f5628b314e16b48d2341fe649cfad7b8eff92a9

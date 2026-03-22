@@ -1,13 +1,24 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+<<<<<<< HEAD
 import { useToast } from '@/hooks/use-toast';
 import { Eye, EyeOff, TrendingUp, ShieldCheck, Zap } from 'lucide-react';
+=======
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { useToast } from '@/hooks/use-toast';
+>>>>>>> 1f5628b314e16b48d2341fe649cfad7b8eff92a9
 
 export default function Signup() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+<<<<<<< HEAD
   const [showPass, setShowPass] = useState(false);
+=======
+>>>>>>> 1f5628b314e16b48d2341fe649cfad7b8eff92a9
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -15,12 +26,19 @@ export default function Signup() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+<<<<<<< HEAD
     try {
       const response = await fetch('http://localhost:3001/api/auth/signup', {
+=======
+
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/auth/signup`, {
+>>>>>>> 1f5628b314e16b48d2341fe649cfad7b8eff92a9
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, password }),
       });
+<<<<<<< HEAD
       const data = await response.json();
       if (response.ok) {
         localStorage.setItem('token', data.token);
@@ -40,12 +58,56 @@ export default function Signup() {
       }
     } catch {
       toast({ title: 'Error', description: 'Failed to connect to server', variant: 'destructive' });
+=======
+
+      const data = await response.json();
+
+      if (response.ok) {
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+        
+        // Automatically create free trial for new users
+        const trialEndDate = new Date();
+        trialEndDate.setDate(trialEndDate.getDate() + 30);
+        
+        const subscription = {
+          active: true,
+          isTrial: true,
+          startDate: new Date().toISOString(),
+          endDate: trialEndDate.toISOString(),
+          plan: 'Free Trial'
+        };
+        
+        localStorage.setItem('subscription', JSON.stringify(subscription));
+        
+        toast({
+          title: 'Welcome!',
+          description: 'Your 30-day free trial has started automatically',
+        });
+        
+        // New users go directly to dashboard with free trial
+        navigate('/dashboard');
+      } else {
+        toast({
+          title: 'Error',
+          description: data.error || 'Signup failed',
+          variant: 'destructive',
+        });
+      }
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to connect to server',
+        variant: 'destructive',
+      });
+>>>>>>> 1f5628b314e16b48d2341fe649cfad7b8eff92a9
     } finally {
       setLoading(false);
     }
   };
 
   return (
+<<<<<<< HEAD
     <div className="min-h-screen flex">
 
       {/* Left — background image panel */}
@@ -224,6 +286,69 @@ export default function Signup() {
           </p>
         </div>
       </div>
+=======
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+      <Card className="w-full max-w-md">
+        <CardHeader className="space-y-1">
+          <CardTitle className="text-2xl font-bold text-center">Create Account</CardTitle>
+          <CardDescription className="text-center">
+            Enter your information to get started
+          </CardDescription>
+        </CardHeader>
+        <form onSubmit={handleSubmit}>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="name">Full Name</Label>
+              <Input
+                id="name"
+                type="text"
+                placeholder="John Doe"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="you@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                minLength={6}
+              />
+              <p className="text-xs text-muted-foreground">
+                Must be at least 6 characters
+              </p>
+            </div>
+          </CardContent>
+          <CardFooter className="flex flex-col space-y-4">
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? 'Creating account...' : 'Sign Up'}
+            </Button>
+            <p className="text-sm text-center text-muted-foreground">
+              Already have an account?{' '}
+              <Link to="/login" className="text-primary hover:underline font-medium">
+                Login
+              </Link>
+            </p>
+          </CardFooter>
+        </form>
+      </Card>
+>>>>>>> 1f5628b314e16b48d2341fe649cfad7b8eff92a9
     </div>
   );
 }

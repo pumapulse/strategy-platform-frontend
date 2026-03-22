@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 const API_BASE_URL = 'http://localhost:3001/api';
+=======
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+>>>>>>> 1f5628b314e16b48d2341fe649cfad7b8eff92a9
 
 export const api = {
   // Strategies
@@ -59,6 +63,7 @@ export const api = {
     return response.json();
   },
 
+<<<<<<< HEAD
   async updateProfile(token: string, data: { name?: string; bio?: string; avatar_url?: string }) {
     const response = await fetch(`${API_BASE_URL}/auth/profile`, {
       method: 'PUT',
@@ -79,6 +84,8 @@ export const api = {
     return response.json();
   },
 
+=======
+>>>>>>> 1f5628b314e16b48d2341fe649cfad7b8eff92a9
   // Discussions
   async getAllDiscussions(token: string) {
     const response = await fetch(`${API_BASE_URL}/discussions`, {
@@ -88,6 +95,7 @@ export const api = {
     return response.json();
   },
 
+<<<<<<< HEAD
   async getDiscussionById(token: string, id: string) {
     const response = await fetch(`${API_BASE_URL}/discussions/${id}`, {
       headers: { 'Authorization': `Bearer ${token}` },
@@ -100,11 +108,21 @@ export const api = {
     const response = await fetch(`${API_BASE_URL}/discussions`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+=======
+  async createDiscussion(token: string, data: any) {
+    const response = await fetch(`${API_BASE_URL}/discussions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+>>>>>>> 1f5628b314e16b48d2341fe649cfad7b8eff92a9
       body: JSON.stringify(data),
     });
     if (!response.ok) throw new Error('Failed to create discussion');
     return response.json();
   },
+<<<<<<< HEAD
 
   async createReply(token: string, discussionId: string, content: string) {
     const response = await fetch(`${API_BASE_URL}/discussions/${discussionId}/replies`, {
@@ -142,4 +160,6 @@ export const api = {
     if (!response.ok) throw new Error('Failed to get follow status');
     return response.json();
   },
+=======
+>>>>>>> 1f5628b314e16b48d2341fe649cfad7b8eff92a9
 };

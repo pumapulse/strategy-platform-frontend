@@ -10,8 +10,13 @@ export const connectMetaMask = async () => {
   }
 
   try {
+<<<<<<< HEAD
     const accounts = await window.ethereum.request({ 
       method: 'eth_requestAccounts' 
+=======
+    const accounts = await window.ethereum.request({
+      method: 'eth_requestAccounts'
+>>>>>>> 1f5628b314e16b48d2341fe649cfad7b8eff92a9
     });
     return accounts[0];
   } catch (error: any) {
@@ -49,6 +54,7 @@ export const sendPayment = async (walletAddress: string, amount: string) => {
 export const checkSubscription = () => {
   const subscription = localStorage.getItem('subscription');
   if (!subscription) return null;
+<<<<<<< HEAD
   
   const sub = JSON.parse(subscription);
   const endDate = new Date(sub.endDate);
@@ -58,6 +64,17 @@ export const checkSubscription = () => {
     return { ...sub, active: false, expired: true };
   }
   
+=======
+
+  const sub = JSON.parse(subscription);
+  const endDate = new Date(sub.endDate);
+  const now = new Date();
+
+  if (now > endDate) {
+    return { ...sub, active: false, expired: true };
+  }
+
+>>>>>>> 1f5628b314e16b48d2341fe649cfad7b8eff92a9
   return sub;
 };
 

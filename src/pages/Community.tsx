@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { useState, useEffect, useCallback } from 'react';
+=======
+import { useState, useEffect } from 'react';
+>>>>>>> 1f5628b314e16b48d2341fe649cfad7b8eff92a9
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -9,6 +13,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+<<<<<<< HEAD
 import { Users, MessageSquare, TrendingUp, ThumbsUp, MessageCircle, Clock, Plus, Search, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { api } from '@/lib/api';
@@ -44,10 +49,100 @@ const Community = () => {
   const [discussions, setDiscussions] = useState<Discussion[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+=======
+import { Users, MessageSquare, TrendingUp, ThumbsUp, MessageCircle, Clock, Plus, Search } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+
+interface Discussion {
+  id: number;
+  title: string;
+  content: string;
+  author: string;
+  authorInitials: string;
+  category: string;
+  replies: number;
+  likes: number;
+  views: number;
+  timeAgo: string;
+  isHot: boolean;
+}
+
+const Community = () => {
+  const navigate = useNavigate();
+  const [discussions, setDiscussions] = useState<Discussion[]>([
+    {
+      id: 1,
+      title: 'Best strategies for volatile markets?',
+      content: 'Looking for advice on trading during high volatility periods. What indicators do you use?',
+      author: 'John Doe',
+      authorInitials: 'JD',
+      category: 'Strategy',
+      replies: 24,
+      likes: 45,
+      views: 320,
+      timeAgo: '2 hours ago',
+      isHot: true,
+    },
+    {
+      id: 2,
+      title: 'How to manage risk in crypto trading',
+      content: 'Share your risk management techniques for cryptocurrency trading.',
+      author: 'Jane Smith',
+      authorInitials: 'JS',
+      category: 'Risk Management',
+      replies: 18,
+      likes: 32,
+      views: 245,
+      timeAgo: '5 hours ago',
+      isHot: true,
+    },
+    {
+      id: 3,
+      title: 'My experience with automated trading',
+      content: 'After 6 months of using bots, here are my results and lessons learned.',
+      author: 'Mike Johnson',
+      authorInitials: 'MJ',
+      category: 'Automation',
+      replies: 31,
+      likes: 67,
+      views: 512,
+      timeAgo: '1 day ago',
+      isHot: false,
+    },
+    {
+      id: 4,
+      title: 'Tips for beginners in forex trading',
+      content: 'Starting your forex journey? Here are some essential tips to get you started.',
+      author: 'Sarah Wilson',
+      authorInitials: 'SW',
+      category: 'Education',
+      replies: 42,
+      likes: 89,
+      views: 678,
+      timeAgo: '2 days ago',
+      isHot: false,
+    },
+    {
+      id: 5,
+      title: 'Technical analysis vs fundamental analysis',
+      content: 'Which approach do you prefer and why? Let\'s discuss the pros and cons.',
+      author: 'David Lee',
+      authorInitials: 'DL',
+      category: 'Analysis',
+      replies: 15,
+      likes: 28,
+      views: 189,
+      timeAgo: '3 hours ago',
+      isHot: true,
+    },
+  ]);
+
+>>>>>>> 1f5628b314e16b48d2341fe649cfad7b8eff92a9
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [newDiscussion, setNewDiscussion] = useState({ title: '', content: '', category: 'Strategy' });
+<<<<<<< HEAD
 
   const categories = ['All', 'Strategy', 'Risk Management', 'Automation', 'Education', 'Analysis', 'News'];
 
@@ -95,17 +190,79 @@ const Community = () => {
 
   const replyCount = (d: Discussion) => d.replies?.[0]?.count ?? 0;
   const isHot = (d: Discussion) => d.likes > 20 || replyCount(d) > 10;
+=======
+  const [user, setUser] = useState<any>(null);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      setUser(JSON.parse(userData));
+    }
+  }, []);
+
+  const categories = ['All', 'Strategy', 'Risk Management', 'Automation', 'Education', 'Analysis', 'News'];
+
+  const filteredDiscussions = discussions.filter(discussion => {
+    const matchesSearch = discussion.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         discussion.content.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = selectedCategory === 'All' || discussion.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
+
+  const handleCreateDiscussion = () => {
+    if (!newDiscussion.title || !newDiscussion.content) {
+      toast({
+        title: 'Error',
+        description: 'Please fill in all fields',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    const discussion: Discussion = {
+      id: discussions.length + 1,
+      title: newDiscussion.title,
+      content: newDiscussion.content,
+      author: user?.name || 'Anonymous',
+      authorInitials: user?.name?.split(' ').map((n: string) => n[0]).join('') || 'AN',
+      category: newDiscussion.category,
+      replies: 0,
+      likes: 0,
+      views: 0,
+      timeAgo: 'Just now',
+      isHot: false,
+    };
+
+    setDiscussions([discussion, ...discussions]);
+    setNewDiscussion({ title: '', content: '', category: 'Strategy' });
+    setIsDialogOpen(false);
+    
+    toast({
+      title: 'Success!',
+      description: 'Your discussion has been created',
+    });
+  };
+>>>>>>> 1f5628b314e16b48d2341fe649cfad7b8eff92a9
 
   return (
     <div className="min-h-screen bg-background">
       <Header />
+<<<<<<< HEAD
       <div className="container mx-auto px-4 pt-28 pb-8">
+=======
+      <div className="container mx-auto px-4 py-8">
+>>>>>>> 1f5628b314e16b48d2341fe649cfad7b8eff92a9
         <div className="mb-8">
           <h1 className="text-4xl font-bold mb-2">Community</h1>
           <p className="text-muted-foreground">Connect with traders and share insights</p>
         </div>
 
+<<<<<<< HEAD
         {/* Stats */}
+=======
+        {/* Stats Cards */}
+>>>>>>> 1f5628b314e16b48d2341fe649cfad7b8eff92a9
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -139,6 +296,7 @@ const Community = () => {
           </Card>
         </div>
 
+<<<<<<< HEAD
         {/* Search + New */}
         <div className="flex flex-col md:flex-row gap-4 mb-6">
           <div className="flex-1 relative">
@@ -149,10 +307,30 @@ const Community = () => {
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
               <Button className="gap-2"><Plus className="w-4 h-4" />New Discussion</Button>
+=======
+        {/* Search and Filter */}
+        <div className="flex flex-col md:flex-row gap-4 mb-6">
+          <div className="flex-1 relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Input
+              placeholder="Search discussions..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogTrigger asChild>
+              <Button className="gap-2">
+                <Plus className="w-4 h-4" />
+                New Discussion
+              </Button>
+>>>>>>> 1f5628b314e16b48d2341fe649cfad7b8eff92a9
             </DialogTrigger>
             <DialogContent className="max-w-2xl">
               <DialogHeader>
                 <DialogTitle>Start a New Discussion</DialogTitle>
+<<<<<<< HEAD
                 <DialogDescription>Share your thoughts with the community</DialogDescription>
               </DialogHeader>
               <div className="space-y-4 mt-4">
@@ -167,12 +345,37 @@ const Community = () => {
                   <select value={newDiscussion.category}
                     onChange={e => setNewDiscussion({ ...newDiscussion, category: e.target.value })}
                     className="w-full px-3 py-2 border rounded-md bg-background">
+=======
+                <DialogDescription>
+                  Share your thoughts, ask questions, or start a conversation with the community
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 mt-4">
+                <div className="space-y-2">
+                  <Label htmlFor="title">Title</Label>
+                  <Input
+                    id="title"
+                    placeholder="What's your discussion about?"
+                    value={newDiscussion.title}
+                    onChange={(e) => setNewDiscussion({ ...newDiscussion, title: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="category">Category</Label>
+                  <select
+                    id="category"
+                    value={newDiscussion.category}
+                    onChange={(e) => setNewDiscussion({ ...newDiscussion, category: e.target.value })}
+                    className="w-full px-3 py-2 border rounded-md bg-background"
+                  >
+>>>>>>> 1f5628b314e16b48d2341fe649cfad7b8eff92a9
                     {categories.filter(c => c !== 'All').map(cat => (
                       <option key={cat} value={cat}>{cat}</option>
                     ))}
                   </select>
                 </div>
                 <div className="space-y-2">
+<<<<<<< HEAD
                   <Label>Content</Label>
                   <Textarea placeholder="Share your thoughts in detail..." rows={6}
                     value={newDiscussion.content}
@@ -182,6 +385,22 @@ const Community = () => {
                   <Button variant="outline" onClick={() => setIsDialogOpen(false)}>Cancel</Button>
                   <Button onClick={handleCreateDiscussion} disabled={submitting}>
                     {submitting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+=======
+                  <Label htmlFor="content">Content</Label>
+                  <Textarea
+                    id="content"
+                    placeholder="Share your thoughts in detail..."
+                    value={newDiscussion.content}
+                    onChange={(e) => setNewDiscussion({ ...newDiscussion, content: e.target.value })}
+                    rows={6}
+                  />
+                </div>
+                <div className="flex justify-end gap-2">
+                  <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+                    Cancel
+                  </Button>
+                  <Button onClick={handleCreateDiscussion}>
+>>>>>>> 1f5628b314e16b48d2341fe649cfad7b8eff92a9
                     Create Discussion
                   </Button>
                 </div>
@@ -190,6 +409,7 @@ const Community = () => {
           </Dialog>
         </div>
 
+<<<<<<< HEAD
         {/* Category filter */}
         <div className="flex flex-wrap gap-2 mb-6">
           {categories.map(cat => (
@@ -197,10 +417,23 @@ const Community = () => {
               className="cursor-pointer hover:bg-primary/20 transition-colors"
               onClick={() => setSelectedCategory(cat)}>
               {cat}
+=======
+        {/* Category Filter */}
+        <div className="flex flex-wrap gap-2 mb-6">
+          {categories.map((category) => (
+            <Badge
+              key={category}
+              variant={selectedCategory === category ? 'default' : 'outline'}
+              className="cursor-pointer hover:bg-primary/20 transition-colors"
+              onClick={() => setSelectedCategory(category)}
+            >
+              {category}
+>>>>>>> 1f5628b314e16b48d2341fe649cfad7b8eff92a9
             </Badge>
           ))}
         </div>
 
+<<<<<<< HEAD
         {/* List */}
         <Card>
           <CardHeader>
@@ -234,10 +467,65 @@ const Community = () => {
                           <div className="flex items-center gap-1"><MessageCircle className="w-3 h-3" />{replyCount(d)} replies</div>
                           <div className="flex items-center gap-1"><ThumbsUp className="w-3 h-3" />{d.likes} likes</div>
                           <div className="flex items-center gap-1"><Users className="w-3 h-3" />{d.views} views</div>
+=======
+        {/* Discussions List */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Recent Discussions</CardTitle>
+            <CardDescription>
+              {filteredDiscussions.length} {filteredDiscussions.length === 1 ? 'discussion' : 'discussions'} found
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {filteredDiscussions.map((discussion) => (
+                <div
+                  key={discussion.id}
+                  className="p-4 border rounded-lg hover:bg-accent cursor-pointer transition-colors"
+                  onClick={() => navigate(`/discussion/${discussion.id}`)}
+                >
+                  <div className="flex items-start gap-4">
+                    <Avatar className="w-10 h-10">
+                      <AvatarFallback>{discussion.authorInitials}</AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <h3 className="font-semibold text-lg hover:text-primary transition-colors">
+                          {discussion.title}
+                        </h3>
+                        {discussion.isHot && (
+                          <Badge variant="destructive" className="text-xs">HOT</Badge>
+                        )}
+                      </div>
+                      <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
+                        {discussion.content}
+                      </p>
+                      <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+                        <span className="font-medium text-foreground">{discussion.author}</span>
+                        <Badge variant="secondary" className="text-xs">
+                          {discussion.category}
+                        </Badge>
+                        <div className="flex items-center gap-1">
+                          <Clock className="w-3 h-3" />
+                          {discussion.timeAgo}
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <MessageCircle className="w-3 h-3" />
+                          {discussion.replies} replies
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <ThumbsUp className="w-3 h-3" />
+                          {discussion.likes} likes
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Users className="w-3 h-3" />
+                          {discussion.views} views
+>>>>>>> 1f5628b314e16b48d2341fe649cfad7b8eff92a9
                         </div>
                       </div>
                     </div>
                   </div>
+<<<<<<< HEAD
                 ))}
                 {filtered.length === 0 && !loading && (
                   <div className="text-center py-12 text-muted-foreground">
@@ -247,6 +535,17 @@ const Community = () => {
                 )}
               </div>
             )}
+=======
+                </div>
+              ))}
+              {filteredDiscussions.length === 0 && (
+                <div className="text-center py-12 text-muted-foreground">
+                  <MessageSquare className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                  <p>No discussions found. Be the first to start one!</p>
+                </div>
+              )}
+            </div>
+>>>>>>> 1f5628b314e16b48d2341fe649cfad7b8eff92a9
           </CardContent>
         </Card>
       </div>

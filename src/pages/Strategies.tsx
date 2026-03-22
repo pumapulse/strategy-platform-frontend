@@ -44,7 +44,11 @@ const Strategies = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
+<<<<<<< HEAD
       <div className="container mx-auto px-4 pt-28 pb-8">
+=======
+      <div className="container mx-auto px-4 py-8">
+>>>>>>> 1f5628b314e16b48d2341fe649cfad7b8eff92a9
         <div className="mb-8">
           <h1 className="text-4xl font-bold mb-2">Trading Strategies</h1>
           <p className="text-muted-foreground">Browse and discover proven trading strategies</p>
