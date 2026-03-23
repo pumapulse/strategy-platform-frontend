@@ -91,7 +91,7 @@ const StrategyDetail = () => {
     const fetchStrategy = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`http://localhost:3001/api/strategies/${id}`);
+        const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001/api'}/strategies/${id}`);
         
         if (!response.ok) {
           throw new Error('Strategy not found');

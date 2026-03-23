@@ -7,7 +7,7 @@ import {
   ShieldAlert, TrendingUp, Activity, DollarSign, X, Check, Loader2
 } from 'lucide-react';
 
-const API = 'http://localhost:3001/api/admin';
+const API = `${import.meta.env.VITE_API_URL || 'http://localhost:3001/api'}/admin`;
 
 type Tab = 'overview' | 'users' | 'strategies' | 'community' | 'alerts' | 'payments';
 
