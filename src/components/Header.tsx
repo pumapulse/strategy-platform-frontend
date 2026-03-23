@@ -1,4 +1,4 @@
-import { Crown, Sparkles } from "lucide-react";
+import { Crown, Sparkles, Bell } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { checkSubscription } from "@/lib/metamask";
@@ -104,6 +104,11 @@ const Header = () => {
         <div className="flex items-center gap-2">
           {user ? (
             <>
+              {/* Bell icon */}
+              <button className={`relative p-2 rounded-full transition-all ${transparent ? 'text-white/70 hover:text-white hover:bg-white/10' : 'text-muted-foreground hover:text-foreground hover:bg-foreground/5'}`}>
+                <Bell className="w-4 h-4" />
+                <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-violet-400" />
+              </button>
               {subscription?.active && !subscription?.expired && (
                 <Link to="/subscription">
                   <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-colors ${
