@@ -102,15 +102,8 @@ const StrategyGrid = ({ limitedView = false, walletAddress = '' }: StrategyGridP
   });
 
   return (
-    <section id="strategies" className="py-16 px-4">
-      <div className="container mx-auto">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold mb-4">Explore Trading Strategies</h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Browse our collection of backtested strategies with real performance data
-          </p>
-        </div>
-
+    <section id="strategies">
+      <div>
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           <div className="lg:col-span-1">
             <StrategyFilters
@@ -136,13 +129,13 @@ const StrategyGrid = ({ limitedView = false, walletAddress = '' }: StrategyGridP
             {loading ? (
               <div className="flex items-center justify-center py-12">
                 <div className="text-center">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-                  <p className="text-muted-foreground">Loading strategies...</p>
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500 mx-auto mb-4"></div>
+                  <p className="text-white/40">Loading strategies...</p>
                 </div>
               </div>
             ) : (
               <>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {filteredStrategies.map((strategy) => (
                     <StrategyCard key={strategy.id} {...strategy} />
                   ))}
@@ -150,8 +143,8 @@ const StrategyGrid = ({ limitedView = false, walletAddress = '' }: StrategyGridP
 
                 {filteredStrategies.length === 0 && (
                   <div className="text-center py-12">
-                    <p className="text-muted-foreground text-lg">
-                      {strategies.length === 0 
+                    <p className="text-white/40 text-base">
+                      {strategies.length === 0
                         ? 'No strategies available. Please seed the database first.'
                         : 'No strategies found with selected filters'}
                     </p>

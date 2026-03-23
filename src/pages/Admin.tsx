@@ -22,6 +22,7 @@ export default function Admin() {
   const [discussions, setDiscussions] = useState<any[]>([]);
   const [alerts, setAlerts] = useState<any[]>([]);
   const [payments, setPayments] = useState<any[]>([]);
+  const [paymentRequests, setPaymentRequests] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
   // Alert form
@@ -67,6 +68,27 @@ export default function Admin() {
     setPayments(d.payments || []);
   };
 
+  const fetchPaymentRequests = async () => {
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+    const r = await fetch(`${apiUrl}/payments/requests`, { headers });
+    const d = await r.json();
+    setPaymentRequests(d.requests || []);
+  };
+
+  const approveRequest = async (id: string) => {
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+    await fetch(`${apiUrl}/payments/requests/${id}/approve`, { method: 'POST', headers });
+    toast({ title: 'Approved! User subscription activated.' });
+    fetchPaymentRequests();
+  };
+
+  const rejectRequest = async (id: string) => {
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+    await fetch(`${apiUrl}/payments/requests/${id}/reject`, { method: 'POST', headers });
+    toast({ title: 'Request rejected.' });
+    fetchPaymentRequests();
+  };
+
   useEffect(() => {
     const adminToken = localStorage.getItem('adminToken');
     if (!adminToken) { navigate('/admin-login'); return; }
@@ -78,7 +100,7 @@ export default function Admin() {
     if (tab === 'strategies') fetchStrategies();
     if (tab === 'community') fetchDiscussions();
     if (tab === 'alerts') fetchAlerts();
-    if (tab === 'payments') fetchPayments();
+    if (tab === 'payments') { fetchPayments(); fetchPaymentRequests(); }
   }, [tab]);
 
   const deleteItem = async (endpoint: string, id: string, refresh: () => void) => {
@@ -385,50 +407,70 @@ export default function Admin() {
 
         {/* ── PAYMENTS ── */}
         {tab === 'payments' && (
-          <div className="bg-white/5 border border-white/8 rounded-2xl overflow-hidden">
-            <div className="p-5 border-b border-white/8 flex items-center justify-between">
-              <h2 className="font-bold">Subscriptions & Payments <span className="text-white/30 text-sm ml-2">{payments.length}</span></h2>
-              <span className="text-xs text-white/30 bg-white/5 px-3 py-1 rounded-full">MetaMask on-chain</span>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-white/8 text-white/30 text-xs uppercase tracking-widest">
-                    <th className="text-left px-5 py-3">User</th>
-                    <th className="text-left px-5 py-3">Email</th>
-                    <th className="text-left px-5 py-3">Plan</th>
-                    <th className="text-left px-5 py-3">Status</th>
-                    <th className="text-left px-5 py-3">Amount</th>
-                    <th className="text-left px-5 py-3">Date</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {payments.map((p, i) => {
-                    const statusColor = p.status === 'active' ? 'text-emerald-400 bg-emerald-500/10' : p.status === 'expired' ? 'text-red-400 bg-red-500/10' : 'text-white/30 bg-white/5';
-                    return (
-                      <tr key={p.id ?? i} className="border-b border-white/5 hover:bg-white/3 transition-colors">
-                        <td className="px-5 py-3 font-medium">{p.user?.name ?? p.name ?? '—'}</td>
-                        <td className="px-5 py-3 text-white/50">{p.user?.email ?? p.email ?? '—'}</td>
-                        <td className="px-5 py-3 text-violet-400 capitalize">{p.plan ?? '—'}</td>
-                        <td className="px-5 py-3">
-                          <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${statusColor}`}>
-                            {p.status ?? 'unknown'}
-                          </span>
-                        </td>
-                        <td className="px-5 py-3 text-emerald-400">{p.amount ?? '—'}</td>
-                        <td className="px-5 py-3 text-white/40">{p.created_at ? new Date(p.created_at).toLocaleDateString() : '—'}</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-              {payments.length === 0 && (
-                <div className="text-center py-16">
-                  <DollarSign className="w-10 h-10 text-white/10 mx-auto mb-3" />
-                  <p className="text-white/30 text-sm">No payment records found</p>
-                  <p className="text-white/20 text-xs mt-1">Payments are processed via MetaMask and stored locally</p>
-                </div>
-              )}
+          <div className="space-y-6">
+            {/* Pending payment requests */}
+            <div className="bg-white/5 border border-white/8 rounded-2xl overflow-hidden">
+              <div className="p-5 border-b border-white/8 flex items-center justify-between">
+                <h2 className="font-bold">Pending Payment Requests
+                  <span className="ml-2 text-xs bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded-full">
+                    {paymentRequests.filter(r => r.status === 'pending').length} pending
+                  </span>
+                </h2>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-white/8 text-white/30 text-xs uppercase tracking-widest">
+                      <th className="text-left px-5 py-3">Name</th>
+                      <th className="text-left px-5 py-3">Email</th>
+                      <th className="text-left px-5 py-3">Plan</th>
+                      <th className="text-left px-5 py-3">Chain</th>
+                      <th className="text-left px-5 py-3">Amount</th>
+                      <th className="text-left px-5 py-3">Status</th>
+                      <th className="text-left px-5 py-3">Date</th>
+                      <th className="px-5 py-3">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {paymentRequests.map(r => {
+                      const statusColor = r.status === 'approved' ? 'text-emerald-400 bg-emerald-500/10' : r.status === 'rejected' ? 'text-red-400 bg-red-500/10' : 'text-amber-400 bg-amber-500/10';
+                      return (
+                        <tr key={r.id} className="border-b border-white/5 hover:bg-white/3 transition-colors">
+                          <td className="px-5 py-3 font-medium">{r.name}</td>
+                          <td className="px-5 py-3 text-white/50">{r.email}</td>
+                          <td className="px-5 py-3 text-violet-400 capitalize font-bold">{r.plan}</td>
+                          <td className="px-5 py-3 text-white/40 text-xs">{r.chain}</td>
+                          <td className="px-5 py-3 text-emerald-400 font-bold">{r.amount}</td>
+                          <td className="px-5 py-3">
+                            <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${statusColor}`}>{r.status}</span>
+                          </td>
+                          <td className="px-5 py-3 text-white/40">{new Date(r.created_at).toLocaleDateString()}</td>
+                          <td className="px-5 py-3">
+                            {r.status === 'pending' && (
+                              <div className="flex items-center gap-2">
+                                <button onClick={() => approveRequest(r.id)}
+                                  className="p-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 transition-all">
+                                  <Check className="w-4 h-4" />
+                                </button>
+                                <button onClick={() => rejectRequest(r.id)}
+                                  className="p-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 transition-all">
+                                  <X className="w-4 h-4" />
+                                </button>
+                              </div>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+                {paymentRequests.length === 0 && (
+                  <div className="text-center py-12">
+                    <DollarSign className="w-10 h-10 text-white/10 mx-auto mb-3" />
+                    <p className="text-white/30 text-sm">No payment requests yet</p>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         )}

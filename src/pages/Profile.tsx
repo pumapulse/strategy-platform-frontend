@@ -1,10 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
 import Header from '@/components/Header';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { User, Mail, Calendar, Camera, Loader2, Check } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { api } from '@/lib/api';
@@ -95,112 +90,119 @@ const Profile = () => {
   const initials = (n: string) =>
     n?.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2) || '?';
 
+  const inputClass = "w-full px-4 py-2.5 rounded-xl bg-white/[0.05] border border-white/[0.08] text-white placeholder:text-white/30 text-sm focus:outline-none focus:border-emerald-500/50 transition-colors disabled:opacity-40";
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[#0a0e1a]">
       <Header />
-      <div className="container mx-auto px-4 pt-28 pb-8 max-w-4xl">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">Profile Settings</h1>
-          <p className="text-muted-foreground">Manage your account information</p>
+      <div className="container mx-auto px-6 pt-28 pb-16 max-w-4xl">
+        {/* Page header */}
+        <div className="mb-10">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="h-px w-6 bg-violet-500" />
+            <span className="text-xs font-bold tracking-[0.25em] text-violet-400 uppercase">Account</span>
+          </div>
+          <h1 className="text-5xl font-black tracking-tight text-white mb-2">Profile Settings</h1>
+          <p className="text-white/40 text-base">Manage your account information</p>
         </div>
 
-        <div className="grid gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Personal Information</CardTitle>
-              <CardDescription>Update your profile photo and details</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="flex items-center gap-6">
-                <div className="relative shrink-0">
-                  <div className="w-24 h-24 rounded-full overflow-hidden bg-muted border-2 border-border flex items-center justify-center">
-                    {avatarPreview ? (
-                      <img src={avatarPreview} alt="Avatar" className="w-full h-full object-cover" />
-                    ) : (
-                      <span className="text-2xl font-bold text-muted-foreground">{initials(name)}</span>
-                    )}
-                  </div>
-                  <button
-                    onClick={() => fileRef.current?.click()}
-                    className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-md hover:opacity-90 transition-opacity"
-                  >
-                    <Camera className="w-4 h-4" />
-                  </button>
-                  <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
+        <div className="grid gap-5">
+          {/* Personal Info */}
+          <div className="rounded-2xl border border-white/[0.07] bg-white/[0.03] p-8">
+            <p className="text-white font-bold text-base mb-1">Personal Information</p>
+            <p className="text-white/30 text-sm mb-8">Update your profile photo and details</p>
+
+            {/* Avatar */}
+            <div className="flex items-center gap-6 mb-8">
+              <div className="relative shrink-0">
+                <div className="w-24 h-24 rounded-full overflow-hidden bg-white/[0.08] border-2 border-white/[0.1] flex items-center justify-center">
+                  {avatarPreview ? (
+                    <img src={avatarPreview} alt="Avatar" className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-2xl font-bold text-white/50">{initials(name)}</span>
+                  )}
                 </div>
-                <div>
-                  <p className="font-semibold text-sm">{name || 'Your Name'}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">{user?.email}</p>
-                  <button
-                    onClick={() => fileRef.current?.click()}
-                    className="text-xs text-primary hover:underline mt-2 block"
-                  >
-                    {avatarPreview ? 'Change photo' : 'Upload photo'}
-                  </button>
-                  <p className="text-xs text-muted-foreground mt-0.5">JPG, PNG or GIF · Max 5MB</p>
-                </div>
+                <button
+                  onClick={() => fileRef.current?.click()}
+                  className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-violet-500 text-white flex items-center justify-center shadow-md hover:bg-violet-400 transition-colors"
+                >
+                  <Camera className="w-4 h-4" />
+                </button>
+                <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
               </div>
-
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="name">Full Name</Label>
-                  <div className="flex items-center gap-2">
-                    <User className="w-4 h-4 text-muted-foreground shrink-0" />
-                    <Input id="name" value={name} onChange={e => setName(e.target.value)} />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <div className="flex items-center gap-2">
-                    <Mail className="w-4 h-4 text-muted-foreground shrink-0" />
-                    <Input id="email" type="email" value={user?.email || ''} disabled />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="bio">Bio</Label>
-                  <Textarea
-                    id="bio"
-                    placeholder="Tell the community about yourself..."
-                    value={bio}
-                    onChange={e => setBio(e.target.value)}
-                    rows={3}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Member Since</Label>
-                  <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-muted-foreground shrink-0" />
-                    <Input value={user?.created_at ? new Date(user.created_at).toLocaleDateString() : new Date().toLocaleDateString()} disabled />
-                  </div>
-                </div>
+              <div>
+                <p className="font-semibold text-white">{name || 'Your Name'}</p>
+                <p className="text-sm text-white/40 mt-0.5">{user?.email}</p>
+                <button onClick={() => fileRef.current?.click()} className="text-xs text-violet-400 hover:text-violet-300 mt-2 block transition-colors">
+                  {avatarPreview ? 'Change photo' : 'Upload photo'}
+                </button>
+                <p className="text-xs text-white/30 mt-0.5">JPG, PNG or GIF · Max 5MB</p>
               </div>
+            </div>
 
-              <Button onClick={handleSave} disabled={saving} className="gap-2">
-                {saving
-                  ? <><Loader2 className="w-4 h-4 animate-spin" />{uploadingAvatar ? 'Uploading photo...' : 'Saving...'}</>
-                  : <><Check className="w-4 h-4" />Save Changes</>
-                }
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Trading Preferences</CardTitle>
-              <CardDescription>Customize your trading experience</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
+            <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="risk">Risk Tolerance</Label>
-                <Input id="risk" placeholder="Medium" />
+                <label className="text-white/60 text-sm font-medium flex items-center gap-2">
+                  <User className="w-3.5 h-3.5" />Full Name
+                </label>
+                <input id="name" value={name} onChange={e => setName(e.target.value)} className={inputClass} placeholder="Your full name" />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="capital">Trading Capital</Label>
-                <Input id="capital" placeholder="$10,000" />
+                <label className="text-white/60 text-sm font-medium flex items-center gap-2">
+                  <Mail className="w-3.5 h-3.5" />Email
+                </label>
+                <input id="email" type="email" value={user?.email || ''} disabled className={inputClass} />
               </div>
-              <Button variant="outline">Update Preferences</Button>
-            </CardContent>
-          </Card>
+              <div className="space-y-2">
+                <label className="text-white/60 text-sm font-medium">Bio</label>
+                <textarea
+                  id="bio"
+                  placeholder="Tell the community about yourself..."
+                  value={bio}
+                  onChange={e => setBio(e.target.value)}
+                  rows={3}
+                  className="w-full px-4 py-2.5 rounded-xl bg-white/[0.05] border border-white/[0.08] text-white placeholder:text-white/30 text-sm focus:outline-none focus:border-emerald-500/50 transition-colors resize-none"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-white/60 text-sm font-medium flex items-center gap-2">
+                  <Calendar className="w-3.5 h-3.5" />Member Since
+                </label>
+                <input
+                  value={user?.created_at ? new Date(user.created_at).toLocaleDateString() : new Date().toLocaleDateString()}
+                  disabled
+                  className={inputClass}
+                />
+              </div>
+            </div>
+
+            <button onClick={handleSave} disabled={saving}
+              className="mt-6 inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-violet-500 hover:bg-violet-400 disabled:opacity-50 text-white font-semibold text-sm transition-all">
+              {saving
+                ? <><Loader2 className="w-4 h-4 animate-spin" />{uploadingAvatar ? 'Uploading photo...' : 'Saving...'}</>
+                : <><Check className="w-4 h-4" />Save Changes</>
+              }
+            </button>
+          </div>
+
+          {/* Trading Preferences */}
+          <div className="rounded-2xl border border-white/[0.07] bg-white/[0.03] p-8">
+            <p className="text-white font-bold text-base mb-1">Trading Preferences</p>
+            <p className="text-white/30 text-sm mb-8">Customize your trading experience</p>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <label className="text-white/60 text-sm font-medium">Risk Tolerance</label>
+                <input id="risk" placeholder="Medium" className={inputClass} />
+              </div>
+              <div className="space-y-2">
+                <label className="text-white/60 text-sm font-medium">Trading Capital</label>
+                <input id="capital" placeholder="$10,000" className={inputClass} />
+              </div>
+              <button className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-white/[0.1] text-white/60 hover:text-white hover:border-white/20 text-sm font-medium transition-all">
+                Update Preferences
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

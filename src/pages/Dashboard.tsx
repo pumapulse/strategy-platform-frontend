@@ -442,7 +442,7 @@ const Dashboard = () => {
                 <div className="relative w-full max-w-[760px] mselect-none">
                   <img
                     src="/desktop.png"
-                    alt="TradexStrategies Desktop App"
+                    alt="TradexStrategies Desktop App"do you 
                     className="w-full rounded-xl"
                     style={{ boxShadow: '0 0 0 1px rgba(255,255,255,0.08), 0 24px 60px rgba(0,0,0,0.7)' }}
                   />

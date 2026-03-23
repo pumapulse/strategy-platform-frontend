@@ -1,13 +1,6 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
-import { 
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Filter, Search, ChevronDown, X } from "lucide-react";
 
 interface FilterProps {
@@ -28,120 +21,84 @@ interface FilterProps {
   onClearAll: () => void;
 }
 
-const StrategyFilters = ({ 
-  selectedMarket, 
-  setSelectedMarket, 
-  selectedTimeframe, 
-  setSelectedTimeframe,
-  searchQuery,
-  setSearchQuery,
-  winRateRange,
-  setWinRateRange,
-  profitFactorRange,
-  setProfitFactorRange,
-  maxDrawdownRange,
-  setMaxDrawdownRange,
-  selectedIndicators,
-  setSelectedIndicators,
+const markets = ["All", "Crypto", "Forex", "Stocks"];
+const timeframes = ["All", "1H", "4H", "Daily", "Weekly"];
+const indicators = ["EMA", "RSI", "MACD", "Bollinger Bands", "Stochastic", "Fibonacci", "Ichimoku", "ADX", "Volume", "Price Action"];
+
+const StrategyFilters = ({
+  selectedMarket, setSelectedMarket,
+  selectedTimeframe, setSelectedTimeframe,
+  searchQuery, setSearchQuery,
+  winRateRange, setWinRateRange,
+  profitFactorRange, setProfitFactorRange,
+  maxDrawdownRange, setMaxDrawdownRange,
+  selectedIndicators, setSelectedIndicators,
   onClearAll,
 }: FilterProps) => {
   const [advancedOpen, setAdvancedOpen] = useState(false);
-  
-  const markets = ["All", "Crypto", "Forex", "Stocks"];
-  const timeframes = ["All", "1H", "4H", "Daily", "Weekly"];
-  const indicators = [
-    "EMA", 
-    "RSI", 
-    "MACD", 
-    "Bollinger Bands", 
-    "Stochastic", 
-    "Fibonacci", 
-    "Ichimoku", 
-    "ADX", 
-    "Volume", 
-    "Price Action"
-  ];
 
   const toggleIndicator = (indicator: string) => {
-    if (selectedIndicators.includes(indicator)) {
-      setSelectedIndicators(selectedIndicators.filter(i => i !== indicator));
-    } else {
-      setSelectedIndicators([...selectedIndicators, indicator]);
-    }
+    setSelectedIndicators(
+      selectedIndicators.includes(indicator)
+        ? selectedIndicators.filter(i => i !== indicator)
+        : [...selectedIndicators, indicator]
+    );
   };
 
-  const hasActiveFilters = 
-    selectedMarket !== "All" || 
-    selectedTimeframe !== "All" || 
-    searchQuery !== "" ||
-    winRateRange[0] !== 0 || 
-    winRateRange[1] !== 100 ||
-    profitFactorRange[0] !== 0 ||
-    profitFactorRange[1] !== 5 ||
-    maxDrawdownRange[0] !== 0 ||
-    maxDrawdownRange[1] !== 20 ||
+  const hasActiveFilters =
+    selectedMarket !== "All" || selectedTimeframe !== "All" || searchQuery !== "" ||
+    winRateRange[0] !== 0 || winRateRange[1] !== 100 ||
+    profitFactorRange[0] !== 0 || profitFactorRange[1] !== 5 ||
+    maxDrawdownRange[0] !== 0 || maxDrawdownRange[1] !== 20 ||
     selectedIndicators.length > 0;
 
+  const chipBase = "px-3 py-1.5 rounded-full text-xs font-semibold border cursor-pointer transition-all";
+  const chipActive = "bg-emerald-500/20 border-emerald-500/50 text-emerald-400";
+  const chipInactive = "bg-white/[0.03] border-white/[0.08] text-white/50 hover:border-white/20 hover:text-white/80";
+
   return (
-    <div className="bg-card border border-border rounded-lg p-6 sticky top-20">
-      <div className="flex items-center gap-2 mb-4">
-        <Filter className="w-5 h-5 text-primary" />
-        <h3 className="font-semibold text-lg">Search & Filter</h3>
+    <div className="rounded-2xl border border-white/[0.07] bg-white/[0.03] p-6 sticky top-24">
+      <div className="flex items-center gap-2 mb-6">
+        <Filter className="w-4 h-4 text-emerald-400" />
+        <p className="font-bold text-white text-sm">Search & Filter</p>
       </div>
 
       <div className="space-y-6">
-        {/* Search Bar */}
+        {/* Search */}
         <div>
-          <label className="text-sm text-muted-foreground mb-2 block">Search Strategies</label>
+          <label className="text-xs text-white/40 mb-2 block uppercase tracking-widest font-semibold">Search</label>
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input 
-              placeholder="Search by name..." 
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+            <input
+              placeholder="Search by name..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 bg-background"
+              onChange={e => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-8 py-2.5 rounded-xl bg-white/[0.05] border border-white/[0.08] text-white placeholder:text-white/30 text-sm focus:outline-none focus:border-emerald-500/50 transition-colors"
             />
             {searchQuery && (
-              <button
-                onClick={() => setSearchQuery("")}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
-              >
+              <button onClick={() => setSearchQuery("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/70 transition-colors">
                 <X className="w-4 h-4" />
               </button>
             )}
           </div>
         </div>
 
-        {/* Market Filter */}
+        {/* Market */}
         <div>
-          <label className="text-sm text-muted-foreground mb-2 block">Market</label>
+          <label className="text-xs text-white/40 mb-2 block uppercase tracking-widest font-semibold">Market</label>
           <div className="flex flex-wrap gap-2">
-            {markets.map((market) => (
-              <Badge
-                key={market}
-                variant={selectedMarket === market ? "default" : "outline"}
-                className="cursor-pointer hover:bg-primary/20 transition-colors"
-                onClick={() => setSelectedMarket(market)}
-              >
-                {market}
-              </Badge>
+            {markets.map(m => (
+              <button key={m} onClick={() => setSelectedMarket(m)} className={`${chipBase} ${selectedMarket === m ? chipActive : chipInactive}`}>{m}</button>
             ))}
           </div>
         </div>
 
-        {/* Timeframe Filter */}
+        {/* Timeframe */}
         <div>
-          <label className="text-sm text-muted-foreground mb-2 block">Timeframe</label>
+          <label className="text-xs text-white/40 mb-2 block uppercase tracking-widest font-semibold">Timeframe</label>
           <div className="flex flex-wrap gap-2">
-            {timeframes.map((timeframe) => (
-              <Badge
-                key={timeframe}
-                variant={selectedTimeframe === timeframe ? "default" : "outline"}
-                className="cursor-pointer hover:bg-primary/20 transition-colors"
-                onClick={() => setSelectedTimeframe(timeframe)}
-              >
-                {timeframe}
-              </Badge>
+            {timeframes.map(t => (
+              <button key={t} onClick={() => setSelectedTimeframe(t)} className={`${chipBase} ${selectedTimeframe === t ? chipActive : chipInactive}`}>{t}</button>
             ))}
           </div>
         </div>
@@ -149,89 +106,56 @@ const StrategyFilters = ({
         {/* Advanced Filters */}
         <Collapsible open={advancedOpen} onOpenChange={setAdvancedOpen}>
           <CollapsibleTrigger asChild>
-            <Button variant="outline" className="w-full justify-between">
+            <button className="w-full flex items-center justify-between px-4 py-2.5 rounded-xl border border-white/[0.08] bg-white/[0.03] text-white/60 hover:text-white hover:border-white/20 text-sm font-medium transition-all">
               Advanced Filters
               <ChevronDown className={`w-4 h-4 transition-transform ${advancedOpen ? 'rotate-180' : ''}`} />
-            </Button>
+            </button>
           </CollapsibleTrigger>
-          <CollapsibleContent className="space-y-6 mt-6">
-            {/* Win Rate Range */}
+          <CollapsibleContent className="space-y-6 mt-5">
+            {/* Win Rate */}
             <div>
-              <label className="text-sm text-muted-foreground mb-2 block">
-                Win Rate: {winRateRange[0]}% - {winRateRange[1]}%
+              <label className="text-xs text-white/40 mb-3 block">
+                Win Rate: <span className="text-emerald-400 font-semibold">{winRateRange[0]}% – {winRateRange[1]}%</span>
               </label>
-              <Slider
-                value={winRateRange}
-                onValueChange={(value) => setWinRateRange(value as [number, number])}
-                min={0}
-                max={100}
-                step={1}
-                className="mt-2"
-              />
+              <Slider value={winRateRange} onValueChange={v => setWinRateRange(v as [number, number])} min={0} max={100} step={1} className="mt-2" />
             </div>
 
-            {/* Profit Factor Range */}
+            {/* Profit Factor */}
             <div>
-              <label className="text-sm text-muted-foreground mb-2 block">
-                Profit Factor: {profitFactorRange[0].toFixed(1)} - {profitFactorRange[1].toFixed(1)}
+              <label className="text-xs text-white/40 mb-3 block">
+                Profit Factor: <span className="text-emerald-400 font-semibold">{profitFactorRange[0].toFixed(1)} – {profitFactorRange[1].toFixed(1)}</span>
               </label>
-              <Slider
-                value={profitFactorRange}
-                onValueChange={(value) => setProfitFactorRange(value as [number, number])}
-                min={0}
-                max={5}
-                step={0.1}
-                className="mt-2"
-              />
+              <Slider value={profitFactorRange} onValueChange={v => setProfitFactorRange(v as [number, number])} min={0} max={5} step={0.1} className="mt-2" />
             </div>
 
-            {/* Max Drawdown Range */}
+            {/* Max Drawdown */}
             <div>
-              <label className="text-sm text-muted-foreground mb-2 block">
-                Max Drawdown: {maxDrawdownRange[0]}% - {maxDrawdownRange[1]}%
+              <label className="text-xs text-white/40 mb-3 block">
+                Max Drawdown: <span className="text-red-400 font-semibold">{maxDrawdownRange[0]}% – {maxDrawdownRange[1]}%</span>
               </label>
-              <Slider
-                value={maxDrawdownRange}
-                onValueChange={(value) => setMaxDrawdownRange(value as [number, number])}
-                min={0}
-                max={20}
-                step={0.1}
-                className="mt-2"
-              />
+              <Slider value={maxDrawdownRange} onValueChange={v => setMaxDrawdownRange(v as [number, number])} min={0} max={20} step={0.1} className="mt-2" />
             </div>
 
-            {/* Indicators Filter */}
+            {/* Indicators */}
             <div>
-              <label className="text-sm text-muted-foreground mb-2 block">
-                Indicators Used {selectedIndicators.length > 0 && `(${selectedIndicators.length})`}
+              <label className="text-xs text-white/40 mb-3 block uppercase tracking-widest font-semibold">
+                Indicators {selectedIndicators.length > 0 && <span className="text-emerald-400">({selectedIndicators.length})</span>}
               </label>
               <div className="flex flex-wrap gap-2">
-                {indicators.map((indicator) => (
-                  <Badge
-                    key={indicator}
-                    variant={selectedIndicators.includes(indicator) ? "default" : "outline"}
-                    className="cursor-pointer hover:bg-primary/20 transition-colors"
-                    onClick={() => toggleIndicator(indicator)}
-                  >
-                    {indicator}
-                  </Badge>
+                {indicators.map(ind => (
+                  <button key={ind} onClick={() => toggleIndicator(ind)} className={`${chipBase} ${selectedIndicators.includes(ind) ? chipActive : chipInactive}`}>{ind}</button>
                 ))}
               </div>
             </div>
           </CollapsibleContent>
         </Collapsible>
 
-        {/* Clear Filters Button */}
+        {/* Clear All */}
         {hasActiveFilters && (
-          <Button 
-            variant="outline" 
-            size="sm"
-            onClick={onClearAll}
-            className="w-full"
-          >
-            <X className="w-4 h-4 mr-2" />
-            Clear All Filters
-          </Button>
+          <button onClick={onClearAll}
+            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-red-500/30 bg-red-500/[0.07] text-red-400 hover:bg-red-500/[0.12] text-sm font-medium transition-all">
+            <X className="w-4 h-4" />Clear All Filters
+          </button>
         )}
       </div>
     </div>

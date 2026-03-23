@@ -255,7 +255,7 @@ const DiscussionDetail = () => {
                       <AvatarFallback>{initials(reply.user?.name)}</AvatarFallback>
                     </Avatar>
                     <div className="flex-1">
-                      <div className="bg-accent rounded-lg p-4">
+                      <div className="border border-white/[0.06] bg-white/[0.03] hover:bg-emerald-500/10 hover:border-emerald-500/30 transition-all rounded-xl p-4">
                         <div className="flex items-center gap-2 mb-2">
                           <span className="font-semibold">{reply.user?.name}</span>
                           <span className="text-xs text-muted-foreground">{timeAgo(reply.created_at)}</span>
