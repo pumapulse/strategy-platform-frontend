@@ -398,74 +398,54 @@ const Dashboard = () => {
                   ))}
                 </div>
                 <div className="space-y-4">
-                  <p className="text-xs font-semibold uppercase tracking-widest text-white/30">Download for your platform</p>
+                  <p className="text-xs font-semibold uppercase tracking-widest text-white/50">Download for your platform</p>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <a href="/Tradex.exe" download="Tradex.exe" className="group flex items-center gap-3 px-4 py-3.5 rounded-2xl bg-white/[0.04] border border-white/[0.08] hover:bg-white/[0.08] hover:border-violet-500/40 transition-all">
-                      <svg className="w-7 h-7 shrink-0" viewBox="0 0 24 24" fill="none">
-                        <path d="M3 5.5L10.5 4.5V11.5H3V5.5Z" fill="#00adef"/>
-                        <path d="M11.5 4.35L21 3V11.5H11.5V4.35Z" fill="#00adef"/>
-                        <path d="M3 12.5H10.5V19.5L3 18.5V12.5Z" fill="#00adef"/>
-                        <path d="M11.5 12.5H21V21L11.5 19.65V12.5Z" fill="#00adef"/>
+                    <a href="https://www.dropbox.com/scl/fi/7ljdblj8eslqbsshi4dgg/Tradex.exe?rlkey=7a1svh0j0n5n5yztxi0v1dpw0&st=j968znuc&dl=1" download="Tradex.exe"
+                      className="group flex items-center gap-3 px-5 py-4 rounded-2xl bg-violet-600 border border-violet-500 hover:bg-violet-500 transition-all shadow-lg shadow-violet-900/40">
+                      <svg className="w-8 h-8 shrink-0" viewBox="0 0 24 24" fill="none">
+                        <path d="M3 5.5L10.5 4.5V11.5H3V5.5Z" fill="white"/>
+                        <path d="M11.5 4.35L21 3V11.5H11.5V4.35Z" fill="white"/>
+                        <path d="M3 12.5H10.5V19.5L3 18.5V12.5Z" fill="white"/>
+                        <path d="M11.5 12.5H21V21L11.5 19.65V12.5Z" fill="white"/>
                       </svg>
                       <div className="text-left">
-                        <div className="text-[11px] text-white/40 leading-none mb-0.5">Download for</div>
-                        <div className="text-sm font-bold text-white">Windows</div>
-                        <div className="text-[10px] text-white/30">v2.4.1 · .exe · 64-bit</div>
+                        <div className="text-[11px] text-white/70 leading-none mb-0.5">Download for</div>
+                        <div className="text-base font-black text-white">Windows</div>
+                        <div className="text-[10px] text-white/60">v2.4.1 · .exe · 64-bit</div>
                       </div>
-                      <Download className="w-3.5 h-3.5 text-white/20 group-hover:text-violet-400 ml-auto transition-colors" />
+                      <Download className="w-4 h-4 text-white/60 group-hover:text-white ml-auto transition-colors" />
                     </a>
-                    <button className="group flex items-center gap-3 px-4 py-3.5 rounded-2xl bg-white/[0.04] border border-white/[0.08] hover:bg-white/[0.08] hover:border-violet-500/40 transition-all">
-                      <Monitor className="w-7 h-7 shrink-0 text-white/60" />
+                    <button className="group flex items-center gap-3 px-5 py-4 rounded-2xl bg-white/[0.07] border border-white/20 hover:bg-white/[0.12] hover:border-white/30 transition-all">
+                      <Monitor className="w-8 h-8 shrink-0 text-white/80" />
                       <div className="text-left">
-                        <div className="text-[11px] text-white/40 leading-none mb-0.5">Download for</div>
-                        <div className="text-sm font-bold text-white">macOS</div>
-                        <div className="text-[10px] text-white/30">v2.4.1 · .dmg · M1/Intel</div>
+                        <div className="text-[11px] text-white/50 leading-none mb-0.5">Download for</div>
+                        <div className="text-base font-black text-white">macOS</div>
+                        <div className="text-[10px] text-white/40">v2.4.1 · .dmg · M1/Intel</div>
                       </div>
-                      <Download className="w-3.5 h-3.5 text-white/20 group-hover:text-violet-400 ml-auto transition-colors" />
+                      <Download className="w-4 h-4 text-white/30 group-hover:text-white ml-auto transition-colors" />
                     </button>
-                    <button className="group flex items-center gap-3 px-4 py-3.5 rounded-2xl bg-white/[0.04] border border-white/[0.08] hover:bg-white/[0.08] hover:border-violet-500/40 transition-all">
-                      <Monitor className="w-7 h-7 shrink-0 text-white/60" />
+                    <button className="group flex items-center gap-3 px-5 py-4 rounded-2xl bg-white/[0.07] border border-white/20 hover:bg-white/[0.12] hover:border-white/30 transition-all">
+                      <Monitor className="w-8 h-8 shrink-0 text-white/80" />
                       <div className="text-left">
-                        <div className="text-[11px] text-white/40 leading-none mb-0.5">Download for</div>
-                        <div className="text-sm font-bold text-white">Linux</div>
-                        <div className="text-[10px] text-white/30">v2.4.1 · .AppImage</div>
+                        <div className="text-[11px] text-white/50 leading-none mb-0.5">Download for</div>
+                        <div className="text-base font-black text-white">Linux</div>
+                        <div className="text-[10px] text-white/40">v2.4.1 · .AppImage</div>
                       </div>
-                      <Download className="w-3.5 h-3.5 text-white/20 group-hover:text-violet-400 ml-auto transition-colors" />
+                      <Download className="w-4 h-4 text-white/30 group-hover:text-white ml-auto transition-colors" />
                     </button>
                   </div>
                   <p className="text-[11px] text-white/20">Free forever · No credit card · Auto-updates</p>
                 </div>
               </div>
 
-              <div className="relative flex items-center justify-center lg:justify-end overflow-hidden p-6 lg:p-8 lg:pl-0">
-                <div className="relative w-full max-w-[520px] select-none">
-                  <div className="relative rounded-t-2xl rounded-b-md overflow-hidden"
-                    style={{ background: 'linear-gradient(145deg,#2a2d3a,#1a1d28)', padding: '10px 10px 0', boxShadow: '0 0 0 1px rgba(255,255,255,0.08), 0 30px 80px rgba(0,0,0,0.8)' }}>
-                    <div className="absolute top-3 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-[#111] border border-white/10 z-10" />
-                    <div className="rounded-t-xl rounded-b-sm overflow-hidden bg-[#080b14]" style={{ aspectRatio: '16/10' }}>
-                      <div className="w-full h-full text-[10px] font-mono flex flex-col">
-                        <div className="flex items-center justify-between px-3 py-1.5 bg-[#12151f] border-b border-white/[0.07]">
-                          <div className="flex items-center gap-1.5">
-                            <span className="w-2.5 h-2.5 rounded-full bg-red-500/80" />
-                            <span className="w-2.5 h-2.5 rounded-full bg-yellow-400/80" />
-                            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80" />
-                          </div>
-                          <span className="text-white/30 tracking-wide">TradexStrategies · BTC/USDT · 1H</span>
-                          <div className="flex gap-2 text-white/20"><span>⊟</span><span>⊡</span><span>✕</span></div>
-                        </div>
-                        <div className="flex-1 flex items-center justify-center bg-[#0b0e1a]">
-                          <div className="text-center">
-                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse mx-auto mb-2" />
-                            <span className="text-[9px] text-white/30">Live · 3 strategies running</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="h-[6px] mx-1" style={{ background: 'linear-gradient(to bottom, #1a1d28, #111318)' }} />
-                  <div className="rounded-b-2xl px-6 pt-3 pb-4" style={{ background: 'linear-gradient(160deg,#252836,#1a1d28)' }}>
-                    <div className="mx-auto rounded-lg border border-white/[0.07]" style={{ width: '38%', height: '52px', background: 'rgba(255,255,255,0.03)' }} />
-                  </div>
+              <div className="relative flex items-center justify-center lg:justify-end overflow-hidden p-6 lg:p-10 lg:pl-0">
+                <div className="relative w-full max-w-[760px] mselect-none">
+                  <img
+                    src="/desktop.png"
+                    alt="TradexStrategies Desktop App"
+                    className="w-full rounded-xl"
+                    style={{ boxShadow: '0 0 0 1px rgba(255,255,255,0.08), 0 24px 60px rgba(0,0,0,0.7)' }}
+                  />
                 </div>
               </div>
             </div>
