@@ -161,7 +161,14 @@ const StrategyDetail = () => {
               </div>
             </div>
             <button onClick={handleDownloadScript}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white font-semibold text-sm transition-all">
+              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full font-semibold text-sm text-white transition-all active:scale-95"
+              style={{
+                background: 'linear-gradient(180deg, #7c5cfc 0%, #5b3fd4 100%)',
+                boxShadow: '0 1px 0 rgba(255,255,255,0.15) inset, 0 4px 16px rgba(91,63,212,0.45), 0 1px 3px rgba(0,0,0,0.4)',
+              }}
+              onMouseEnter={e => (e.currentTarget.style.filter = 'brightness(1.08)')}
+              onMouseLeave={e => (e.currentTarget.style.filter = 'brightness(1)')}
+            >
               <Download className="w-4 h-4" />Download Script
             </button>
           </div>
