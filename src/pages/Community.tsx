@@ -215,14 +215,14 @@ const Community = () => {
               <div className="space-y-4">
                 {filtered.map(d => (
                   <div key={d.id} onClick={() => navigate(`/discussion/${d.id}`)}
-                    className="p-4 border rounded-lg hover:bg-accent cursor-pointer transition-colors">
+                    className="p-4 border border-white/[0.05] rounded-xl hover:bg-emerald-500/10 hover:border-emerald-500/30 cursor-pointer transition-all group">
                     <div className="flex items-start gap-4">
                       <Avatar className="w-10 h-10">
                         <AvatarFallback>{initials(d.user?.name)}</AvatarFallback>
                       </Avatar>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
-                          <h3 className="font-semibold text-lg hover:text-primary transition-colors">{d.title}</h3>
+                          <h3 className="font-semibold text-lg group-hover:text-emerald-400 transition-colors">{d.title}</h3>
                           {isHot(d) && <Badge variant="destructive" className="text-xs">HOT</Badge>}
                         </div>
                         <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{d.content}</p>

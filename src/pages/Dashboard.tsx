@@ -460,7 +460,7 @@ const Dashboard = () => {
             <p className="text-white/30 text-xs mb-5">Your latest trading activity</p>
             <div className="space-y-2">
               {recentTrades.map((trade) => (
-                <div key={trade.id} className="flex items-center justify-between p-4 rounded-xl border border-white/[0.05] hover:bg-white/[0.04] transition-colors cursor-pointer group">
+                <div key={trade.id} className="flex items-center justify-between p-4 rounded-xl border border-white/[0.05] hover:bg-emerald-500/10 hover:border-emerald-500/30 transition-all cursor-pointer group">
                   <div className="flex items-center gap-4">
                     <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${trade.type === 'buy' ? 'bg-emerald-400/10' : 'bg-red-400/10'}`}>
                       {trade.type === 'buy' ? <TrendingUp className="w-5 h-5 text-emerald-400" /> : <TrendingDown className="w-5 h-5 text-red-400" />}
