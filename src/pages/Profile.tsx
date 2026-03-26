@@ -1,11 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
-import { User, Mail, Calendar, Camera, Loader2, Check } from 'lucide-react';
+import Footer from '@/components/Footer';
+import { User, Mail, Calendar, Camera, Loader2, Check, Crown, Sparkles, Zap, ShieldCheck, Clock, AlertCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { api } from '@/lib/api';
+import { checkSubscription } from '@/lib/metamask';
 
 const Profile = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const fileRef = useRef<HTMLInputElement>(null);
 
   const [user, setUser] = useState<any>(null);
@@ -15,6 +19,7 @@ const Profile = () => {
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [saving, setSaving] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [subscription, setSubscription] = useState<any>(null);
 
   const token = localStorage.getItem('token') || '';
 
@@ -36,6 +41,7 @@ const Profile = () => {
         setAvatarPreview(u.avatar_url || null);
       }).catch(() => {});
     }
+    setSubscription(checkSubscription());
   }, []);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -185,6 +191,130 @@ const Profile = () => {
             </button>
           </div>
 
+          {/* Membership Status */}
+          <div className="rounded-2xl border border-white/[0.07] bg-white/[0.03] p-8">
+            <p className="text-white font-bold text-base mb-1">Membership Status</p>
+            <p className="text-white/30 text-sm mb-6">Your current plan and subscription details</p>
+
+            {subscription?.active && !subscription?.expired ? (
+              <div className="space-y-4">
+                {/* Plan badge */}
+                <div className={`flex items-center justify-between p-5 rounded-2xl border ${
+                  subscription.plan === 'elite'
+                    ? 'border-violet-500/30 bg-violet-500/[0.07]'
+                    : subscription.isTrial
+                    ? 'border-blue-500/30 bg-blue-500/[0.07]'
+                    : 'border-yellow-500/30 bg-yellow-500/[0.07]'
+                }`}>
+                  <div className="flex items-center gap-4">
+                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                      subscription.plan === 'elite' ? 'bg-violet-500/20' : subscription.isTrial ? 'bg-blue-500/20' : 'bg-yellow-500/20'
+                    }`}>
+                      {subscription.isTrial
+                        ? <Sparkles className="w-6 h-6 text-blue-400" />
+                        : subscription.plan === 'elite'
+                        ? <Zap className="w-6 h-6 text-violet-400" />
+                        : <Crown className="w-6 h-6 text-yellow-400" />}
+                    </div>
+                    <div>
+                      <p className={`text-lg font-black capitalize ${
+                        subscription.plan === 'elite' ? 'text-violet-400' : subscription.isTrial ? 'text-blue-400' : 'text-yellow-400'
+                      }`}>
+                        {subscription.isTrial ? 'Free Trial' : `${subscription.plan} Plan`}
+                      </p>
+                      <p className="text-white/40 text-sm">Active subscription</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                    <span className="text-xs font-bold text-emerald-400">Active</span>
+                  </div>
+                </div>
+
+                {/* Details grid */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="p-4 rounded-xl bg-white/[0.03] border border-white/[0.06]">
+                    <p className="text-[11px] font-bold uppercase tracking-widest text-white/30 mb-1">Plan</p>
+                    <p className="text-white font-semibold capitalize">{subscription.isTrial ? 'Free Trial' : subscription.plan}</p>
+                  </div>
+                  <div className="p-4 rounded-xl bg-white/[0.03] border border-white/[0.06]">
+                    <p className="text-[11px] font-bold uppercase tracking-widest text-white/30 mb-1">Status</p>
+                    <p className="text-emerald-400 font-semibold">Active</p>
+                  </div>
+                  {subscription.endDate && (
+                    <div className="p-4 rounded-xl bg-white/[0.03] border border-white/[0.06]">
+                      <p className="text-[11px] font-bold uppercase tracking-widest text-white/30 mb-1">Expires</p>
+                      <p className="text-white font-semibold flex items-center gap-1.5">
+                        <Clock className="w-3.5 h-3.5 text-white/40" />
+                        {new Date(subscription.endDate).toLocaleDateString()}
+                      </p>
+                    </div>
+                  )}
+                  {subscription.startDate && (
+                    <div className="p-4 rounded-xl bg-white/[0.03] border border-white/[0.06]">
+                      <p className="text-[11px] font-bold uppercase tracking-widest text-white/30 mb-1">Started</p>
+                      <p className="text-white font-semibold">{new Date(subscription.startDate).toLocaleDateString()}</p>
+                    </div>
+                  )}
+                </div>
+
+                {subscription.isTrial && (
+                  <button onClick={() => navigate('/subscription')}
+                    className="w-full py-3 rounded-xl bg-gradient-to-r from-yellow-500 to-orange-500 hover:opacity-90 text-white font-bold text-sm transition-all flex items-center justify-center gap-2">
+                    <Crown className="w-4 h-4" />Upgrade to Premium
+                  </button>
+                )}
+              </div>
+            ) : subscription?.expired ? (
+              <div className="space-y-4">
+                <div className="flex items-center gap-4 p-5 rounded-2xl border border-red-500/20 bg-red-500/[0.05]">
+                  <div className="w-12 h-12 rounded-xl bg-red-500/10 flex items-center justify-center">
+                    <AlertCircle className="w-6 h-6 text-red-400" />
+                  </div>
+                  <div>
+                    <p className="text-red-400 font-black text-base">Subscription Expired</p>
+                    <p className="text-white/40 text-sm">Your {subscription.plan} plan expired on {new Date(subscription.endDate).toLocaleDateString()}</p>
+                  </div>
+                </div>
+                <button onClick={() => navigate('/subscription')}
+                  className="w-full py-3 rounded-xl bg-gradient-to-r from-yellow-500 to-orange-500 hover:opacity-90 text-white font-bold text-sm transition-all flex items-center justify-center gap-2">
+                  <Crown className="w-4 h-4" />Renew Subscription
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <div className="flex items-center gap-4 p-5 rounded-2xl border border-white/[0.07] bg-white/[0.02]">
+                  <div className="w-12 h-12 rounded-xl bg-white/[0.05] flex items-center justify-center">
+                    <Crown className="w-6 h-6 text-white/30" />
+                  </div>
+                  <div>
+                    <p className="text-white font-black text-base">Free Plan</p>
+                    <p className="text-white/40 text-sm">Limited access to strategies</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  {[
+                    { label: '2 strategies/day', locked: false },
+                    { label: 'Full backtest data', locked: true },
+                    { label: 'Community access', locked: false },
+                    { label: 'Priority signals', locked: true },
+                  ].map(({ label, locked }) => (
+                    <div key={label} className={`flex items-center gap-2 p-3 rounded-xl border ${locked ? 'border-white/[0.04] opacity-40' : 'border-white/[0.07]'}`}>
+                      {locked
+                        ? <span className="w-4 h-4 text-white/20">🔒</span>
+                        : <Check className="w-4 h-4 text-emerald-400 shrink-0" />}
+                      <span className="text-white/60 text-xs">{label}</span>
+                    </div>
+                  ))}
+                </div>
+                <button onClick={() => navigate('/subscription')}
+                  className="w-full py-3 rounded-xl bg-gradient-to-r from-yellow-500 to-orange-500 hover:opacity-90 text-white font-bold text-sm transition-all flex items-center justify-center gap-2">
+                  <Crown className="w-4 h-4" />Upgrade to Premium
+                </button>
+              </div>
+            )}
+          </div>
+
           {/* Trading Preferences */}
           <div className="rounded-2xl border border-white/[0.07] bg-white/[0.03] p-8">
             <p className="text-white font-bold text-base mb-1">Trading Preferences</p>
@@ -205,6 +335,7 @@ const Profile = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

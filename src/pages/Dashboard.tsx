@@ -1,6 +1,9 @@
+import Typewriter from '@/components/Typewriter';
+import RevealSection from '@/components/RevealSection';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import MarketTicker from '@/components/MarketTicker';
 import SubscriptionBanner from '@/components/SubscriptionBanner';
 import {
@@ -193,27 +196,28 @@ const Dashboard = () => {
           <SubscriptionBanner />
 
           {/* Welcome */}
+          <RevealSection variant="up">
           <div className="flex items-end justify-between">
             <div>
               <h1 className="text-5xl font-black tracking-tight text-white">
                 Welcome back,{' '}
-                <span className="bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
-                  {user?.name ?? 'Trader'}
-                </span>
+                <Typewriter text={user?.name ?? 'Trader'} as="span" speed={80} charClassName="text-emerald-400" />
               </h1>
               <p className="text-white/40 mt-3 text-base">Here's your trading overview for today.</p>
             </div>
             <button onClick={() => navigate('/strategies')}
-              className="hidden md:inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white/10 border border-white/10 text-white font-semibold text-sm hover:bg-white/15 transition-all">
+              className="hidden md:inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white/10 border border-white/10 text-white font-semibold text-sm hover:bg-white/15 transition-all hover-lift">
               <Zap className="w-4 h-4" />Browse Strategies
             </button>
           </div>
+          </RevealSection>
 
           {/* Stat cards */}
+          <RevealSection variant="stagger">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {stats.map((stat) => (
+            {stats.map((stat, i) => (
               <div key={stat.title} onClick={() => navigate(stat.link)}
-                className={`cursor-pointer rounded-2xl border ${stat.border} bg-white/[0.03] hover:bg-white/[0.06] p-6 transition-all hover:-translate-y-0.5 hover:shadow-xl`}>
+                className={`cursor-pointer rounded-2xl border ${stat.border} bg-white/[0.03] hover:bg-white/[0.06] p-6 transition-all hover-lift`}>
                 <div className="flex items-center justify-between mb-4">
                   <span className="text-xs font-semibold uppercase tracking-widest text-white/30">{stat.title}</span>
                   <div className={`w-9 h-9 rounded-xl ${stat.bg} flex items-center justify-center`}>
@@ -225,8 +229,10 @@ const Dashboard = () => {
               </div>
             ))}
           </div>
+          </RevealSection>
 
           {/* Strategy Performance Section */}
+          <RevealSection variant="up">
           <div className="space-y-5">
             <div>
               <div className="flex items-center gap-2 mb-2">
@@ -238,7 +244,8 @@ const Dashboard = () => {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-              <div className="lg:col-span-2 rounded-2xl border border-white/[0.07] bg-white/[0.03] p-6">
+              <RevealSection variant="left" className="lg:col-span-2">
+              <div className="rounded-2xl border border-white/[0.07] bg-white/[0.03] p-6 hover-lift h-full">
                 <div className="flex items-center justify-between mb-4">
                   <div>
                     <p className="text-white font-bold text-base">Strategy vs. Market</p>
@@ -271,9 +278,10 @@ const Dashboard = () => {
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
+              </RevealSection>
 
-              <div className="rounded-2xl border border-white/[0.07] bg-white/[0.03] p-6">
-                <p className="text-white font-bold text-base mb-1">Monthly Returns</p>
+              <RevealSection variant="right">
+              <div className="rounded-2xl border border-white/[0.07] bg-white/[0.03] p-6 hover-lift">
                 <p className="text-white/30 text-xs mb-4">ML Momentum · 2024</p>
                 <ResponsiveContainer width="100%" height={200}>
                   <ComposedChart data={monthlyReturns} margin={{ top: 4, right: 4, left: 0, bottom: 0 }}>
@@ -289,27 +297,33 @@ const Dashboard = () => {
                   </ComposedChart>
                 </ResponsiveContainer>
               </div>
+              </RevealSection>
             </div>
 
+            <RevealSection variant="stagger">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
                 { label: 'Avg Annual Return', value: '+184%', sub: 'vs +22% market', pos: true },
                 { label: 'Win Rate', value: '68%', sub: '247 trades sampled', pos: true },
                 { label: 'Max Drawdown', value: '-8.4%', sub: 'Controlled risk', pos: false },
                 { label: 'Sharpe Ratio', value: '2.31', sub: 'Risk-adjusted return', pos: true },
-              ].map((m) => (
-                <div key={m.label} className="p-5 rounded-2xl border border-white/[0.07] bg-white/[0.03] hover:bg-white/[0.05] transition-colors">
+              ].map((m, i) => (
+                <div key={m.label}
+                  className="p-5 rounded-2xl border border-white/[0.07] bg-white/[0.03] hover:bg-white/[0.05] hover-lift transition-colors">
                   <p className="text-xs font-semibold uppercase tracking-widest text-white/30 mb-2">{m.label}</p>
                   <p className={`text-3xl font-black tracking-tight ${m.pos ? 'text-emerald-400' : 'text-red-400'}`}>{m.value}</p>
                   <p className="text-xs text-white/30 mt-1">{m.sub}</p>
                 </div>
               ))}
             </div>
+            </RevealSection>
           </div>
+          </RevealSection>
 
           {/* Portfolio Growth + Top Performers */}
+          <RevealSection variant="up">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-            <div className="lg:col-span-2 rounded-2xl border border-white/[0.07] bg-white/[0.03] p-6">
+            <div className="lg:col-span-2 rounded-2xl border border-white/[0.07] bg-white/[0.03] p-6 hover-lift animate-slide-left delay-200">
               <div className="flex items-center gap-2 mb-1">
                 <Activity className="w-4 h-4 text-emerald-400" />
                 <p className="text-white font-bold text-base">Portfolio Growth</p>
@@ -333,7 +347,7 @@ const Dashboard = () => {
               </ResponsiveContainer>
             </div>
 
-            <div className="rounded-2xl border border-white/[0.07] bg-white/[0.03] p-6">
+            <div className="rounded-2xl border border-white/[0.07] bg-white/[0.03] p-6 hover-lift animate-slide-right delay-200">
               <div className="flex items-center gap-2 mb-1">
                 <Award className="w-4 h-4 text-yellow-400" />
                 <p className="text-white font-bold text-base">Top Performers</p>
@@ -342,7 +356,8 @@ const Dashboard = () => {
               <div className="space-y-3">
                 {topStrategies.map((s, i) => (
                   <div key={s.id} onClick={() => navigate(`/strategy/${s.id}`)}
-                    className="flex items-center justify-between p-4 rounded-xl border border-white/[0.06] hover:bg-white/[0.05] transition-colors cursor-pointer group">
+                    className="flex items-center justify-between p-4 rounded-xl border border-white/[0.06] hover:bg-white/[0.05] hover-lift transition-colors cursor-pointer group animate-fade-up"
+                    style={{ animationDelay: `${0.3 + i * 0.1}s` }}>
                     <div className="flex items-center gap-3">
                       <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${i === 0 ? 'bg-yellow-400/10' : i === 1 ? 'bg-blue-400/10' : 'bg-purple-400/10'}`}>
                         {i === 0 ? <Crown className="w-4 h-4 text-yellow-400" /> : <s.icon className={`w-4 h-4 ${i === 1 ? 'text-blue-400' : 'text-purple-400'}`} />}
@@ -358,8 +373,10 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
+          </RevealSection>
 
           {/* Desktop App Section */}
+          <RevealSection variant="scale">
           <div className="relative rounded-3xl overflow-hidden border border-white/[0.07]">
             <div className="absolute inset-0 bg-gradient-to-br from-violet-900/30 via-[#0a0e1a] to-emerald-900/20" />
             <div className="absolute -top-32 -right-32 w-96 h-96 bg-violet-600/10 rounded-full blur-3xl pointer-events-none" />
@@ -372,14 +389,18 @@ const Dashboard = () => {
                   <span className="text-xs font-bold tracking-[0.25em] text-violet-400 uppercase">Desktop App</span>
                 </div>
                 <h2 className="text-4xl lg:text-5xl font-black tracking-tight text-white leading-[1.05] mb-5">
-                  Trade like a pro.<br />
-                  <span className="bg-gradient-to-r from-violet-400 to-emerald-400 bg-clip-text text-transparent">
-                    Right on your desktop.
-                  </span>
+                  <Typewriter text="Trade like a pro." as="span" speed={40} cursor={false} />
+                  <br />
+                  <Typewriter text="Right on your desktop." as="span" speed={40} delay={700} charClassName="text-violet-400" />
                 </h2>
-                <p className="text-white/50 text-base leading-relaxed mb-8 max-w-md">
-                  Our native desktop app brings the full power of a professional trading terminal — think MetaTrader, but built around our strategy ecosystem. Live charts, one-click execution, real-time alerts, and your full strategy library, all in one window.
-                </p>
+                <Typewriter
+                  text="Our native desktop app brings the full power of a professional trading terminal — think MetaTrader, but built around our strategy ecosystem. Live charts, one-click execution, real-time alerts, and your full strategy library, all in one window."
+                  as="p"
+                  speed={12}
+                  delay={1600}
+                  cursor={false}
+                  className="text-white/50 text-base leading-relaxed mb-8 max-w-md"
+                />
                 <div className="grid grid-cols-2 gap-3 mb-10">
                   {[
                     { icon: LineChart, label: 'Live candlestick charts', color: 'text-emerald-400', bg: 'bg-emerald-400/10' },
@@ -450,8 +471,10 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
+          </RevealSection>
 
           {/* Recent Trades */}
+          <RevealSection variant="up">
           <div className="rounded-2xl border border-white/[0.07] bg-white/[0.03] p-6">
             <div className="flex items-center gap-2 mb-1">
               <BarChart3 className="w-4 h-4 text-white/50" />
@@ -459,8 +482,10 @@ const Dashboard = () => {
             </div>
             <p className="text-white/30 text-xs mb-5">Your latest trading activity</p>
             <div className="space-y-2">
-              {recentTrades.map((trade) => (
-                <div key={trade.id} className="flex items-center justify-between p-4 rounded-xl border border-white/[0.05] hover:bg-emerald-500/10 hover:border-emerald-500/30 transition-all cursor-pointer group">
+              {recentTrades.map((trade, i) => (
+                <div key={trade.id}
+                  className="flex items-center justify-between p-4 rounded-xl border border-white/[0.05] hover:bg-emerald-500/10 hover:border-emerald-500/30 transition-all cursor-pointer group animate-fade-up"
+                  style={{ animationDelay: `${0.1 + i * 0.08}s` }}>
                   <div className="flex items-center gap-4">
                     <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${trade.type === 'buy' ? 'bg-emerald-400/10' : 'bg-red-400/10'}`}>
                       {trade.type === 'buy' ? <TrendingUp className="w-5 h-5 text-emerald-400" /> : <TrendingDown className="w-5 h-5 text-red-400" />}
@@ -481,9 +506,11 @@ const Dashboard = () => {
               ))}
             </div>
           </div>
+          </RevealSection>
 
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

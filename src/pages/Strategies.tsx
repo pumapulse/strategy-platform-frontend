@@ -1,4 +1,5 @@
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import StrategyGrid from '@/components/StrategyGrid';
 import { Link } from 'react-router-dom';
 import { Lock } from 'lucide-react';
@@ -38,6 +39,7 @@ const Strategies = () => {
 
         <StrategyGrid limitedView={!isLoggedIn} />
       </div>
+      <Footer />
     </div>
   );
 };

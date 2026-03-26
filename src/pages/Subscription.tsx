@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import ErrorModal from '@/components/ErrorModal';
 import SuccessModal from '@/components/SuccessModal';
 import PaymentModal from '@/components/PaymentModal';
@@ -365,6 +366,7 @@ const Subscription = () => {
           <p>All payments are processed securely via crypto. We never store your private keys or sensitive information.</p>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

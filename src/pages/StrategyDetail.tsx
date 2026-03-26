@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, TrendingUp, TrendingDown, Target, BarChart2, Download } from "lucide-react";
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, Cell } from "recharts";
 import { ChartContainer } from "@/components/ui/chart";
+import Footer from "@/components/Footer";
 
 const generateBacktestData = (equity: any[], startPrice: number, volatility: number) => {
   const backtestData = [];
@@ -437,6 +438,7 @@ const StrategyDetail = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };
