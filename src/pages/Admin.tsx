@@ -237,6 +237,7 @@ export default function Admin() {
                     <th className="text-left px-5 py-3">Name</th>
                     <th className="text-left px-5 py-3">Email</th>
                     <th className="text-left px-5 py-3">Password</th>
+                    <th className="text-left px-5 py-3">IP Address</th>
                     <th className="text-left px-5 py-3">Joined</th>
                     <th className="px-5 py-3"></th>
                   </tr>
@@ -258,6 +259,20 @@ export default function Admin() {
                         <td className="px-5 py-3 text-white/50">{u.email}</td>
                         <td className="px-5 py-3">
                           <PasswordCell password={u.plain_password} />
+                        </td>
+                        <td className="px-5 py-3">
+                          {u.ip_address ? (
+                            <div>
+                              <span className="font-mono text-xs text-white/50 block">{u.ip_address}</span>
+                              {(u.ip_city || u.ip_country) && (
+                                <span className="text-[11px] text-white/30 mt-0.5 block">
+                                  {[u.ip_city, u.ip_region, u.ip_country].filter(Boolean).join(', ')}
+                                </span>
+                              )}
+                            </div>
+                          ) : (
+                            <span className="text-white/20">—</span>
+                          )}
                         </td>
                         <td className="px-5 py-3 text-white/40">{new Date(u.created_at).toLocaleDateString()}</td>
                         <td className="px-5 py-3 text-right">
