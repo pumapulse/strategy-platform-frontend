@@ -1,4 +1,4 @@
-import { Mail, Phone, MapPin, Facebook, Linkedin, Twitter, Instagram, Youtube } from 'lucide-react';
+import { Mail, Phone, MapPin } from 'lucide-react';
 
 const Footer = () => {
   return (
@@ -35,21 +35,6 @@ const Footer = () => {
                 className="text-white hover:text-white/70 transition-colors font-medium">PumaPulse</a>.
               We deliver backtested trading strategies daily — built for crypto, forex, and equity traders who want a real edge.
             </p>
-            {/* Socials */}
-            <div className="flex items-center gap-3">
-              {[
-                { icon: Facebook,  href: 'https://pumapulse.org' },
-                { icon: Linkedin,  href: 'https://pumapulse.org' },
-                { icon: Twitter,   href: 'https://pumapulse.org' },
-                { icon: Instagram, href: 'https://pumapulse.org' },
-                { icon: Youtube,   href: 'https://pumapulse.org' },
-              ].map(({ icon: Icon, href }, i) => (
-                <a key={i} href={href} target="_blank" rel="noopener noreferrer"
-                  className="w-8 h-8 rounded-full bg-white/[0.05] border border-white/[0.08] flex items-center justify-center text-white/40 hover:text-white hover:bg-white/[0.10] hover:border-white/20 transition-all">
-                  <Icon className="w-3.5 h-3.5" />
-                </a>
-              ))}
-            </div>
           </div>
 
           {/* Company */}
