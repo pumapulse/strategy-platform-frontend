@@ -57,12 +57,12 @@ const Footer = () => {
             <p className="text-xs font-black uppercase tracking-[0.2em] text-white/30 mb-5">Company</p>
             <ul className="space-y-3">
               {[
-                { label: 'About Us',         href: 'https://pumapulse.org/aboutus/' },
-                { label: 'Contact Us',       href: 'https://pumapulse.org/contact-us/' },
+                { label: 'About Us',         href: 'https://www.pumapulse.org/about/' },
+                { label: 'Contact Us',       href: 'https://www.pumapulse.org/contact/' },
                 { label: 'Careers',          href: 'https://pumapulse.org/careers/' },
                 { label: 'Blog',             href: 'https://pumapulse.org/blog/' },
-                { label: 'Privacy Policy',   href: 'https://pumapulse.org/privacy-policy/' },
-                { label: 'Terms of Service', href: 'https://pumapulse.org/terms-conditions/' },
+                { label: 'Privacy Policy',   href: 'https://www.pumapulse.org/privacy/' },
+                { label: 'Terms of Service', href: 'https://www.pumapulse.org/terms/' },
               ].map(({ label, href }) => (
                 <li key={label}>
                   <a href={href} target={href.startsWith('http') ? '_blank' : undefined}
