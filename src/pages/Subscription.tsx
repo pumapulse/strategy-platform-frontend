@@ -5,8 +5,12 @@ import Footer from '@/components/Footer';
 import ErrorModal from '@/components/ErrorModal';
 import SuccessModal from '@/components/SuccessModal';
 import PaymentModal from '@/components/PaymentModal';
-import { Check, Sparkles, Crown, Zap, Shield, TrendingUp, CheckCircle2 } from 'lucide-react';
-import { checkSubscription } from '@/lib/metamask';
+import { Check, Sparkles, Crown, Zap, Shield, TrendingUp, CheckCircle2, Wallet } from 'lucide-react';
+import {
+  checkSubscription, connectMetaMask, subscribeOnChain,
+  getOnChainSubscription, getContractPrices, saveOnChainSubscription,
+  CONTRACT_ADDRESS,
+} from '@/lib/metamask';
 
 interface Subscription {
   active: boolean;
@@ -73,11 +77,66 @@ const Subscription = () => {
   const [errorModal, setErrorModal] = useState<ModalState>({ isOpen: false, title: '', message: '' });
   const [successModal, setSuccessModal] = useState<SuccessModalState>({ isOpen: false, title: '', message: '', isPremium: false });
   const [paymentModal, setPaymentModal] = useState<{ open: boolean; plan: 'premium' | 'elite' }>({ open: false, plan: 'premium' });
+  const [walletAddress, setWalletAddress] = useState<string | null>(null);
+  const [onChainPrices, setOnChainPrices] = useState<{ premium: bigint; elite: bigint } | null>(null);
+  const contractDeployed = !!CONTRACT_ADDRESS;
 
   useEffect(() => {
     const sub = checkSubscription();
     if (sub) setSubscriptionStatus(sub as Subscription);
+    // Load on-chain prices if contract is deployed
+    if (contractDeployed) {
+      getContractPrices().then(p => { if (p) setOnChainPrices(p); });
+    }
   }, []);
+
+  const handleOnChainSubscribe = async (plan: 'premium' | 'elite') => {
+    // No MetaMask → fall back to manual payment modal
+    if (!window.ethereum) {
+      setPaymentModal({ open: true, plan });
+      return;
+    }
+    setIsConnecting(true);
+    try {
+      const address = await connectMetaMask();
+      setWalletAddress(address);
+
+      // Get price from contract or use fallback (0.02 ETH premium, 0.04 ETH elite)
+      let valueWei: bigint;
+      if (onChainPrices) {
+        valueWei = plan === 'premium' ? onChainPrices.premium : onChainPrices.elite;
+      } else {
+        valueWei = plan === 'premium'
+          ? BigInt('20000000000000000')  // 0.02 ETH
+          : BigInt('40000000000000000'); // 0.04 ETH
+      }
+
+      const txHash = await subscribeOnChain(plan, valueWei);
+
+      // Wait a moment then read subscription from chain
+      await new Promise(r => setTimeout(r, 3000));
+      const onChainSub = await getOnChainSubscription(address);
+
+      if (onChainSub) {
+        saveOnChainSubscription(plan, onChainSub.expiry);
+        setSubscriptionStatus(onChainSub as Subscription);
+      } else {
+        // Fallback: save locally with 30 days
+        saveOnChainSubscription(plan, Date.now() + 30 * 24 * 60 * 60 * 1000);
+      }
+
+      setSuccessModal({
+        isOpen: true,
+        title: `🎉 ${plan === 'premium' ? 'Premium' : 'Elite'} Activated!`,
+        message: `Your ${plan} subscription is now active on-chain. Tx: ${txHash.slice(0, 10)}...`,
+        isPremium: true,
+      });
+    } catch (err: any) {
+      setErrorModal({ isOpen: true, title: 'Transaction Failed', message: err.message || 'Failed to complete transaction.' });
+    } finally {
+      setIsConnecting(false);
+    }
+  };
 
   const handleFreeTrial = async () => {
     setIsConnecting(true);
@@ -205,10 +264,15 @@ const Subscription = () => {
             </div>
 
             <button
-              onClick={() => setPaymentModal({ open: true, plan: 'premium' })}
-              className="w-full py-3 rounded-xl bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-400 hover:to-orange-400 text-white font-semibold text-sm transition-all mb-6 flex items-center justify-center gap-2 shadow-lg shadow-yellow-900/30"
+              onClick={() => contractDeployed ? handleOnChainSubscribe('premium') : setPaymentModal({ open: true, plan: 'premium' })}
+              disabled={isConnecting}
+              className="w-full py-3 rounded-xl bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-400 hover:to-orange-400 text-white font-semibold text-sm transition-all mb-6 flex items-center justify-center gap-2 shadow-lg shadow-yellow-900/30 disabled:opacity-50"
             >
-              <Crown className="w-4 h-4" />Upgrade to Premium
+              {isConnecting
+                ? <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />Processing...</>
+                : contractDeployed
+                ? <><Wallet className="w-4 h-4" />{window.ethereum ? 'Pay with MetaMask' : 'Upgrade to Premium'}</>
+                : <><Crown className="w-4 h-4" />Upgrade to Premium</>}
             </button>
 
             <div className="space-y-3 flex-1 max-h-72 overflow-y-auto pr-1" style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(255,255,255,0.1) transparent' }}>
@@ -252,10 +316,15 @@ const Subscription = () => {
             </div>
 
             <button
-              onClick={() => setPaymentModal({ open: true, plan: 'elite' })}
-              className="w-full py-3 rounded-xl bg-gradient-to-r from-violet-600 to-pink-600 hover:from-violet-500 hover:to-pink-500 text-white font-semibold text-sm transition-all mb-6 flex items-center justify-center gap-2 shadow-lg shadow-violet-900/30"
+              onClick={() => contractDeployed ? handleOnChainSubscribe('elite') : setPaymentModal({ open: true, plan: 'elite' })}
+              disabled={isConnecting}
+              className="w-full py-3 rounded-xl bg-gradient-to-r from-violet-600 to-pink-600 hover:from-violet-500 hover:to-pink-500 text-white font-semibold text-sm transition-all mb-6 flex items-center justify-center gap-2 shadow-lg shadow-violet-900/30 disabled:opacity-50"
             >
-              <Zap className="w-4 h-4" />Upgrade to Elite
+              {isConnecting
+                ? <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />Processing...</>
+                : contractDeployed
+                ? <><Wallet className="w-4 h-4" />{window.ethereum ? 'Pay with MetaMask' : 'Upgrade to Elite'}</>
+                : <><Zap className="w-4 h-4" />Upgrade to Elite</>}
             </button>
 
             <div className="space-y-3 flex-1 max-h-72 overflow-y-auto pr-1" style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(255,255,255,0.1) transparent' }}>

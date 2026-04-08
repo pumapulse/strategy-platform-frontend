@@ -1,0 +1,93 @@
+{
+  "abi": [
+    {
+      "inputs": [
+        { "internalType": "uint256", "name": "_premiumPriceWei", "type": "uint256" },
+        { "internalType": "uint256", "name": "_elitePriceWei",   "type": "uint256" }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        { "indexed": true,  "internalType": "address", "name": "user",   "type": "address" },
+        { "indexed": false, "internalType": "uint8",   "name": "plan",   "type": "uint8"   },
+        { "indexed": false, "internalType": "uint256", "name": "expiry", "type": "uint256" }
+      ],
+      "name": "Subscribed",
+      "type": "event"
+    },
+    {
+      "inputs": [{ "internalType": "uint8", "name": "plan", "type": "uint8" }],
+      "name": "subscribe",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [{ "internalType": "address", "name": "user", "type": "address" }],
+      "name": "getSubscription",
+      "outputs": [
+        { "internalType": "uint8",   "name": "plan",   "type": "uint8"   },
+        { "internalType": "uint256", "name": "expiry", "type": "uint256" },
+        { "internalType": "bool",    "name": "active", "type": "bool"    }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [{ "internalType": "address", "name": "user", "type": "address" }],
+      "name": "isActive",
+      "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "withdraw",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "premiumPriceWei",
+      "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "elitePriceWei",
+      "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "owner",
+      "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "internalType": "uint8",   "name": "plan",         "type": "uint8"   },
+        { "internalType": "uint256", "name": "newPriceWei",  "type": "uint256" }
+      ],
+      "name": "updatePrice",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [{ "internalType": "address", "name": "newOwner", "type": "address" }],
+      "name": "transferOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    { "stateMutability": "payable", "type": "receive" }
+  ]
+}
