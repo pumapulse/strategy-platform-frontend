@@ -2,17 +2,23 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { Eye, EyeOff, TrendingUp, ShieldCheck, Zap } from 'lucide-react';
+import Turnstile from '@/components/Turnstile';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState('');
   const navigate = useNavigate();
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!captchaToken) {
+      toast({ title: 'Human check required', description: 'Please complete the verification below', variant: 'destructive' });
+      return;
+    }
     setLoading(true);
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001/api'}/auth/login`, {
@@ -25,9 +31,7 @@ export default function Login() {
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
         localStorage.setItem('subscription', JSON.stringify({
-          plan: 'free',
-          active: true,
-          isTrial: false,
+          plan: 'free', active: true, isTrial: false,
           startDate: new Date().toISOString(),
           endDate: new Date(Date.now() + 100 * 365 * 24 * 60 * 60 * 1000).toISOString(),
         }));
@@ -45,12 +49,10 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex">
+      {/* Left panel */}
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
-        <img
-          src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1200&q=90"
-          alt="People celebrating success"
-          className="absolute inset-0 w-full h-full object-cover object-center"
-        />
+        <img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1200&q=90"
+          alt="Trading" className="absolute inset-0 w-full h-full object-cover object-center" />
         <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-black/60 to-[#0a0e1a]/90" />
         <div className="relative z-10 flex flex-col justify-between p-12 w-full">
           <Link to="/" className="flex items-center gap-2.5">
@@ -67,14 +69,11 @@ export default function Login() {
               <polygon points="12,31 23,18 12,22 1,18" fill="url(#eth-bot-l)" opacity="0.85"/>
               <polygon points="12,17 23,13 12,22 1,13" fill="white" opacity="0.12"/>
             </svg>
-            <span className="text-white text-[17px] font-bold tracking-tight">
-              Crowd<span className="text-violet-400">Pnl</span>
-            </span>
+            <span className="text-white text-[17px] font-bold tracking-tight">Crowd<span className="text-violet-400">Pnl</span></span>
           </Link>
           <div>
             <span className="text-5xl font-black text-white leading-tight mb-5 block">
-              Trade smarter.<br />
-              <span className="text-violet-400">Not harder.</span>
+              Trade smarter.<br /><span className="text-violet-400">Not harder.</span>
             </span>
             <p className="text-white/60 text-lg max-w-sm leading-relaxed mt-4">
               Access 730+ backtested strategies trusted by thousands of traders worldwide.
@@ -110,6 +109,7 @@ export default function Login() {
         </div>
       </div>
 
+      {/* Right — form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center bg-[#0a0e1a] px-6 py-12">
         <div className="w-full max-w-md">
           <Link to="/" className="flex items-center gap-2 mb-10 lg:hidden">
@@ -151,19 +151,16 @@ export default function Login() {
                 </button>
               </div>
             </div>
-            <button type="submit" disabled={loading}
-              className="w-full py-3.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-bold text-sm tracking-wide transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed mt-2">
+
+            <Turnstile onVerify={setCaptchaToken} onExpire={() => setCaptchaToken('')} />
+
+            <button type="submit" disabled={loading || !captchaToken}
+              className="w-full py-3.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-bold text-sm tracking-wide transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
               {loading ? 'Signing in...' : 'Sign In'}
             </button>
           </form>
 
-          <div className="flex items-center gap-3 my-6">
-            <div className="flex-1 h-px bg-white/8" />
-            <span className="text-white/20 text-xs">or</span>
-            <div className="flex-1 h-px bg-white/8" />
-          </div>
-
-          <p className="text-center text-white/30 text-sm">
+          <p className="text-center text-white/30 text-sm mt-6">
             Don't have an account?{' '}
             <Link to="/signup" className="text-violet-400 hover:text-violet-300 font-semibold transition-colors">Create account</Link>
           </p>
