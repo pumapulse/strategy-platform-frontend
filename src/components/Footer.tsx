@@ -27,12 +27,12 @@ const Footer = () => {
                 <polygon points="12,17 23,13 12,22 1,13" fill="white" opacity="0.12"/>
               </svg>
               <span className="text-[19px] font-bold tracking-[-0.01em] whitespace-nowrap leading-none select-none text-white">
-                Tradex<span className="text-violet-400">Strategies</span>
+                Crowd<span className="text-violet-400">Pnl</span>
               </span>
             </div>
             <p className="text-white/40 text-sm leading-relaxed mb-6">
-              A product by <a href="https://pumapulse.org" target="_blank" rel="noopener noreferrer"
-                className="text-white hover:text-white/70 transition-colors font-medium">PumaPulse</a>.
+              A product by <a href="https://crowdpnl.com" target="_blank" rel="noopener noreferrer"
+                className="text-white hover:text-white/70 transition-colors font-medium">CrowdPnl</a>.
               We deliver backtested trading strategies daily — built for crypto, forex, and equity traders who want a real edge.
             </p>
           </div>
@@ -42,12 +42,12 @@ const Footer = () => {
             <p className="text-xs font-black uppercase tracking-[0.2em] text-white/30 mb-5">Company</p>
             <ul className="space-y-3">
               {[
-                { label: 'About Us',         href: 'https://www.pumapulse.org/about/' },
-                { label: 'Contact Us',       href: 'https://www.pumapulse.org/contact/' },
-                { label: 'Careers',          href: 'https://pumapulse.org/careers/' },
-                { label: 'Blog',             href: 'https://pumapulse.org/blog/' },
-                { label: 'Privacy Policy',   href: 'https://www.pumapulse.org/privacy/' },
-                { label: 'Terms of Service', href: 'https://www.pumapulse.org/terms/' },
+                { label: 'About Us',         href: 'https://crowdpnl.com/about/' },
+                { label: 'Contact Us',       href: 'https://crowdpnl.com/contact/' },
+                { label: 'Careers',          href: 'https://crowdpnl.com/careers/' },
+                { label: 'Blog',             href: 'https://crowdpnl.com/blog/' },
+                { label: 'Privacy Policy',   href: 'https://crowdpnl.com/privacy/' },
+                { label: 'Terms of Service', href: 'https://crowdpnl.com/terms/' },
               ].map(({ label, href }) => (
                 <li key={label}>
                   <a href={href} target={href.startsWith('http') ? '_blank' : undefined}
@@ -88,14 +88,14 @@ const Footer = () => {
             <ul className="space-y-4">
               <li>
                 <p className="text-[10px] font-bold uppercase tracking-widest text-white/20 mb-1">Business Inquiries</p>
-                <a href="mailto:sales@pumapulse.org" className="flex items-center gap-2 text-sm text-white/40 hover:text-white transition-colors">
-                  <Mail className="w-3.5 h-3.5 shrink-0" />sales@pumapulse.org
+                <a href="mailto:sales@crowdpnl.com" className="flex items-center gap-2 text-sm text-white/40 hover:text-white transition-colors">
+                  <Mail className="w-3.5 h-3.5 shrink-0" />sales@crowdpnl.com
                 </a>
               </li>
               <li>
                 <p className="text-[10px] font-bold uppercase tracking-widest text-white/20 mb-1">Jobs</p>
-                <a href="mailto:hr@pumapulse.org" className="flex items-center gap-2 text-sm text-white/40 hover:text-white transition-colors">
-                  <Mail className="w-3.5 h-3.5 shrink-0" />hr@pumapulse.org
+                <a href="mailto:hr@crowdpnl.com" className="flex items-center gap-2 text-sm text-white/40 hover:text-white transition-colors">
+                  <Mail className="w-3.5 h-3.5 shrink-0" />hr@crowdpnl.com
                 </a>
               </li>
               <li>
@@ -119,7 +119,7 @@ const Footer = () => {
         {/* Bottom bar */}
         <div className="flex items-center justify-center">
           <p className="text-xs text-white/25 text-center">
-            © 2025 PumaPulse Infoservices Private Limited. All Rights Reserved.
+            © 2025 CrowdPnl. All Rights Reserved.
           </p>
         </div>
 

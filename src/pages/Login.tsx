@@ -68,7 +68,7 @@ export default function Login() {
               <polygon points="12,17 23,13 12,22 1,13" fill="white" opacity="0.12"/>
             </svg>
             <span className="text-white text-[17px] font-bold tracking-tight">
-              Tradex<span className="text-violet-400">Strategies</span>
+              Crowd<span className="text-violet-400">Pnl</span>
             </span>
           </Link>
           <div>
@@ -97,7 +97,7 @@ export default function Login() {
           </div>
           <div className="border border-white/10 rounded-2xl p-5 bg-white/5 backdrop-blur-sm">
             <p className="text-white/70 text-sm leading-relaxed italic">
-              "TradexStrategies completely changed how I approach the markets. The backtested data gives me real confidence."
+              "CrowdPnl completely changed how I approach the markets. The backtested data gives me real confidence."
             </p>
             <div className="flex items-center gap-3 mt-4">
               <div className="w-8 h-8 rounded-full bg-violet-500/20 flex items-center justify-center text-violet-400 text-xs font-bold">JM</div>
@@ -126,7 +126,7 @@ export default function Login() {
               <polygon points="12,31 23,18 12,22 1,18" fill="url(#eth-bot-m)" opacity="0.85"/>
               <polygon points="12,17 23,13 12,22 1,13" fill="white" opacity="0.12"/>
             </svg>
-            <span className="text-white text-[16px] font-bold">Tradex<span className="text-violet-400">Strategies</span></span>
+            <span className="text-white text-[16px] font-bold">Crowd<span className="text-violet-400">Pnl</span></span>
           </Link>
 
           <h1 className="text-3xl font-black text-white mb-1 tracking-tight">Welcome back</h1>

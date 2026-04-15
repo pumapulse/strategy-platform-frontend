@@ -74,7 +74,7 @@ const Header = () => {
               <polygon points="12,17 23,13 12,22 1,13" fill="white" opacity="0.12"/>
             </svg>
             <span className="text-[19px] font-bold tracking-[-0.01em] whitespace-nowrap leading-none select-none text-white">
-              Tradex<span className="text-[#a78bfa]">Strategies</span>
+              Crowd<span className="text-[#a78bfa]">Pnl</span>
             </span>
           </Link>
 
