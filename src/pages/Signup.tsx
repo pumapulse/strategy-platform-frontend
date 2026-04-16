@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
-import { Eye, EyeOff, TrendingUp, ShieldCheck, Zap, Mail, ArrowLeft } from 'lucide-react';
+import { Eye, EyeOff, TrendingUp, ShieldCheck, Zap, Mail, ArrowLeft, Clock } from 'lucide-react';
 import Turnstile from '@/components/Turnstile';
 
 export default function Signup() {
@@ -15,9 +15,36 @@ export default function Signup() {
   const [pendingEmail, setPendingEmail] = useState('');
   const [code, setCode] = useState('');
   const [verifying, setVerifying] = useState(false);
+  const [secondsLeft, setSecondsLeft] = useState(600); // 10 min
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
   const API = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+
+  // Start countdown when verify step begins
+  useEffect(() => {
+    if (step === 'verify') {
+      setSecondsLeft(600);
+      timerRef.current = setInterval(() => {
+        setSecondsLeft(s => {
+          if (s <= 1) {
+            clearInterval(timerRef.current!);
+            return 0;
+          }
+          return s - 1;
+        });
+      }, 1000);
+    } else {
+      if (timerRef.current) clearInterval(timerRef.current);
+    }
+    return () => { if (timerRef.current) clearInterval(timerRef.current); };
+  }, [step]);
+
+  const formatTime = (s: number) => {
+    const m = Math.floor(s / 60);
+    const sec = s % 60;
+    return `${m}:${sec.toString().padStart(2, '0')}`;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -178,11 +205,31 @@ export default function Signup() {
                     placeholder="000000"
                     maxLength={6}
                     required
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-4 text-white placeholder-white/20 text-2xl font-black tracking-[0.5em] text-center focus:outline-none focus:border-violet-500/60 transition-all"
+                    disabled={secondsLeft === 0}
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-4 text-white placeholder-white/20 text-2xl font-black tracking-[0.5em] text-center focus:outline-none focus:border-violet-500/60 transition-all disabled:opacity-40"
                   />
-                  <p className="text-xs text-white/25 mt-1.5 text-center">Code expires in 10 minutes</p>
+                  {/* Countdown */}
+                  <div className={`flex items-center justify-center gap-2 mt-3 px-4 py-2.5 rounded-xl border ${
+                    secondsLeft === 0
+                      ? 'border-red-500/30 bg-red-500/[0.07]'
+                      : secondsLeft < 60
+                      ? 'border-amber-500/30 bg-amber-500/[0.07]'
+                      : 'border-white/[0.07] bg-white/[0.03]'
+                  }`}>
+                    <Clock className={`w-3.5 h-3.5 ${secondsLeft === 0 ? 'text-red-400' : secondsLeft < 60 ? 'text-amber-400' : 'text-white/40'}`} />
+                    {secondsLeft > 0 ? (
+                      <span className={`text-sm font-semibold ${secondsLeft < 60 ? 'text-amber-400' : 'text-white/50'}`}>
+                        This code will expire after{' '}
+                        <span className={`font-black tabular-nums ${secondsLeft < 60 ? 'text-amber-300' : 'text-white'}`}>
+                          {formatTime(secondsLeft)}
+                        </span>
+                      </span>
+                    ) : (
+                      <span className="text-sm font-bold text-red-400">Code expired — please request a new one</span>
+                    )}
+                  </div>
                 </div>
-                <button type="submit" disabled={verifying || code.length !== 6}
+                <button type="submit" disabled={verifying || code.length !== 6 || secondsLeft === 0}
                   className="w-full py-3.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-bold text-sm tracking-wide transition-all disabled:opacity-50 disabled:cursor-not-allowed">
                   {verifying ? 'Verifying...' : 'Verify Email'}
                 </button>
