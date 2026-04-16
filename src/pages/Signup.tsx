@@ -74,7 +74,7 @@ export default function Signup() {
           startDate: new Date().toISOString(),
           endDate: new Date(Date.now() + 100 * 365 * 24 * 60 * 60 * 1000).toISOString(),
         }));
-        toast({ title: 'Email verified!', description: 'Welcome to CrowdPnl' });
+        toast({ title: 'Email verified!', description: 'Welcome to CrowdPnL' });
         navigate('/dashboard');
       } else {
         toast({ title: 'Invalid code', description: data.error || 'Please check the code and try again', variant: 'destructive' });
@@ -112,7 +112,7 @@ export default function Signup() {
         <div className="relative z-10 flex flex-col justify-between p-12 w-full">
           <Link to="/" className="flex items-center gap-2.5">
             <Logo id="l" />
-            <span className="text-white text-[17px] font-bold tracking-tight">Crowd<span className="text-violet-400">Pnl</span></span>
+            <span className="text-white text-[17px] font-bold tracking-tight">Crowd<span className="text-violet-400">PnL</span></span>
           </Link>
           <div>
             <span className="text-5xl font-black text-white leading-tight mb-5 block">
@@ -198,7 +198,7 @@ export default function Signup() {
             <div>
               <Link to="/" className="flex items-center gap-2 mb-10 lg:hidden">
                 <Logo id="m" />
-                <span className="text-white text-[16px] font-bold">Crowd<span className="text-violet-400">Pnl</span></span>
+                <span className="text-white text-[16px] font-bold">Crowd<span className="text-violet-400">PnL</span></span>
               </Link>
 
               <h1 className="text-3xl font-black text-white mb-1 tracking-tight">Create account</h1>

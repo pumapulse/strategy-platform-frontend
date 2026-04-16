@@ -46,7 +46,7 @@ export default function AdminLogin() {
             <ShieldAlert className="w-7 h-7 text-violet-400" />
           </div>
           <h1 className="text-2xl font-black text-white tracking-tight">Admin Access</h1>
-          <p className="text-white/30 text-sm mt-1">CrowdPnl Control Panel</p>
+          <p className="text-white/30 text-sm mt-1">CrowdPnL Control Panel</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">

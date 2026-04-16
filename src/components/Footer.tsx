@@ -27,12 +27,12 @@ const Footer = () => {
                 <polygon points="12,17 23,13 12,22 1,13" fill="white" opacity="0.12"/>
               </svg>
               <span className="text-[19px] font-bold tracking-[-0.01em] whitespace-nowrap leading-none select-none text-white">
-                Crowd<span className="text-violet-400">Pnl</span>
+                Crowd<span className="text-violet-400">PnL</span>
               </span>
             </div>
             <p className="text-white/40 text-sm leading-relaxed mb-6">
               A product by <a href="https://crowdpnl.com" target="_blank" rel="noopener noreferrer"
-                className="text-white hover:text-white/70 transition-colors font-medium">CrowdPnl</a>.
+                className="text-white hover:text-white/70 transition-colors font-medium">CrowdPnL</a>.
               We deliver backtested trading strategies daily — built for crypto, forex, and equity traders who want a real edge.
             </p>
           </div>
@@ -119,7 +119,7 @@ const Footer = () => {
         {/* Bottom bar */}
         <div className="flex items-center justify-center">
           <p className="text-xs text-white/25 text-center">
-            © 2025 CrowdPnl. All Rights Reserved.
+            © 2025 CrowdPnL. All Rights Reserved.
           </p>
         </div>
 
