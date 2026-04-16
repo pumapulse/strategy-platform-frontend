@@ -7,8 +7,11 @@ import Turnstile from '@/components/Turnstile';
 export default function Signup() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [emailError, setEmailError] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [showPass, setShowPass] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const [loading, setLoading] = useState(false);
   const [captchaToken, setCaptchaToken] = useState('');
   const [step, setStep] = useState<'form' | 'verify'>('form');
@@ -46,8 +49,21 @@ export default function Signup() {
     return `${m}:${sec.toString().padStart(2, '0')}`;
   };
 
+  const validateEmail = (val: string) => {
+    if (!val) { setEmailError('Email is required'); return false; }
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    if (!re.test(val)) { setEmailError('Please enter a valid email address'); return false; }
+    setEmailError('');
+    return true;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validateEmail(email)) return;
+    if (password !== confirmPassword) {
+      toast({ title: 'Passwords do not match', description: 'Please make sure both passwords are the same', variant: 'destructive' });
+      return;
+    }
     if (!captchaToken) {
       toast({ title: 'Human check required', description: 'Please complete the verification below', variant: 'destructive' });
       return;
@@ -259,8 +275,22 @@ export default function Signup() {
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-white/50 uppercase tracking-widest mb-2">Email</label>
-                  <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" required
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/20 text-sm focus:outline-none focus:border-violet-500/60 transition-all" />
+                  <input
+                    type="text"
+                    value={email}
+                    onChange={e => { setEmail(e.target.value); if (emailError) validateEmail(e.target.value); }}
+                    onBlur={e => validateEmail(e.target.value)}
+                    placeholder="you@example.com"
+                    required
+                    className={`w-full bg-white/5 border rounded-xl px-4 py-3 text-white placeholder-white/20 text-sm focus:outline-none transition-all ${
+                      emailError ? 'border-red-500/60 focus:border-red-500' : 'border-white/10 focus:border-violet-500/60'
+                    }`}
+                  />
+                  {emailError && (
+                    <p className="text-xs text-red-400 mt-1.5 flex items-center gap-1">
+                      <span>⚠</span>{emailError}
+                    </p>
+                  )}
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-white/50 uppercase tracking-widest mb-2">Password</label>
@@ -273,6 +303,30 @@ export default function Signup() {
                     </button>
                   </div>
                   <p className="text-xs text-white/25 mt-1.5">Must be at least 6 characters</p>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-white/50 uppercase tracking-widest mb-2">Confirm Password</label>
+                  <div className="relative">
+                    <input type={showConfirm ? 'text' : 'password'} value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)}
+                      placeholder="••••••••" required
+                      className={`w-full bg-white/5 border rounded-xl px-4 py-3 pr-11 text-white placeholder-white/20 text-sm focus:outline-none transition-all ${
+                        confirmPassword && confirmPassword !== password
+                          ? 'border-red-500/60 focus:border-red-500'
+                          : confirmPassword && confirmPassword === password
+                          ? 'border-emerald-500/60'
+                          : 'border-white/10 focus:border-violet-500/60'
+                      }`}
+                    />
+                    <button type="button" onClick={() => setShowConfirm(p => !p)} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors">
+                      {showConfirm ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                  {confirmPassword && confirmPassword !== password && (
+                    <p className="text-xs text-red-400 mt-1.5 flex items-center gap-1"><span>⚠</span>Passwords do not match</p>
+                  )}
+                  {confirmPassword && confirmPassword === password && (
+                    <p className="text-xs text-emerald-400 mt-1.5 flex items-center gap-1"><span>✓</span>Passwords match</p>
+                  )}
                 </div>
 
                 <Turnstile onVerify={setCaptchaToken} onExpire={() => setCaptchaToken('')} />
