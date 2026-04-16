@@ -59,23 +59,8 @@ const Header = () => {
         <div className="w-full px-16 md:px-24 h-16 flex items-center justify-between">
 
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2.5 shrink-0 flex-1">
-            <svg width="24" height="32" viewBox="0 0 24 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <linearGradient id="eth-top" x1="0" y1="0" x2="24" y2="16" gradientUnits="userSpaceOnUse">
-                  <stop stopColor="#a78bfa"/><stop offset="1" stopColor="#6366f1"/>
-                </linearGradient>
-                <linearGradient id="eth-bot" x1="0" y1="16" x2="24" y2="32" gradientUnits="userSpaceOnUse">
-                  <stop stopColor="#818cf8"/><stop offset="1" stopColor="#4f46e5"/>
-                </linearGradient>
-              </defs>
-              <polygon points="12,1 23,13 12,17 1,13" fill="url(#eth-top)" opacity="0.95"/>
-              <polygon points="12,31 23,18 12,22 1,18" fill="url(#eth-bot)" opacity="0.85"/>
-              <polygon points="12,17 23,13 12,22 1,13" fill="white" opacity="0.12"/>
-            </svg>
-            <span className="text-[19px] font-bold tracking-[-0.01em] whitespace-nowrap leading-none select-none text-white">
-              Crowd<span className="text-[#a78bfa]">PnL</span>
-            </span>
+          <Link to="/" className="flex items-center shrink-0 flex-1">
+            <img src="/logo.png" alt="CrowdPnL" className="w-auto" style={{ height: '52px' }} />
           </Link>
 
           {/* Desktop Nav */}

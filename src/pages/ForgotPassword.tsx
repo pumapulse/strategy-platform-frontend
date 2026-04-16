@@ -145,20 +145,7 @@ export default function ForgotPassword() {
 
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2.5 mb-10">
-          <svg width="22" height="30" viewBox="0 0 24 32" fill="none">
-            <defs>
-              <linearGradient id="fp-t" x1="0" y1="0" x2="24" y2="16" gradientUnits="userSpaceOnUse">
-                <stop stopColor="#a78bfa"/><stop offset="1" stopColor="#6366f1"/>
-              </linearGradient>
-              <linearGradient id="fp-b" x1="0" y1="16" x2="24" y2="32" gradientUnits="userSpaceOnUse">
-                <stop stopColor="#818cf8"/><stop offset="1" stopColor="#4f46e5"/>
-              </linearGradient>
-            </defs>
-            <polygon points="12,1 23,13 12,17 1,13" fill="url(#fp-t)" opacity="0.95"/>
-            <polygon points="12,31 23,18 12,22 1,18" fill="url(#fp-b)" opacity="0.85"/>
-            <polygon points="12,17 23,13 12,22 1,13" fill="white" opacity="0.12"/>
-          </svg>
-          <span className="text-white text-[17px] font-bold tracking-tight">Crowd<span className="text-violet-400">PnL</span></span>
+          <img src="/logo.png" alt="CrowdPnL" style={{ height: '52px', width: 'auto' }} />
         </Link>
 
         {/* ── Step 1: Email ── */}

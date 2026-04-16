@@ -129,20 +129,8 @@ export default function Signup() {
     }
   };
 
-  const Logo = ({ id }: { id: string }) => (
-    <svg width="22" height="30" viewBox="0 0 24 32" fill="none">
-      <defs>
-        <linearGradient id={`et-${id}`} x1="0" y1="0" x2="24" y2="16" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#a78bfa"/><stop offset="1" stopColor="#6366f1"/>
-        </linearGradient>
-        <linearGradient id={`eb-${id}`} x1="0" y1="16" x2="24" y2="32" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#818cf8"/><stop offset="1" stopColor="#4f46e5"/>
-        </linearGradient>
-      </defs>
-      <polygon points="12,1 23,13 12,17 1,13" fill={`url(#et-${id})`} opacity="0.95"/>
-      <polygon points="12,31 23,18 12,22 1,18" fill={`url(#eb-${id})`} opacity="0.85"/>
-      <polygon points="12,17 23,13 12,22 1,13" fill="white" opacity="0.12"/>
-    </svg>
+  const Logo = () => (
+    <img src="/logo.png" alt="CrowdPnL" style={{ height: '52px', width: 'auto' }} />
   );
 
   return (
@@ -154,8 +142,7 @@ export default function Signup() {
         <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-black/60 to-[#0a0e1a]/90" />
         <div className="relative z-10 flex flex-col justify-between p-12 w-full">
           <Link to="/" className="flex items-center gap-2.5">
-            <Logo id="l" />
-            <span className="text-white text-[17px] font-bold tracking-tight">Crowd<span className="text-violet-400">PnL</span></span>
+            <Logo />
           </Link>
           <div>
             <span className="text-5xl font-black text-white leading-tight mb-5 block">
@@ -260,8 +247,7 @@ export default function Signup() {
             /* ── Signup form ── */
             <div>
               <Link to="/" className="flex items-center gap-2 mb-10 lg:hidden">
-                <Logo id="m" />
-                <span className="text-white text-[16px] font-bold">Crowd<span className="text-violet-400">PnL</span></span>
+                <Logo />
               </Link>
 
               <h1 className="text-3xl font-black text-white mb-1 tracking-tight">Create account</h1>
