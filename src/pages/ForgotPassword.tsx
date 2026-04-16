@@ -14,6 +14,8 @@ export default function ForgotPassword() {
   const [showPass, setShowPass] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [resending, setResending] = useState(false);
+  const [codeError, setCodeError] = useState('');
   const [secondsLeft, setSecondsLeft] = useState(600);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const { toast } = useToast();
@@ -60,11 +62,52 @@ export default function ForgotPassword() {
   const handleVerifyCode = async (e: React.FormEvent) => {
     e.preventDefault();
     if (secondsLeft === 0) {
-      toast({ title: 'Code expired', description: 'Please request a new code', variant: 'destructive' });
+      setCodeError('Code expired. Please request a new one.');
       return;
     }
-    // Just move to new password step — actual verification happens on submit
-    setStep('newpass');
+    setLoading(true);
+    setCodeError('');
+    try {
+      // Verify code exists and is valid before proceeding
+      const res = await fetch(`${API}/auth/verify-reset-code`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, code }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setStep('newpass');
+      } else {
+        setCodeError(data.error || 'Invalid code. Please try again.');
+      }
+    } catch {
+      setCodeError('Failed to verify code. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResend = async () => {
+    setResending(true);
+    setCodeError('');
+    setCode('');
+    try {
+      const res = await fetch(`${API}/auth/forgot-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      if (res.ok) {
+        setSecondsLeft(600);
+        toast({ title: 'New code sent!', description: `Check ${email} for your new reset code` });
+      } else {
+        toast({ title: 'Error', description: 'Failed to resend code', variant: 'destructive' });
+      }
+    } catch {
+      toast({ title: 'Error', description: 'Failed to resend', variant: 'destructive' });
+    } finally {
+      setResending(false);
+    }
   };
 
   const handleResetPassword = async (e: React.FormEvent) => {
@@ -159,9 +202,16 @@ export default function ForgotPassword() {
               <div>
                 <label className="block text-xs font-semibold text-white/50 uppercase tracking-widest mb-2">Reset Code</label>
                 <input type="text" value={code}
-                  onChange={e => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                  onChange={e => { setCode(e.target.value.replace(/\D/g, '').slice(0, 6)); setCodeError(''); }}
                   placeholder="000000" maxLength={6} required disabled={secondsLeft === 0}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-4 text-white placeholder-white/20 text-2xl font-black tracking-[0.5em] text-center focus:outline-none focus:border-violet-500/60 transition-all disabled:opacity-40" />
+                  className={`w-full bg-white/5 border rounded-xl px-4 py-4 text-white placeholder-white/20 text-2xl font-black tracking-[0.5em] text-center focus:outline-none transition-all disabled:opacity-40 ${
+                    codeError ? 'border-red-500/60 focus:border-red-500' : 'border-white/10 focus:border-violet-500/60'
+                  }`} />
+                {codeError && (
+                  <p className="text-xs text-red-400 mt-2 flex items-center gap-1 justify-center">
+                    <span>⚠</span>{codeError}
+                  </p>
+                )}
                 <div className={`flex items-center justify-center gap-2 mt-3 px-4 py-2.5 rounded-xl border ${
                   secondsLeft === 0 ? 'border-red-500/30 bg-red-500/[0.07]'
                   : secondsLeft < 60 ? 'border-amber-500/30 bg-amber-500/[0.07]'
@@ -175,14 +225,17 @@ export default function ForgotPassword() {
                     : <span className="text-sm font-bold text-red-400">Code expired — request a new one</span>}
                 </div>
               </div>
-              <button type="submit" disabled={code.length !== 6 || secondsLeft === 0}
+              <button type="submit" disabled={code.length !== 6 || secondsLeft === 0 || loading}
                 className="w-full py-3.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-bold text-sm transition-all disabled:opacity-50">
-                Continue
+                {loading ? 'Verifying...' : 'Continue'}
               </button>
             </form>
             <p className="text-center text-white/30 text-sm mt-6">
               Didn't receive it?{' '}
-              <button onClick={() => setStep('email')} className="text-violet-400 hover:text-violet-300 font-semibold transition-colors">Try again</button>
+              <button onClick={handleResend} disabled={resending}
+                className="text-violet-400 hover:text-violet-300 font-semibold transition-colors disabled:opacity-50">
+                {resending ? 'Sending...' : 'Resend code'}
+              </button>
             </p>
           </div>
         )}
