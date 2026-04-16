@@ -50,17 +50,9 @@ export default function Signup() {
   };
 
   const validateEmail = (val: string) => {
-    if (!val) { setEmailError('Email is required'); return false; }
-    // Basic format check
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-    if (!re.test(val)) { setEmailError('Please enter a valid email address'); return false; }
-    // Local part (before @) must be at least 3 characters
-    const local = val.split('@')[0];
-    if (local.length < 3) { setEmailError('Email address is too short before @'); return false; }
-    // No consecutive dots
-    if (val.includes('..')) { setEmailError('Email address cannot contain consecutive dots'); return false; }
-    // Must not start or end with a dot
-    if (local.startsWith('.') || local.endsWith('.')) { setEmailError('Email cannot start or end with a dot'); return false; }
+    const re = /^[^\s@]{3,}@[^\s@]+\.[^\s@]{2,}$/;
+    const valid = val && re.test(val) && !val.includes('..') && !val.split('@')[0].startsWith('.') && !val.split('@')[0].endsWith('.');
+    if (!valid) { setEmailError('Invalid email address'); return false; }
     setEmailError('');
     return true;
   };
