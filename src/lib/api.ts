@@ -77,18 +77,18 @@ export const api = {
     return response.json();
   },
 
-  async getAllDiscussions(token: string) {
-    const response = await fetch(`${API_BASE_URL}/discussions`, {
-      headers: { 'Authorization': `Bearer ${token}` },
-    });
+  async getAllDiscussions(token?: string) {
+    const headers: Record<string, string> = {};
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+    const response = await fetch(`${API_BASE_URL}/discussions`, { headers });
     if (!response.ok) throw new Error('Failed to fetch discussions');
     return response.json();
   },
 
-  async getDiscussionById(token: string, id: string) {
-    const response = await fetch(`${API_BASE_URL}/discussions/${id}`, {
-      headers: { 'Authorization': `Bearer ${token}` },
-    });
+  async getDiscussionById(token: string | undefined, id: string) {
+    const headers: Record<string, string> = {};
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+    const response = await fetch(`${API_BASE_URL}/discussions/${id}`, { headers });
     if (!response.ok) throw new Error('Failed to fetch discussion');
     return response.json();
   },
