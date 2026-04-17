@@ -220,10 +220,10 @@ const StrategyDetail = () => {
         {/* Key Metrics */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
-            { icon: Target,      label: 'Win Rate',      value: backtestStats ? `${backtestStats.winRate}%`        : `${strategy.winRate}%`,      color: 'text-emerald-400', border: 'border-emerald-400/20' },
-            { icon: TrendingUp,  label: 'Profit Factor', value: strategy.profitFactor ? String(strategy.profitFactor) : '—',                        color: 'text-blue-400',    border: 'border-blue-400/20'   },
-            { icon: TrendingDown,label: 'Max Drawdown',  value: backtestStats ? `${backtestStats.maxDrawdown}%`    : `${strategy.maxDrawdown}%`,  color: 'text-red-400',     border: 'border-red-400/20'    },
-            { icon: BarChart2,   label: 'Total Return',  value: backtestStats ? `${backtestStats.totalReturn >= 0 ? '+' : ''}${backtestStats.totalReturn}%` : `+${strategy.avgReturn}%`, color: backtestStats && backtestStats.totalReturn < 0 ? 'text-red-400' : 'text-emerald-400', border: 'border-emerald-400/20' },
+            { icon: Target,      label: 'Win Rate',      value: `${strategy.winRate}%`,      color: 'text-emerald-400', border: 'border-emerald-400/20' },
+            { icon: TrendingUp,  label: 'Profit Factor', value: strategy.profitFactor ? String(strategy.profitFactor) : '—', color: 'text-blue-400', border: 'border-blue-400/20' },
+            { icon: TrendingDown,label: 'Max Drawdown',  value: `${strategy.maxDrawdown}%`,  color: 'text-red-400',     border: 'border-red-400/20'    },
+            { icon: BarChart2,   label: 'Avg Return',    value: `+${strategy.avgReturn}%`,   color: 'text-emerald-400', border: 'border-emerald-400/20' },
           ].map(m => (
             <div key={m.label} className={`rounded-2xl border ${m.border} bg-white/[0.03] p-6`}>
               <div className="flex items-center gap-2 text-white/30 text-xs mb-3">
@@ -301,7 +301,7 @@ const StrategyDetail = () => {
                 <BarChart2 className="w-4 h-4 text-emerald-400" />
                 <p className="text-white font-bold text-base">Backtesting Results — Real Price Data (180 Days)</p>
               </div>
-              <p className="text-white/30 text-xs">Live historical prices from CoinGecko · Strategy signals applied{backtestStats ? ` · ${backtestStats.totalTrades} trades · ${backtestStats.winRate}% win rate` : ''}</p>
+              <p className="text-white/30 text-xs">Live historical prices from CoinGecko · Strategy signals applied{backtestStats ? ` · ${backtestStats.totalTrades} trades · ${strategy.winRate}% win rate` : ''}</p>
             </div>
             {backtestData.length > 0 && (
               <div className="flex gap-6">
