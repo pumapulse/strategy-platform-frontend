@@ -25,43 +25,41 @@ interface ModalState { isOpen: boolean; title: string; message: string; }
 interface SuccessModalState extends ModalState { isPremium: boolean; }
 
 const freeTrialFeatures = [
-  'Access to 12 professional trading strategies',
+  '12 professional trading strategies — full descriptions',
   'Real-time backtesting results',
-  'Basic algorithm details',
+  'Algorithm details & trading rules',
   'Community discussions',
   'Portfolio tracking dashboard',
-  'Strategy download scripts',
+  'Desktop app access',
   'Email support',
-  '30-day trial period',
+  'No download scripts',
 ];
 
 const premiumFeatures = [
-  'Access to 50+ professional trading strategies',
-  '2 NEW strategies added DAILY',
+  '12 core strategies — full descriptions',
+  '+1 NEW strategy description added every day',
   'Real-time backtesting with live data',
+  '2 strategy script downloads per month',
   'Advanced algorithm details & source code',
   'AI-powered strategy recommendations',
-  'Custom strategy builder tool',
   'Automated trading bot integration',
-  'Advanced risk management tools',
   'Real-time market alerts & signals',
   'Priority 24/7 support',
   'Private community & expert webinars',
-  'Monthly performance reports & analytics',
+  'Monthly performance reports',
   'API access for custom integrations',
-  'Multi-exchange support',
   'Personal trading coach (monthly call)',
 ];
 
 const eliteFeatures = [
   'Everything in Premium PLUS:',
-  'Access to 100+ elite trading strategies',
-  '5 NEW strategies added DAILY',
+  '12 core strategies — full descriptions',
+  '+2 NEW strategy descriptions added every day',
+  '4 strategy script downloads per month',
   'Exclusive institutional-grade algorithms',
   'Dedicated personal trading coach (weekly calls)',
   'Custom strategy development service',
   'White-label trading bot',
-  'Priority algorithm requests',
   'Advanced AI portfolio manager',
   'Hedge fund-level risk analytics',
   'Direct access to strategy developers',
@@ -159,14 +157,15 @@ const Subscription = () => {
   };
 
   const compareRows = [
-    { label: 'Trading Strategies', free: '12', premium: '50+', elite: '100+' },
-    { label: 'New Strategies Daily', free: '✗', premium: '2/day', elite: '5/day' },
-    { label: 'Algorithm Details', free: 'Basic', premium: 'Advanced', elite: 'Institutional' },
-    { label: 'AI Recommendations', free: '✗', premium: '✓', elite: '✓' },
-    { label: 'Trading Bot', free: '✗', premium: '✓', elite: 'White-label' },
-    { label: 'API Access', free: '✗', premium: 'Limited', elite: 'Unlimited' },
-    { label: 'Support', free: 'Email', premium: '24/7 Priority', elite: 'VIP Dedicated' },
-    { label: 'Personal Coach', free: '✗', premium: 'Monthly', elite: 'Weekly' },
+    { label: 'Strategy Descriptions',    free: '12',      premium: '12 + daily',  elite: '12 + 2x daily' },
+    { label: 'New Descriptions/Day',     free: '✗',       premium: '+1/day',      elite: '+2/day'        },
+    { label: 'Script Downloads/Month',   free: '✗',       premium: '2/month',     elite: '4/month'       },
+    { label: 'Desktop App',              free: '✓',       premium: '✓',           elite: '✓'             },
+    { label: 'Algorithm Details',        free: '✓',       premium: 'Advanced',    elite: 'Institutional' },
+    { label: 'AI Recommendations',       free: '✗',       premium: '✓',           elite: '✓'             },
+    { label: 'Trading Bot',              free: '✗',       premium: '✓',           elite: 'White-label'   },
+    { label: 'Support',                  free: 'Email',   premium: '24/7 Priority',elite: 'VIP Dedicated'},
+    { label: 'Personal Coach',           free: '✗',       premium: 'Monthly',     elite: 'Weekly'        },
   ];
 
   return (

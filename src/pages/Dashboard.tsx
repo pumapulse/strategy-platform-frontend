@@ -21,27 +21,27 @@ import { checkSubscription } from '@/lib/metamask';
 const heroSlides = [
   {
     src: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=1920&q=90',
-    eyebrow: 'DAILY EDGE',
-    headline: ['Outperform', 'the market.'],
-    sub: 'Two fresh, backtested strategies land every morning — so your edge never expires.',
+    eyebrow: 'PROVEN STRATEGIES',
+    headline: ['12 professional', 'strategies.'],
+    sub: 'Access 12 fully backtested trading strategies with real performance data — free forever.',
     accent: 'from-emerald-400 to-teal-400',
     btnBg: 'bg-white text-slate-900 hover:bg-white/90',
     btnOutline: 'border-white/40 text-white hover:bg-white/10',
   },
   {
     src: 'https://images.unsplash.com/photo-1620321023374-d1a68fbc720d?auto=format&fit=crop&w=1920&q=90',
-    eyebrow: 'CRYPTO ALPHA',
-    headline: ['Trade the future', 'of money.'],
-    sub: 'Strategies engineered for crypto volatility — BTC, ETH, SOL and beyond.',
+    eyebrow: 'PREMIUM EDGE',
+    headline: ['New strategies', 'every day.'],
+    sub: 'Premium members get +1 new strategy description daily. Elite members get +2. Stay ahead of the market.',
     accent: 'from-violet-400 to-indigo-400',
     btnBg: 'bg-violet-500 text-white hover:bg-violet-600',
     btnOutline: 'border-white/40 text-white hover:bg-white/10',
   },
   {
     src: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1920&q=90',
-    eyebrow: 'VERIFIED RESULTS',
-    headline: ['730+ strategies', 'per year.'],
-    sub: 'Every strategy is 100% backtested and verified before it reaches your dashboard.',
+    eyebrow: 'SCRIPT DOWNLOADS',
+    headline: ['Download & automate', 'your trades.'],
+    sub: 'Premium: 2 script downloads/month. Elite: 4 downloads/month. Run strategies on any exchange.',
     accent: 'from-amber-400 to-orange-400',
     btnBg: 'bg-amber-400 text-slate-900 hover:bg-amber-300',
     btnOutline: 'border-white/40 text-white hover:bg-white/10',
@@ -87,10 +87,10 @@ const Dashboard = () => {
   }, []);
 
   const stats = [
-    { title: 'Active Strategies', value: '12', icon: Target, color: 'text-blue-400', bg: 'bg-blue-400/10', border: 'border-blue-400/20', change: '+3 this week', link: '/' },
-    { title: 'Total Profit', value: '+24.5%', icon: TrendingUp, color: 'text-emerald-400', bg: 'bg-emerald-400/10', border: 'border-emerald-400/20', change: '+5.2% this month', link: '/dashboard' },
-    { title: 'Win Rate', value: '68%', icon: Activity, color: 'text-violet-400', bg: 'bg-violet-400/10', border: 'border-violet-400/20', change: '+2% vs last month', link: '/dashboard' },
-    { title: 'Total Trades', value: '247', icon: BarChart3, color: 'text-amber-400', bg: 'bg-amber-400/10', border: 'border-amber-400/20', change: '18 today', link: '/dashboard' },
+    { title: 'Available Strategies', value: '12', icon: Target, color: 'text-blue-400', bg: 'bg-blue-400/10', border: 'border-blue-400/20', change: 'Free forever', link: '/strategies' },
+    { title: 'Avg Win Rate', value: '62%', icon: TrendingUp, color: 'text-emerald-400', bg: 'bg-emerald-400/10', border: 'border-emerald-400/20', change: 'Across all strategies', link: '/strategies' },
+    { title: 'Best Strategy', value: '+28.7%', icon: Activity, color: 'text-violet-400', bg: 'bg-violet-400/10', border: 'border-violet-400/20', change: 'Turtle Trading System', link: '/strategy/12' },
+    { title: 'Markets Covered', value: '3', icon: BarChart3, color: 'text-amber-400', bg: 'bg-amber-400/10', border: 'border-amber-400/20', change: 'Crypto · Forex · Stocks', link: '/strategies' },
   ];
 
   const performanceData = [
@@ -110,9 +110,9 @@ const Dashboard = () => {
   ];
 
   const topStrategies = [
-    { id: 10, name: 'Machine Learning Momentum', return: '+137%', winRate: 61, trades: 89, icon: Zap },
-    { id: 2, name: 'Breakout Momentum Scanner', return: '+121%', winRate: 58, trades: 67, icon: TrendingUp },
-    { id: 3, name: 'Turtle Trading System', return: '+72%', winRate: 42, trades: 124, icon: Activity },
+    { id: 10, name: 'ML Momentum Scanner',   return: '+14.7%', winRate: 71, trades: 289, icon: Zap },
+    { id: 12, name: 'Turtle Trading System', return: '+28.7%', winRate: 42, trades: 89,  icon: TrendingUp },
+    { id: 5,  name: 'EMA Crossover Trend',   return: '+22.4%', winRate: 52, trades: 67,  icon: Activity },
   ];
 
   const current = heroSlides[slide];
@@ -142,21 +142,21 @@ const Dashboard = () => {
           <p className="text-lg md:text-xl text-white/60 mb-10 max-w-md leading-relaxed font-light">{current.sub}</p>
           <div className="flex items-center gap-4 flex-wrap">
             <button onClick={() => navigate('/strategies')} className={`inline-flex items-center gap-2.5 px-7 py-3.5 rounded-full font-semibold text-sm transition-all shadow-lg ${current.btnBg}`}>
-              <Zap className="w-4 h-4" />View Today's Strategies
+              <Zap className="w-4 h-4" />View Strategies
             </button>
             <button onClick={() => navigate('/subscription')} className={`inline-flex items-center gap-2 px-7 py-3.5 rounded-full font-semibold text-sm border transition-all ${current.btnOutline}`}>
-              Learn More<ArrowRight className="w-4 h-4" />
+              Upgrade Plan<ArrowRight className="w-4 h-4" />
             </button>
           </div>
           <div className="flex items-center gap-6 mt-10 flex-wrap">
             <div className="flex items-center gap-2 text-white/50 text-sm">
               <CalendarCheck className="w-4 h-4 text-white/40" />
-              <span><span className="text-white font-semibold">2 strategies</span> released daily</span>
+              <span><span className="text-white font-semibold">12 strategies</span> free forever</span>
             </div>
             <div className="w-px h-4 bg-white/15" />
             <div className="flex items-center gap-2 text-white/50 text-sm">
               <ShieldCheck className="w-4 h-4 text-white/40" />
-              <span><span className="text-white font-semibold">100%</span> backtested before release</span>
+              <span><span className="text-white font-semibold">100%</span> backtested & verified</span>
             </div>
           </div>
         </div>
@@ -249,11 +249,11 @@ const Dashboard = () => {
                 <div className="flex items-center justify-between mb-4">
                   <div>
                     <p className="text-white font-bold text-base">Strategy vs. Market</p>
-                    <p className="text-white/30 text-xs mt-0.5">Breakout Momentum · 12 months</p>
+                    <p className="text-white/30 text-xs mt-0.5">ML Momentum Scanner · 12 months</p>
                   </div>
                   <div className="flex items-center gap-4 text-xs">
                     <span className="flex items-center gap-1.5 text-emerald-400"><span className="w-3 h-0.5 bg-emerald-500 inline-block rounded" />Strategy +184%</span>
-                    <span className="flex items-center gap-1.5 text-white/30"><span className="w-3 h-0.5 bg-white/20 inline-block rounded" />Market +22%</span>
+                    <span className="flex items-center gap-1.5 text-white/30"><span className="w-3 h-0.5 bg-white/20 inline-block rounded" />Buy & Hold +22%</span>
                   </div>
                 </div>
                 <ResponsiveContainer width="100%" height={200}>
@@ -303,10 +303,10 @@ const Dashboard = () => {
             <RevealSection variant="stagger">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
-                { label: 'Avg Annual Return', value: '+184%', sub: 'vs +22% market', pos: true },
-                { label: 'Win Rate', value: '68%', sub: '247 trades sampled', pos: true },
-                { label: 'Max Drawdown', value: '-8.4%', sub: 'Controlled risk', pos: false },
-                { label: 'Sharpe Ratio', value: '2.31', sub: 'Risk-adjusted return', pos: true },
+                { label: 'Best Avg Return',  value: '+28.7%', sub: 'Turtle Trading System', pos: true },
+                { label: 'Best Win Rate',    value: '71%',    sub: 'ML Momentum Scanner',   pos: true },
+                { label: 'Max Drawdown',     value: '-8.9%',  sub: 'Controlled risk',        pos: false },
+                { label: 'Markets Covered',  value: '3',      sub: 'Crypto · Forex · Stocks', pos: true },
               ].map((m, i) => (
                 <div key={m.label}
                   className="p-5 rounded-2xl border border-white/[0.07] bg-white/[0.03] hover:bg-white/[0.05] hover-lift transition-colors">

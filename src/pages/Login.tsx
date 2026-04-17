@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { Eye, EyeOff, TrendingUp, ShieldCheck, Zap } from 'lucide-react';
 import Turnstile from '@/components/Turnstile';
+import Logo from '@/components/Logo';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -56,20 +57,20 @@ export default function Login() {
         <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-black/60 to-[#0a0e1a]/90" />
         <div className="relative z-10 flex flex-col justify-between p-12 w-full">
           <Link to="/" className="flex items-center gap-2.5">
-            <img src="/logo.png" alt="CrowdPnL" style={{ height: '52px', width: 'auto' }} />
+            <Logo height={44} />
           </Link>
           <div>
             <span className="text-5xl font-black text-white leading-tight mb-5 block">
               Trade smarter.<br /><span className="text-violet-400">Not harder.</span>
             </span>
             <p className="text-white/60 text-lg max-w-sm leading-relaxed mt-4">
-              Access 730+ backtested strategies trusted by thousands of traders worldwide.
+              Access 12 professional strategies free. Premium members get new strategies daily.
             </p>
             <div className="flex gap-10 mt-10">
               {[
-                { icon: TrendingUp, label: 'Avg. Win Rate', value: '68%' },
-                { icon: Zap,        label: 'Strategies',   value: '730+' },
-                { icon: ShieldCheck,label: 'Backtested',   value: '100%' },
+                { icon: TrendingUp, label: 'Free Strategies', value: '12' },
+                { icon: Zap,        label: 'Best Win Rate',   value: '71%' },
+                { icon: ShieldCheck,label: 'Backtested',      value: '100%' },
               ].map(({ icon: Icon, label, value }) => (
                 <div key={label}>
                   <div className="flex items-center gap-1.5 text-violet-400 mb-1">
@@ -100,7 +101,7 @@ export default function Login() {
       <div className="w-full lg:w-1/2 flex items-center justify-center bg-[#0a0e1a] px-6 py-12">
         <div className="w-full max-w-md">
           <Link to="/" className="flex items-center gap-2 mb-10 lg:hidden">
-            <img src="/logo.png" alt="CrowdPnL" style={{ height: '52px', width: 'auto' }} />
+            <Logo height={40} />
           </Link>
 
           <h1 className="text-3xl font-black text-white mb-1 tracking-tight">Welcome back</h1>

@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { Eye, EyeOff, TrendingUp, ShieldCheck, Zap, Mail, ArrowLeft, Clock } from 'lucide-react';
 import Turnstile from '@/components/Turnstile';
+import LogoSVG from '@/components/Logo';
 
 export default function Signup() {
   const [name, setName] = useState('');
@@ -129,9 +130,7 @@ export default function Signup() {
     }
   };
 
-  const Logo = () => (
-    <img src="/logo.png" alt="CrowdPnL" style={{ height: '52px', width: 'auto' }} />
-  );
+  const Logo = () => <LogoSVG height={44} />;
 
   return (
     <div className="min-h-screen flex">
@@ -153,9 +152,9 @@ export default function Signup() {
             </p>
             <div className="flex gap-10 mt-10">
               {[
-                { icon: TrendingUp, label: 'Avg. Win Rate', value: '68%' },
-                { icon: Zap,        label: 'Strategies',   value: '730+' },
-                { icon: ShieldCheck,label: 'Backtested',   value: '100%' },
+                { icon: TrendingUp, label: 'Free Strategies', value: '12' },
+                { icon: Zap,        label: 'Best Win Rate',   value: '71%' },
+                { icon: ShieldCheck,label: 'Backtested',      value: '100%' },
               ].map(({ icon: Icon, label, value }) => (
                 <div key={label}>
                   <div className="flex items-center gap-1.5 text-violet-400 mb-1">

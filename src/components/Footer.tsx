@@ -1,4 +1,5 @@
 import { Mail, Phone, MapPin } from 'lucide-react';
+import Logo from '@/components/Logo';
 
 const Footer = () => {
   return (
@@ -11,7 +12,7 @@ const Footer = () => {
           {/* Brand col */}
           <div className="lg:col-span-1 lg:pr-6 max-w-xs">
             <div className="flex items-center gap-2.5 mb-4">
-              <img src="/logo.png" alt="CrowdPnL" className="h-20 w-auto" />
+              <Logo height={52} />
             </div>
             <p className="text-white/40 text-sm leading-relaxed mb-6">
               A product by <a href="https://crowdpnl.com" target="_blank" rel="noopener noreferrer"

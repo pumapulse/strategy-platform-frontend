@@ -11,6 +11,8 @@ const navLinks = [
   { to: '/profile',      label: 'Profile'      },
 ];
 
+import Logo from '@/components/Logo';
+
 const Header = () => {
   const [user, setUser]               = useState<any>(null);
   const [subscription, setSubscription] = useState<any>(null);
@@ -60,7 +62,7 @@ const Header = () => {
 
           {/* Logo */}
           <Link to="/" className="flex items-center shrink-0 flex-1">
-            <img src="/logo.png" alt="CrowdPnL" className="w-auto" style={{ height: '52px' }} />
+            <Logo height={44} />
           </Link>
 
           {/* Desktop Nav */}
@@ -94,7 +96,11 @@ const Header = () => {
                     <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-white/10 text-white/80">
                       {subscription.isTrial
                         ? <><Sparkles className="w-3 h-3" />Free Trial</>
-                        : <><Crown className="w-3 h-3" />Premium</>}
+                        : subscription.plan?.toLowerCase() === 'elite'
+                        ? <><Zap className="w-3 h-3 text-violet-400" /><span className="text-violet-400">Elite</span></>
+                        : subscription.plan?.toLowerCase() === 'premium'
+                        ? <><Crown className="w-3 h-3 text-yellow-400" /><span className="text-yellow-400">Premium</span></>
+                        : null}
                     </span>
                   </Link>
                 )}
@@ -177,7 +183,12 @@ const Header = () => {
                   <div>
                     <p className="text-sm font-semibold text-white">{user.name}</p>
                     {subscription?.active && !subscription?.expired && (
-                      <p className="text-xs text-violet-400">{subscription.isTrial ? 'Free Trial' : 'Premium'}</p>
+                      <p className="text-xs text-violet-400">
+                        {subscription.isTrial ? 'Free Trial'
+                          : subscription.plan?.toLowerCase() === 'elite' ? 'Elite'
+                          : subscription.plan?.toLowerCase() === 'premium' ? 'Premium'
+                          : null}
+                      </p>
                     )}
                   </div>
                 </div>

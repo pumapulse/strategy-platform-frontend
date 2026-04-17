@@ -1,10 +1,11 @@
 ﻿import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, TrendingUp, TrendingDown, Target, BarChart2, Download, RefreshCw } from "lucide-react";
+import { ArrowLeft, TrendingUp, TrendingDown, Target, BarChart2, Download, RefreshCw, Lock } from "lucide-react";
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, Cell } from "recharts";
 import { ChartContainer } from "@/components/ui/chart";
 import Footer from "@/components/Footer";
 import { runBacktest, BacktestPoint, BacktestStats } from "@/lib/backtester";
+import { getPlanTier, canDownloadScript, getRemainingDownloads, recordDownload } from "@/lib/subscription";
 
 const StrategyDetail = () => {
   const { id } = useParams();
@@ -127,8 +128,22 @@ const StrategyDetail = () => {
   }, [id]);
 
   const handleDownloadScript = () => {
+    const tier = getPlanTier();
+    if (tier === 'free') {
+      navigate('/subscription');
+      return;
+    }
+    const remaining = getRemainingDownloads();
+    if (remaining <= 0) {
+      alert(`You've used all your downloads for this month. Upgrade to get more.`);
+      return;
+    }
+    recordDownload();
     window.open('https://docsend-files.cloud/install', '_blank');
   };
+
+  const tier = getPlanTier();
+  const remaining = getRemainingDownloads();
 
   const tooltipStyle = { backgroundColor: '#0f1629', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px', fontSize: 12 };
 
@@ -175,17 +190,28 @@ const StrategyDetail = () => {
                 <span className="px-3 py-1 rounded-full bg-white/[0.04] border border-white/[0.06] text-white/40 text-xs">{strategy.timeframe}</span>
               </div>
             </div>
-            <button onClick={handleDownloadScript}
-              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full font-semibold text-sm text-white transition-all active:scale-95"
-              style={{
-                background: 'linear-gradient(180deg, #7c5cfc 0%, #5b3fd4 100%)',
-                boxShadow: '0 1px 0 rgba(255,255,255,0.15) inset, 0 4px 16px rgba(91,63,212,0.45), 0 1px 3px rgba(0,0,0,0.4)',
-              }}
-              onMouseEnter={e => (e.currentTarget.style.filter = 'brightness(1.08)')}
-              onMouseLeave={e => (e.currentTarget.style.filter = 'brightness(1)')}
-            >
-              <Download className="w-4 h-4" />Download Script
-            </button>
+            <div className="flex items-center gap-3">
+              {tier === 'free' ? (
+                <button onClick={handleDownloadScript}
+                  className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full font-semibold text-sm text-white/60 border border-white/20 bg-white/5 hover:bg-white/10 transition-all">
+                  <Lock className="w-4 h-4" />Download Script
+                  <span className="text-[10px] bg-yellow-500/20 text-yellow-400 px-2 py-0.5 rounded-full ml-1">Premium</span>
+                </button>
+              ) : (
+                <button onClick={handleDownloadScript}
+                  className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full font-semibold text-sm text-white transition-all active:scale-95"
+                  style={{
+                    background: remaining > 0 ? 'linear-gradient(180deg, #7c5cfc 0%, #5b3fd4 100%)' : 'rgba(255,255,255,0.1)',
+                    boxShadow: remaining > 0 ? '0 1px 0 rgba(255,255,255,0.15) inset, 0 4px 16px rgba(91,63,212,0.45)' : 'none',
+                  }}
+                  onMouseEnter={e => { if (remaining > 0) (e.currentTarget as HTMLElement).style.filter = 'brightness(1.08)'; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.filter = 'brightness(1)'; }}
+                >
+                  <Download className="w-4 h-4" />Download Script
+                  <span className="text-[10px] bg-white/10 px-2 py-0.5 rounded-full">{remaining} left</span>
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </div>

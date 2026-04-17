@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { Eye, EyeOff, Mail, ArrowLeft, Clock, ShieldCheck } from 'lucide-react';
+import Logo from '@/components/Logo';
 
 type Step = 'email' | 'code' | 'newpass' | 'done';
 
@@ -145,7 +146,7 @@ export default function ForgotPassword() {
 
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2.5 mb-10">
-          <img src="/logo.png" alt="CrowdPnL" style={{ height: '52px', width: 'auto' }} />
+          <Logo height={44} />
         </Link>
 
         {/* ── Step 1: Email ── */}
