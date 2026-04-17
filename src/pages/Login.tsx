@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { Eye, EyeOff, TrendingUp, ShieldCheck, Zap } from 'lucide-react';
-import Turnstile from '@/components/Turnstile';
 import Logo from '@/components/Logo';
 
 export default function Login() {
@@ -10,16 +9,11 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [captchaToken, setCaptchaToken] = useState('');
   const navigate = useNavigate();
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!captchaToken) {
-      toast({ title: 'Human check required', description: 'Please complete the verification below', variant: 'destructive' });
-      return;
-    }
     setLoading(true);
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001/api'}/auth/login`, {
@@ -127,9 +121,7 @@ export default function Login() {
               </div>
             </div>
 
-            <Turnstile onVerify={setCaptchaToken} onExpire={() => setCaptchaToken('')} />
-
-            <button type="submit" disabled={loading || !captchaToken}
+            <button type="submit" disabled={loading}
               className="w-full py-3.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-bold text-sm tracking-wide transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
               {loading ? 'Signing in...' : 'Sign In'}
             </button>

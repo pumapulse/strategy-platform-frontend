@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { Eye, EyeOff, TrendingUp, ShieldCheck, Zap, Mail, ArrowLeft, Clock } from 'lucide-react';
-import Turnstile from '@/components/Turnstile';
 import LogoSVG from '@/components/Logo';
 
 export default function Signup() {
@@ -63,10 +62,6 @@ export default function Signup() {
     if (!validateEmail(email)) return;
     if (password !== confirmPassword) {
       toast({ title: 'Passwords do not match', description: 'Please make sure both passwords are the same', variant: 'destructive' });
-      return;
-    }
-    if (!captchaToken) {
-      toast({ title: 'Human check required', description: 'Please complete the verification below', variant: 'destructive' });
       return;
     }
     setLoading(true);
@@ -313,8 +308,6 @@ export default function Signup() {
                     <p className="text-xs text-emerald-400 mt-1.5 flex items-center gap-1"><span>✓</span>Passwords match</p>
                   )}
                 </div>
-
-                <Turnstile onVerify={setCaptchaToken} onExpire={() => setCaptchaToken('')} />
 
                 <button type="submit" disabled={loading || !captchaToken}
                   className="w-full py-3.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-bold text-sm tracking-wide transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
