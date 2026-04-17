@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, TrendingUp, TrendingDown, Target, BarChart2, Download, RefreshCw, Lock } from "lucide-react";
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, Cell } from "recharts";
@@ -44,7 +44,7 @@ const StrategyDetail = () => {
         const rawMonthly = parse(s.monthly_returns) || [];
         s.backtestData = parse(s.backtest_data);
 
-        // Convert monthly_returns array of numbers → [{month, return}]
+        // Convert monthly_returns array of numbers ? [{month, return}]
         const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
         if (Array.isArray(rawMonthly) && rawMonthly.length > 0 && typeof rawMonthly[0] === 'number') {
           s.monthlyReturns = rawMonthly.map((r: number, i: number) => ({ month: monthNames[i % 12], return: r }));
@@ -52,12 +52,12 @@ const StrategyDetail = () => {
           s.monthlyReturns = rawMonthly;
         }
 
-        // Convert equity array of numbers → [{month, value}]
+        // Convert equity array of numbers ? [{month, value}]
         if (Array.isArray(s.equity) && s.equity.length > 0 && typeof s.equity[0] === 'number') {
           s.equity = s.equity.map((v: number, i: number) => ({ month: monthNames[i % 12], value: v }));
         }
 
-        // Convert raw trades → win/loss distribution for chart
+        // Convert raw trades ? win/loss distribution for chart
         const rawTrades = s.trades;
         if (Array.isArray(rawTrades) && rawTrades.length > 0 && rawTrades[0].pnl !== undefined) {
           const wins   = rawTrades.filter((t: any) => t.pnl > 0).length;
@@ -88,15 +88,15 @@ const StrategyDetail = () => {
         const algoData: Record<number, any> = {
           1: {
             name: 'Breakout Momentum Algorithm', type: 'Price Action + Volume Analysis',
-            description: 'Scans for price consolidation zones where ATR compresses below 0.8%. On the first candle closing above the range high with volume exceeding 1.5× the 20-period average, a long position is opened. The algorithm uses a 2-ATR trailing stop and takes partial profits at 2R to lock in gains while letting winners run.',
+            description: 'Scans for price consolidation zones where ATR compresses below 0.8%. On the first candle closing above the range high with volume exceeding 1.5� the 20-period average, a long position is opened. The algorithm uses a 2-ATR trailing stop and takes partial profits at 2R to lock in gains while letting winners run.',
             technicalDetails: [
               { title: 'Consolidation Detection', content: 'ATR(14) is compared against a 20-period rolling average. When ATR drops below 80% of its average, the algorithm flags a potential squeeze setup and begins monitoring for breakout conditions.' },
-              { title: 'Volume Confirmation', content: 'Breakout candles must show volume ≥ 1.5× the 20-period volume SMA. This filters false breakouts caused by low-liquidity moves and ensures institutional participation.' },
+              { title: 'Volume Confirmation', content: 'Breakout candles must show volume = 1.5� the 20-period volume SMA. This filters false breakouts caused by low-liquidity moves and ensures institutional participation.' },
               { title: 'Dynamic Stop-Loss', content: 'Initial stop is placed 1 ATR below the breakout candle low. After 50% of position is closed at 2R, the stop moves to breakeven, eliminating downside risk on the remaining position.' },
               { title: 'Trailing Exit', content: 'The remaining 50% trails with a 2-ATR trailing stop, automatically adjusting as price moves in favor. This captures extended trend moves without manual intervention.' },
             ],
             workflow: ['Scan all pairs for ATR compression (ATR < 80% of 20-period average)', 'Monitor flagged pairs for volume-confirmed breakout candle', 'Calculate position size based on 2% account risk and ATR stop distance', 'Enter long on candle close above range high', 'Set initial stop 1 ATR below entry candle low', 'Close 50% at 2R target, move stop to breakeven', 'Trail remaining position with 2-ATR trailing stop', 'Exit on trailing stop hit or opposing breakout signal'],
-            complexity: 'Intermediate', computationalLoad: 'Low — runs on 4H candle close', backtestPeriod: '12 months on BTC/USDT, ETH/USDT',
+            complexity: 'Intermediate', computationalLoad: 'Low � runs on 4H candle close', backtestPeriod: '12 months on BTC/USDT, ETH/USDT',
           },
           2: {
             name: 'RSI Mean Reversion Algorithm', type: 'Oscillator + Divergence Analysis',
@@ -108,7 +108,7 @@ const StrategyDetail = () => {
               { title: 'Risk Parameters', content: 'Stop-loss is placed beyond the divergence swing point. Target is the previous swing high/low, giving a minimum 1.5:1 reward-to-risk ratio on every trade.' },
             ],
             workflow: ['Calculate RSI(14) on each candle close', 'Identify RSI pivot highs and lows over 14-period lookback', 'Compare RSI pivots against price pivots for divergence', 'Check price proximity to key S/R levels (within 0.5%)', 'Apply volume filter: exhaustion candle + momentum confirmation', 'Enter on confirmation candle close', 'Set stop beyond divergence swing, target previous swing', 'Exit at target or if RSI crosses back through 50'],
-            complexity: 'Intermediate', computationalLoad: 'Low — 1H candle analysis', backtestPeriod: '12 months on ETH/USDT',
+            complexity: 'Intermediate', computationalLoad: 'Low � 1H candle analysis', backtestPeriod: '12 months on ETH/USDT',
           },
           3: {
             name: 'VWAP Scalper Algorithm', type: 'Intraday Volume-Weighted Analysis',
@@ -120,7 +120,7 @@ const StrategyDetail = () => {
               { title: 'Tight Risk Management', content: 'Stop-loss is 0.5% beyond VWAP. Target is 1.5% minimum, giving a 3:1 reward-to-risk ratio. Positions are always closed before market close to avoid overnight gap risk.' },
             ],
             workflow: ['Wait for market open at 9:30 AM EST', 'Calculate session VWAP from first candle', 'Monitor price for VWAP dip-and-reclaim (long) or rally-and-fail (short)', 'Confirm entry candle volume > 20-period average', 'Enter on candle close with stop 0.5% beyond VWAP', 'Target 1.5% minimum (3:1 R:R)', 'Close all positions by 11:30 AM or at target/stop', 'Log trade and reset for next session'],
-            complexity: 'Beginner to Intermediate', computationalLoad: 'Medium — real-time 15M monitoring', backtestPeriod: '12 months on AAPL, NVDA, TSLA',
+            complexity: 'Beginner to Intermediate', computationalLoad: 'Medium � real-time 15M monitoring', backtestPeriod: '12 months on AAPL, NVDA, TSLA',
           },
           4: {
             name: 'Ichimoku Cloud Trend Algorithm', type: 'Multi-Component Trend System',
@@ -129,10 +129,10 @@ const StrategyDetail = () => {
               { title: 'Five-Component Alignment', content: 'All five Ichimoku components must align: price above/below cloud, Tenkan above/below Kijun, Chikou above/below price 26 periods ago, and future cloud bullish/bearish. This multi-filter approach gives the highest-quality signals.' },
               { title: 'Kumo Twist Detection', content: 'The algorithm monitors the future cloud (26 periods ahead) for Senkou Span A/B crossovers. A bullish Kumo twist (A crosses above B) signals an upcoming trend change before price confirms it.' },
               { title: 'Tenkan/Kijun Cross Entry', content: 'Entry is triggered on a Tenkan-sen crossing above/below Kijun-sen while all other components are aligned. The Kijun-sen acts as the stop-loss level, providing a natural risk management anchor.' },
-              { title: 'Cloud Support/Resistance', content: 'The Kumo cloud provides dynamic support in uptrends and resistance in downtrends. The algorithm uses cloud thickness as a volatility proxy — thicker clouds indicate stronger support/resistance.' },
+              { title: 'Cloud Support/Resistance', content: 'The Kumo cloud provides dynamic support in uptrends and resistance in downtrends. The algorithm uses cloud thickness as a volatility proxy � thicker clouds indicate stronger support/resistance.' },
             ],
             workflow: ['Calculate all five Ichimoku components on each 4H candle', 'Check five-component alignment for trade direction', 'Monitor future cloud for Kumo twist signal', 'Wait for Tenkan/Kijun cross in direction of alignment', 'Enter on cross confirmation with stop at Kijun-sen', 'Trail stop to Kijun-sen as it moves in trade direction', 'Exit on opposite Tenkan/Kijun cross or cloud breach', 'Reset and scan for next setup'],
-            complexity: 'Advanced', computationalLoad: 'Medium — 5 indicator calculations', backtestPeriod: '12 months on EUR/USD, GBP/JPY',
+            complexity: 'Advanced', computationalLoad: 'Medium � 5 indicator calculations', backtestPeriod: '12 months on EUR/USD, GBP/JPY',
           },
           5: {
             name: 'EMA Crossover Trend Algorithm', type: 'Moving Average Trend Following',
@@ -144,7 +144,7 @@ const StrategyDetail = () => {
               { title: 'Exit Logic', content: 'Primary exit is the death cross (EMA 20 crossing below EMA 50). Secondary exit is a 15% trailing stop from the highest close since entry, protecting against sharp reversals.' },
             ],
             workflow: ['Calculate EMA 20, 50, 200 on daily close', 'Check for golden cross (EMA 20 crosses above EMA 50)', 'Verify price above EMA 200 (macro uptrend filter)', 'Confirm crossover day volume > 30-day average', 'Enter long at next day open with stop at EMA 50', 'Trail stop to EMA 50 as it rises', 'Apply 15% trailing stop from highest close', 'Exit on death cross or trailing stop hit'],
-            complexity: 'Beginner', computationalLoad: 'Very Low — daily candle only', backtestPeriod: '12 months on BTC/USDT',
+            complexity: 'Beginner', computationalLoad: 'Very Low � daily candle only', backtestPeriod: '12 months on BTC/USDT',
           },
           6: {
             name: 'Bollinger Band Squeeze Algorithm', type: 'Volatility Breakout System',
@@ -155,20 +155,20 @@ const StrategyDetail = () => {
               { title: 'Band Width Target', content: 'The profit target is calculated as the entry price plus/minus the band width at the time of entry. This projects the expected move based on the energy stored during the squeeze period.' },
               { title: 'Middle Band Stop', content: 'Stop-loss is placed at the middle band (20-period SMA). If price returns to the middle band after a breakout, the squeeze has failed and the position is closed immediately.' },
             ],
-            workflow: ['Calculate Bollinger Bands (20, 2) on each 4H candle', 'Measure band width and compare to 126-period minimum', 'Flag squeeze when width equals 6-month low', 'Monitor for first expansion candle after squeeze', 'Enter long/short on candle closing outside bands', 'Set stop at middle band (20 SMA)', 'Target: entry ± band width at time of entry', 'Exit at target or middle band stop'],
-            complexity: 'Intermediate', computationalLoad: 'Low — 4H candle analysis', backtestPeriod: '12 months on SOL/USDT',
+            workflow: ['Calculate Bollinger Bands (20, 2) on each 4H candle', 'Measure band width and compare to 126-period minimum', 'Flag squeeze when width equals 6-month low', 'Monitor for first expansion candle after squeeze', 'Enter long/short on candle closing outside bands', 'Set stop at middle band (20 SMA)', 'Target: entry � band width at time of entry', 'Exit at target or middle band stop'],
+            complexity: 'Intermediate', computationalLoad: 'Low � 4H candle analysis', backtestPeriod: '12 months on SOL/USDT',
           },
           7: {
             name: 'Support & Resistance Flip Algorithm', type: 'Price Structure Analysis',
             description: 'Trades the classic support-becomes-resistance and resistance-becomes-support flip. The algorithm identifies key levels with at least 3 price touches, waits for a clean break, then enters on the first retest of the broken level from the other side. Confirmation requires a rejection candle at the retest.',
             technicalDetails: [
-              { title: 'Level Identification', content: 'The algorithm scans for price levels with ≥3 touches within a 50-period lookback. Touches are defined as candles where the high or low comes within 0.3% of the level. Levels with more touches are weighted higher.' },
+              { title: 'Level Identification', content: 'The algorithm scans for price levels with =3 touches within a 50-period lookback. Touches are defined as candles where the high or low comes within 0.3% of the level. Levels with more touches are weighted higher.' },
               { title: 'Break Confirmation', content: 'A level is considered broken when price closes beyond it by at least 0.5% on above-average volume. Wicks through the level without a close do not count as breaks, filtering false breakouts.' },
               { title: 'Retest Entry', content: 'After a break, the algorithm waits for price to return to the broken level. Entry requires a rejection candle (pin bar, engulfing, or inside bar) at the retest, confirming the level has flipped.' },
               { title: 'Target Calculation', content: 'The profit target is the next significant S/R level in the direction of the trade. Stop-loss is placed beyond the rejection candle, typically 0.3-0.5% beyond the retest level.' },
             ],
-            workflow: ['Scan for levels with ≥3 touches in 50-period lookback', 'Monitor for clean break with close > 0.5% beyond level', 'Confirm break with above-average volume', 'Wait for price to return to broken level (retest)', 'Look for rejection candle at retest (pin bar, engulfing)', 'Enter on rejection candle close', 'Stop beyond rejection candle, target next S/R level', 'Exit at target or if level is broken again'],
-            complexity: 'Intermediate', computationalLoad: 'Medium — level scanning required', backtestPeriod: '12 months on EUR/USD, ETH/USDT',
+            workflow: ['Scan for levels with =3 touches in 50-period lookback', 'Monitor for clean break with close > 0.5% beyond level', 'Confirm break with above-average volume', 'Wait for price to return to broken level (retest)', 'Look for rejection candle at retest (pin bar, engulfing)', 'Enter on rejection candle close', 'Stop beyond rejection candle, target next S/R level', 'Exit at target or if level is broken again'],
+            complexity: 'Intermediate', computationalLoad: 'Medium � level scanning required', backtestPeriod: '12 months on EUR/USD, ETH/USDT',
           },
           8: {
             name: 'MACD Divergence Algorithm', type: 'Momentum Divergence System',
@@ -180,7 +180,7 @@ const StrategyDetail = () => {
               { title: 'Volume Validation', content: 'For crypto markets, the divergence candle must show below-average volume (exhaustion) while the histogram flip candle shows above-average volume (new momentum). This two-candle confirmation reduces false signals.' },
             ],
             workflow: ['Calculate MACD(12,26,9) on each 4H candle', 'Identify MACD pivot highs/lows over 14-period lookback', 'Compare MACD pivots against price pivots for divergence type', 'Check price proximity to key S/R or Fibonacci levels', 'Wait for MACD histogram to flip direction', 'Apply volume filter: exhaustion + momentum confirmation', 'Enter on histogram flip candle close', 'Stop beyond divergence swing, target previous swing'],
-            complexity: 'Intermediate to Advanced', computationalLoad: 'Low — MACD calculation only', backtestPeriod: '12 months on LINK/USDT',
+            complexity: 'Intermediate to Advanced', computationalLoad: 'Low � MACD calculation only', backtestPeriod: '12 months on LINK/USDT',
           },
           9: {
             name: 'Fibonacci Retracement Algorithm', type: 'Fibonacci & Trend Analysis',
@@ -189,10 +189,10 @@ const StrategyDetail = () => {
               { title: 'Impulse Move Detection', content: 'The algorithm identifies impulse moves as directional price swings of at least 5% (crypto) or 100 pips (forex) with above-average volume. The swing high and low are automatically identified using a 5-period fractal algorithm.' },
               { title: 'Fibonacci Level Calculation', content: 'Fibonacci retracement levels (23.6%, 38.2%, 50%, 61.8%, 78.6%) are calculated from the identified swing. The algorithm monitors price approach to each level and triggers alerts when price comes within 0.5% of a key level.' },
               { title: 'RSI Confirmation', content: 'At the Fibonacci level, RSI must be between 40-60 (neutral zone) for trend continuation entries. RSI below 40 at the 61.8% level adds extra confidence for long entries. RSI above 60 at the 38.2% level adds confidence for short entries.' },
-              { title: 'Rejection Candle Entry', content: 'Entry requires a rejection candle (pin bar with wick ≥ 2× body, or bullish/bearish engulfing) at the Fibonacci level. This confirms price has tested and rejected the level, providing a high-probability entry point.' },
+              { title: 'Rejection Candle Entry', content: 'Entry requires a rejection candle (pin bar with wick = 2� body, or bullish/bearish engulfing) at the Fibonacci level. This confirms price has tested and rejected the level, providing a high-probability entry point.' },
             ],
-            workflow: ['Identify trend direction using EMA 50 slope', 'Detect impulse move (≥5% move with above-average volume)', 'Calculate Fibonacci retracement from swing low to high', 'Monitor price approach to 38.2%, 50%, 61.8% levels', 'Check RSI is in 40-60 range at Fibonacci level', 'Wait for rejection candle (pin bar or engulfing)', 'Enter on rejection candle close with stop beyond 78.6%', 'Target previous swing high/low or 1.618 extension'],
-            complexity: 'Intermediate', computationalLoad: 'Low — Fibonacci calculation', backtestPeriod: '12 months on ETH/USDT, EUR/USD',
+            workflow: ['Identify trend direction using EMA 50 slope', 'Detect impulse move (=5% move with above-average volume)', 'Calculate Fibonacci retracement from swing low to high', 'Monitor price approach to 38.2%, 50%, 61.8% levels', 'Check RSI is in 40-60 range at Fibonacci level', 'Wait for rejection candle (pin bar or engulfing)', 'Enter on rejection candle close with stop beyond 78.6%', 'Target previous swing high/low or 1.618 extension'],
+            complexity: 'Intermediate', computationalLoad: 'Low � Fibonacci calculation', backtestPeriod: '12 months on ETH/USDT, EUR/USD',
           },
           10: {
             name: 'ML Momentum Scanner Algorithm', type: 'Machine Learning + Multi-Indicator',
@@ -203,32 +203,32 @@ const StrategyDetail = () => {
               { title: 'Signal Scoring', content: 'The model outputs a probability score (0-1) for the next candle being bullish. Scores > 0.75 trigger long entries (high confidence bullish). Scores < 0.25 trigger short entries. Scores between 0.25-0.75 result in no trade (uncertainty zone).' },
               { title: 'Dynamic Position Sizing', content: 'Position size scales with model confidence: 0.75-0.85 score = 1% risk, 0.85-0.95 score = 1.5% risk, >0.95 score = 2% risk. This concentrates capital in the highest-conviction trades.' },
             ],
-            workflow: ['Calculate all 12 features on 4H candle close', 'Feed features into XGBoost model for probability score', 'Filter: score > 0.75 (long) or < 0.25 (short)', 'Calculate position size based on confidence level', 'Enter at next candle open with ATR-based stop', 'Monitor model score on each subsequent candle', 'Exit if score crosses 0.5 (conviction lost)', 'Hard stop at 1.5× ATR from entry'],
-            complexity: 'Advanced', computationalLoad: 'High — ML inference on each candle', backtestPeriod: '12 months on ETH/USDT',
+            workflow: ['Calculate all 12 features on 4H candle close', 'Feed features into XGBoost model for probability score', 'Filter: score > 0.75 (long) or < 0.25 (short)', 'Calculate position size based on confidence level', 'Enter at next candle open with ATR-based stop', 'Monitor model score on each subsequent candle', 'Exit if score crosses 0.5 (conviction lost)', 'Hard stop at 1.5� ATR from entry'],
+            complexity: 'Advanced', computationalLoad: 'High � ML inference on each candle', backtestPeriod: '12 months on ETH/USDT',
           },
           11: {
             name: 'Opening Range Breakout Algorithm', type: 'Intraday Range Breakout',
-            description: 'Defines the trading range using the first 30 minutes of the session (9:30-10:00 AM EST). Breakouts above the range high trigger longs; breakouts below the range low trigger shorts. Volume on the breakout candle must be 2× the average. Best performance on high-volume stocks with pre-market catalysts.',
+            description: 'Defines the trading range using the first 30 minutes of the session (9:30-10:00 AM EST). Breakouts above the range high trigger longs; breakouts below the range low trigger shorts. Volume on the breakout candle must be 2� the average. Best performance on high-volume stocks with pre-market catalysts.',
             technicalDetails: [
-              { title: 'Opening Range Definition', content: 'The high and low of the first 30 minutes (two 15-minute candles) define the opening range. The range midpoint is calculated as the average of high and low. Range size is used to calculate the profit target (1× range extension).' },
-              { title: 'Breakout Confirmation', content: 'A breakout is confirmed when a 15-minute candle closes above the range high (long) or below the range low (short) with volume ≥ 2× the 20-period average. Wicks through the range without a close do not trigger entries.' },
-              { title: 'Pre-Market Catalyst Filter', content: 'The algorithm checks for pre-market news catalysts (earnings, upgrades, FDA approvals) using a news API. Stocks with catalysts have 40% higher breakout success rates. Stocks without catalysts require 3× volume confirmation.' },
+              { title: 'Opening Range Definition', content: 'The high and low of the first 30 minutes (two 15-minute candles) define the opening range. The range midpoint is calculated as the average of high and low. Range size is used to calculate the profit target (1� range extension).' },
+              { title: 'Breakout Confirmation', content: 'A breakout is confirmed when a 15-minute candle closes above the range high (long) or below the range low (short) with volume = 2� the 20-period average. Wicks through the range without a close do not trigger entries.' },
+              { title: 'Pre-Market Catalyst Filter', content: 'The algorithm checks for pre-market news catalysts (earnings, upgrades, FDA approvals) using a news API. Stocks with catalysts have 40% higher breakout success rates. Stocks without catalysts require 3� volume confirmation.' },
               { title: 'Time-Based Exit', content: 'All positions are closed by 11:30 AM EST regardless of profit/loss. This avoids the low-volume midday period where breakouts frequently reverse. The 2-hour trading window captures the highest-probability moves.' },
             ],
-            workflow: ['Scan pre-market for news catalysts on watchlist', 'Wait for market open at 9:30 AM EST', 'Record high and low of first 30 minutes (opening range)', 'Monitor for breakout candle with 2× volume confirmation', 'Enter on breakout candle close with stop at range midpoint', 'Target: entry ± 1× range size', 'Close all positions at 11:30 AM EST', 'Log trade results and update watchlist'],
-            complexity: 'Beginner to Intermediate', computationalLoad: 'Medium — real-time monitoring', backtestPeriod: '12 months on NVDA, META, TSLA',
+            workflow: ['Scan pre-market for news catalysts on watchlist', 'Wait for market open at 9:30 AM EST', 'Record high and low of first 30 minutes (opening range)', 'Monitor for breakout candle with 2� volume confirmation', 'Enter on breakout candle close with stop at range midpoint', 'Target: entry � 1� range size', 'Close all positions at 11:30 AM EST', 'Log trade results and update watchlist'],
+            complexity: 'Beginner to Intermediate', computationalLoad: 'Medium � real-time monitoring', backtestPeriod: '12 months on NVDA, META, TSLA',
           },
           12: {
             name: 'Turtle Trading System Algorithm', type: 'Trend Following Breakout',
             description: 'The legendary Turtle Trading system developed by Richard Dennis in 1983, adapted for crypto markets. System 1 buys 20-day highs and sells 20-day lows. System 2 uses 55-day breakouts for larger trend moves. ATR-based position sizing and pyramiding up to 4 units. Designed to catch massive trends while cutting losses quickly.',
             technicalDetails: [
               { title: 'Dual System Approach', content: 'System 1 (short-term): Enter on 20-day high/low breakout, exit on 10-day low/high. System 2 (long-term): Enter on 55-day high/low breakout, exit on 20-day low/high. System 1 catches more trades; System 2 catches larger moves.' },
-              { title: 'ATR Position Sizing', content: 'Position size = (Account × 1%) / (ATR × Dollar Value per Point). This ensures each trade risks exactly 1% of account regardless of market volatility. As ATR increases, position size decreases automatically.' },
+              { title: 'ATR Position Sizing', content: 'Position size = (Account � 1%) / (ATR � Dollar Value per Point). This ensures each trade risks exactly 1% of account regardless of market volatility. As ATR increases, position size decreases automatically.' },
               { title: 'Pyramiding Rules', content: 'Add 1 unit every 0.5 ATR move in your favor, up to a maximum of 4 units. Each add-on uses the same ATR-based sizing. Total risk across all 4 units never exceeds 4% of account. Stop for all units moves to 2 ATR from the last entry.' },
               { title: 'Correlation Management', content: 'Maximum 4 units in correlated markets (e.g., BTC and ETH), 8 units in loosely correlated markets, 12 units total across all positions. This prevents over-concentration in a single market direction.' },
             ],
             workflow: ['Calculate 20-day and 55-day highs/lows on daily close', 'Check for new 20-day high (System 1 long) or 55-day high (System 2 long)', 'Calculate position size using ATR and 1% risk rule', 'Enter on breakout with stop 2 ATR below entry', 'Add units every 0.5 ATR move (max 4 units)', 'Move stop to 2 ATR from last entry on each add', 'Exit System 1 on 10-day low; System 2 on 20-day low', 'Never re-enter a market that stopped you out until new breakout'],
-            complexity: 'Advanced', computationalLoad: 'Low — daily candle only', backtestPeriod: '12 months on BTC/USDT',
+            complexity: 'Advanced', computationalLoad: 'Low � daily candle only', backtestPeriod: '12 months on BTC/USDT',
           },
         };
 
@@ -301,10 +301,19 @@ const StrategyDetail = () => {
             return { date, price: Math.round(price * 100) / 100, equity, signal };
           });
 
+          // Normalize to % change from start for comparable chart display
+          const startPrice0  = points[0]?.price  || 1;
+          const startEquity0 = points[0]?.equity || 1;
+          const normalizedPoints = points.map(p => ({
+            ...p,
+            price:  parseFloat((((p.price  - startPrice0)  / startPrice0)  * 100).toFixed(2)),
+            equity: parseFloat((((p.equity - startEquity0) / startEquity0) * 100).toFixed(2)),
+          }));
+
           // Compute stats
           const finalEq = points[points.length - 1]?.equity ?? 10000;
           const trades = points.filter(p => p.signal !== null).length / 2;
-          setBacktestData(points);
+          setBacktestData(normalizedPoints);
           setBacktestStats({
             totalTrades: Math.round(trades),
             winRate: s.winRate,
@@ -434,7 +443,7 @@ const StrategyDetail = () => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
             { icon: Target,      label: 'Win Rate',      value: `${strategy.winRate}%`,      color: 'text-emerald-400', border: 'border-emerald-400/20' },
-            { icon: TrendingUp,  label: 'Profit Factor', value: strategy.profitFactor ? String(strategy.profitFactor) : '—', color: 'text-blue-400', border: 'border-blue-400/20' },
+            { icon: TrendingUp,  label: 'Profit Factor', value: strategy.profitFactor ? String(strategy.profitFactor) : '�', color: 'text-blue-400', border: 'border-blue-400/20' },
             { icon: TrendingDown,label: 'Max Drawdown',  value: `${strategy.maxDrawdown}%`,  color: 'text-red-400',     border: 'border-red-400/20'    },
             { icon: BarChart2,   label: 'Avg Return',    value: `+${strategy.avgReturn}%`,   color: 'text-emerald-400', border: 'border-emerald-400/20' },
           ].map(m => (
@@ -512,9 +521,9 @@ const StrategyDetail = () => {
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <BarChart2 className="w-4 h-4 text-emerald-400" />
-                <p className="text-white font-bold text-base">Backtesting Results — 12 Month Performance</p>
+                <p className="text-white font-bold text-base">Backtesting Results � 12 Month Performance</p>
               </div>
-              <p className="text-white/30 text-xs">Historical strategy performance · {backtestStats ? `${backtestStats.totalTrades} trades · ${strategy.winRate}% win rate` : 'Loading...'}</p>
+              <p className="text-white/30 text-xs">Historical strategy performance � {backtestStats ? `${backtestStats.totalTrades} trades � ${strategy.winRate}% win rate` : 'Loading...'}</p>
             </div>
             {backtestData.length > 0 && (
               <div className="flex gap-6">
@@ -548,8 +557,8 @@ const StrategyDetail = () => {
           ) : backtestData.length > 0 ? (
             <>
               <div className="flex items-center gap-6 mb-4 p-3 rounded-xl bg-white/[0.03] border border-white/[0.05] flex-wrap">
-                <span className="flex items-center gap-2 text-xs text-white/50"><span className="w-3 h-3 rounded-full bg-blue-400 inline-block" />Real Price</span>
-                <span className="flex items-center gap-2 text-xs text-white/50"><span className="w-3 h-3 rounded-full bg-emerald-400 inline-block" />Portfolio Equity ($10k start)</span>
+                <span className="flex items-center gap-2 text-xs text-white/50"><span className="w-3 h-3 rounded-full bg-blue-400 inline-block" />Real Price (% change)</span>
+                <span className="flex items-center gap-2 text-xs text-white/50"><span className="w-3 h-3 rounded-full bg-emerald-400 inline-block" />Portfolio (% change)</span>
                 <span className="flex items-center gap-2 text-xs text-white/50"><TrendingUp className="w-3 h-3 text-emerald-400" />Buy Signal</span>
                 <span className="flex items-center gap-2 text-xs text-white/50"><TrendingDown className="w-3 h-3 text-red-400" />Sell Signal</span>
               </div>
@@ -558,16 +567,15 @@ const StrategyDetail = () => {
                 equity: { label: "Portfolio ($)", color: "#10b981" }
               }} className="h-[500px]">
                 <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={backtestData} margin={{ top: 20, right: 60, left: 20, bottom: 5 }}>
+                  <LineChart data={backtestData.map(d => ({ ...d, priceChg: backtestData[0]?.price ? parseFloat((((d.price - backtestData[0].price) / backtestData[0].price) * 100).toFixed(2)) : 0, equityChg: backtestData[0]?.equity ? parseFloat((((d.equity - backtestData[0].equity) / backtestData[0].equity) * 100).toFixed(2)) : 0 }))} margin={{ top: 20, right: 60, left: 20, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
                     <XAxis dataKey="date" stroke="rgba(255,255,255,0.2)" fontSize={11} tickLine={false} interval={Math.floor(backtestData.length / 8)} />
-                    <YAxis yAxisId="left"  stroke="hsl(217,91%,60%)" fontSize={11} tickLine={false} tickFormatter={(v) => `$${(v/1000).toFixed(0)}k`} />
-                    <YAxis yAxisId="right" orientation="right" stroke="#10b981" fontSize={11} tickLine={false} tickFormatter={(v) => `$${(v/1000).toFixed(1)}k`} />
+                    <YAxis stroke="rgba(255,255,255,0.2)" fontSize={11} tickLine={false} tickFormatter={(v) => `${Number(v) > 0 ? "+" : ""}${Number(v).toFixed(0)}%`} />
                     <Tooltip contentStyle={tooltipStyle}
-                      formatter={(v: any, name: string) => [`$${Number(v).toLocaleString()}`, name === 'price' ? 'Price' : 'Portfolio']} />
-                    <Legend />
-                    <Line yAxisId="left"  type="monotone" dataKey="price"  stroke="hsl(217,91%,60%)" strokeWidth={1.5} dot={false} />
-                    <Line yAxisId="right" type="monotone" dataKey="equity" stroke="#10b981" strokeWidth={2.5}
+                      formatter={(v: any, name: string) => [`$${Number(v).toLocaleString()}`, name === 'price' ? 'Real Price' : 'Portfolio']} />
+                    <Legend formatter={(v: string) => v === "price" ? "Real Price" : "Portfolio Equity"} />
+                    <Line type="monotone" dataKey="price"  stroke="hsl(217,91%,60%)" strokeWidth={1.5} dot={false} />
+                    <Line type="monotone" dataKey="equity" stroke="#10b981" strokeWidth={2.5}
                       dot={(props: any) => {
                         const { cx, cy, payload } = props;
                         if (payload.signal === 'buy') return (
@@ -691,7 +699,7 @@ const StrategyDetail = () => {
                 <ul className="space-y-2">
                   {strategy.pros.map((pro: string, index: number) => (
                     <li key={index} className="flex items-start gap-2 text-sm text-white/50">
-                      <span className="text-emerald-400 shrink-0">✓</span>{pro}
+                      <span className="text-emerald-400 shrink-0">?</span>{pro}
                     </li>
                   ))}
                 </ul>
@@ -701,7 +709,7 @@ const StrategyDetail = () => {
                 <ul className="space-y-2">
                   {strategy.cons.map((con: string, index: number) => (
                     <li key={index} className="flex items-start gap-2 text-sm text-white/50">
-                      <span className="text-red-400 shrink-0">✗</span>{con}
+                      <span className="text-red-400 shrink-0">?</span>{con}
                     </li>
                   ))}
                 </ul>
