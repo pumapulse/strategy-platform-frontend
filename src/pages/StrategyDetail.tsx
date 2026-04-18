@@ -581,7 +581,7 @@ const StrategyDetail = () => {
                     <XAxis dataKey="date" stroke="rgba(255,255,255,0.2)" fontSize={11} tickLine={false} interval={Math.floor(backtestData.length / 8)} />
                     <YAxis stroke="rgba(255,255,255,0.2)" fontSize={11} tickLine={false} tickFormatter={(v) => `${Number(v) > 0 ? "+" : ""}${Number(v).toFixed(0)}%`} />
                     <Tooltip contentStyle={tooltipStyle}
-                      formatter={(v: any, name: string) => [`$${Number(v).toLocaleString()}`, name === 'price' ? 'Real Price' : 'Portfolio']} />
+                      formatter={(v: any, name: string) => [`${Number(v) > 0 ? "+" : ""}${Number(v).toFixed(2)}%`, name === 'price' ? 'Real Price' : 'Portfolio']} />
                     <Legend formatter={(v: string) => v === "price" ? "Real Price" : "Portfolio Equity"} />
                     <Line type="monotone" dataKey="price"  stroke="hsl(217,91%,60%)" strokeWidth={1.5} dot={false} />
                     <Line type="monotone" dataKey="equity" stroke="#10b981" strokeWidth={2.5}
