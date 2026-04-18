@@ -297,14 +297,6 @@ const StrategyDetail = () => {
           setBacktestStats({ totalTrades:fbT, winCount:fbW, lossCount:fbT-fbW, winRate:s.winRate, avgWin:s.avgReturn, avgLoss:s.maxDrawdown, totalReturn:parseFloat(((fbF-10000)/10000*100).toFixed(1)), maxDrawdown:s.maxDrawdown, monthlyReturns:fbMo });
         }
         setBacktestLoading(false);
-          });
-          setBacktestData(norm);
-          setBacktestStats({
-            totalTrades: tradeCount, winCount, lossCount: tradeCount - winCount,
-            winRate: s.winRate, avgWin: s.avgReturn, avgLoss: s.maxDrawdown,
-            totalReturn: parseFloat(((finalEq - 10000) / 10000 * 100).toFixed(1)),
-            maxDrawdown: s.maxDrawdown, monthlyReturns: monthlyEq,
-          });
         } catch {
           // Fallback: equity only
           const eArr: number[] = s.equity.map((e: any) => typeof e === 'object' ? e.value : e);
