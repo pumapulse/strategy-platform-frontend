@@ -278,28 +278,41 @@ const StrategyDetail = () => {
           const daysPerMonth = totalDays / totalMonths;
 
           const points: BacktestPoint[] = prices.map(([ts, price], i) => {
-            // Interpolate equity between monthly values
-            const monthFloat = i / daysPerMonth;
-            const monthIdx = Math.floor(monthFloat);
-            const monthProgress = monthFloat - monthIdx;
-            const clampedIdx = Math.min(monthIdx, equityArr.length - 1);
-            const startEq = clampedIdx === 0 ? 10000 : equityArr[clampedIdx - 1];
-            const endEq = equityArr[Math.min(clampedIdx, equityArr.length - 1)];
-            const baseEq = startEq + (endEq - startEq) * monthProgress;
-            const noise = baseEq * (Math.random() - 0.48) * 0.006;
-            const equity = Math.round(baseEq + noise);
-
             const d = new Date(ts);
             const date = `${monthNames[d.getMonth()]} ${d.getDate()}`;
-
+            const monthFloat = i / daysPerMonth;
             // Place buy at start of each month, sell near end
             const dayInMonth = Math.round((monthFloat % 1) * daysPerMonth);
             let signal: 'buy' | 'sell' | null = null;
             if (dayInMonth === 1) signal = 'buy';
             else if (dayInMonth === Math.round(daysPerMonth * 0.8)) signal = 'sell';
 
-            return { date, price: Math.round(price * 100) / 100, equity, signal };
+            return { date, price: Math.round(price * 100) / 100, equity: 10000, signal };
           });
+
+          // Now compute equity properly: only changes on SELL based on actual price movement
+          let equity = 10000;
+          let inTrade = false;
+          let entryPrice = 0;
+          let entryEquity = 0;
+          for (let i = 0; i < points.length; i++) {
+            if (points[i].signal === 'buy' && !inTrade) {
+              inTrade = true;
+              entryPrice = points[i].price;
+              entryEquity = equity;
+            } else if (points[i].signal === 'sell' && inTrade) {
+              const pnl = (points[i].price - entryPrice) / entryPrice;
+              equity = entryEquity * (1 + pnl * 0.95);
+              inTrade = false;
+            }
+            // Mark-to-market while in trade
+            if (inTrade && entryPrice > 0) {
+              const unrealized = (points[i].price - entryPrice) / entryPrice;
+              points[i] = { ...points[i], equity: Math.round(entryEquity * (1 + unrealized * 0.95)) };
+            } else {
+              points[i] = { ...points[i], equity: Math.round(equity) };
+            }
+          }
 
           // Normalize to % change from start for comparable chart display
           const startPrice0  = points[0]?.price  || 1;
