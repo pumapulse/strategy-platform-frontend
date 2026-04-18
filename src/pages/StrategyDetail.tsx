@@ -326,18 +326,25 @@ const StrategyDetail = () => {
           // Fallback: build from equity only
           const equityArr: number[] = s.equity.map((e: any) => typeof e === 'object' ? e.value : e);
           const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-          const points: BacktestPoint[] = [];
+          const rawPoints: BacktestPoint[] = [];
           for (let m = 0; m < equityArr.length; m++) {
             const startEq = m === 0 ? 10000 : equityArr[m - 1];
             const endEq = equityArr[m];
             for (let d = 0; d < 8; d++) {
               const base = startEq + (endEq - startEq) * (d / 8);
               const equity = Math.round(base + base * (Math.random() - 0.48) * 0.01);
-              points.push({ date: `${monthNames[m % 12]} ${d * 4 + 1}`, price: equity, equity, signal: d === 1 ? 'buy' : d === 6 ? 'sell' : null });
+              rawPoints.push({ date: `${monthNames[m % 12]} ${d * 4 + 1}`, price: equity, equity, signal: d === 1 ? 'buy' : d === 6 ? 'sell' : null });
             }
           }
-          setBacktestData(points);
-          setBacktestStats({ totalTrades: equityArr.length, winRate: s.winRate, avgWin: s.avgReturn, avgLoss: s.maxDrawdown, totalReturn: parseFloat(((equityArr[equityArr.length-1] - 10000) / 10000 * 100).toFixed(1)), maxDrawdown: s.maxDrawdown });
+          const fbStart = rawPoints[0]?.equity || 1;
+          const fbFinal = rawPoints[rawPoints.length-1]?.equity ?? 10000;
+          const fbNorm = rawPoints.map(p => ({
+            ...p,
+            price:  parseFloat((((p.price  - fbStart) / fbStart) * 100).toFixed(2)),
+            equity: parseFloat((((p.equity - fbStart) / fbStart) * 100).toFixed(2)),
+          }));
+          setBacktestData(fbNorm);
+          setBacktestStats({ totalTrades: equityArr.length, winRate: s.winRate, avgWin: s.avgReturn, avgLoss: s.maxDrawdown, totalReturn: parseFloat(((fbFinal - 10000) / 10000 * 100).toFixed(1)), maxDrawdown: s.maxDrawdown });
         }
         setBacktestLoading(false);
       } catch (err) {
@@ -525,7 +532,7 @@ const StrategyDetail = () => {
               </div>
               <p className="text-white/30 text-xs">Historical strategy performance � {backtestStats ? `${backtestStats.totalTrades} trades � ${strategy.winRate}% win rate` : 'Loading...'}</p>
             </div>
-            {backtestData.length > 0 && (
+            {backtestData.length > 0 && backtestStats && (
               <div className="flex gap-6">
                 <div className="text-right">
                   <p className="text-xs text-white/30">Initial Capital</p>
@@ -533,14 +540,12 @@ const StrategyDetail = () => {
                 </div>
                 <div className="text-right">
                   <p className="text-xs text-white/30">Final Capital</p>
-                  <p className="text-lg font-black text-white">${backtestData[backtestData.length-1].equity.toLocaleString()}</p>
+                  <p className="text-lg font-black text-white">${Math.round(10000 * (1 + backtestStats.totalReturn / 100)).toLocaleString()}</p>
                 </div>
                 <div className="text-right">
                   <p className="text-xs text-white/30">Strategy Return</p>
-                  <p className="text-lg font-black" style={{ color: backtestData[backtestData.length-1].equity >= 10000 ? '#10b981' : '#ef4444' }}>
-                    {(((backtestData[backtestData.length-1].equity - 10000) / 10000) * 100) >= 0
-                      ? '+' + (((backtestData[backtestData.length-1].equity - 10000) / 10000) * 100).toFixed(1) + '%'
-                      : (((backtestData[backtestData.length-1].equity - 10000) / 10000) * 100).toFixed(1) + '%'}
+                  <p className="text-lg font-black" style={{ color: backtestStats.totalReturn >= 0 ? '#10b981' : '#ef4444' }}>
+                    {backtestStats.totalReturn >= 0 ? '+' : ''}{backtestStats.totalReturn}%
                   </p>
                 </div>
               </div>
@@ -563,8 +568,8 @@ const StrategyDetail = () => {
                 <span className="flex items-center gap-2 text-xs text-white/50"><TrendingDown className="w-3 h-3 text-red-400" />Sell Signal</span>
               </div>
               <ChartContainer config={{
-                price:  { label: "Price ($)",     color: "hsl(217, 91%, 60%)" },
-                equity: { label: "Portfolio ($)", color: "#10b981" }
+                price:  { label: "Real Price",     color: "hsl(217, 91%, 60%)" },
+                equity: { label: "Portfolio", color: "#10b981" }
               }} className="h-[500px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={backtestData.map(d => ({ ...d, priceChg: backtestData[0]?.price ? parseFloat((((d.price - backtestData[0].price) / backtestData[0].price) * 100).toFixed(2)) : 0, equityChg: backtestData[0]?.equity ? parseFloat((((d.equity - backtestData[0].equity) / backtestData[0].equity) * 100).toFixed(2)) : 0 }))} margin={{ top: 20, right: 60, left: 20, bottom: 5 }}>
