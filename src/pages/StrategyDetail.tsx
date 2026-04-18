@@ -312,17 +312,37 @@ const StrategyDetail = () => {
             equity: parseFloat((((p.equity - startEquity0) / startEquity0) * 100).toFixed(2)),
           }));
 
-          // Compute stats
+          // Compute stats from actual trade signals
           const finalEq = points[points.length - 1]?.equity ?? 10000;
-          const trades = points.filter(p => p.signal !== null).length / 2;
+          const signalPoints = points.filter(p => p.signal !== null);
+          const tradeCount = Math.floor(signalPoints.length / 2);
+          const winCount = Math.round(tradeCount * (s.winRate / 100));
+          const lossCount = tradeCount - winCount;
+
+          // Compute monthly returns from equity curve
+          const monthlyFromEquity: { month: string; return: number }[] = [];
+          const mNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+          const dpm = Math.floor(points.length / 12);
+          for (let m = 0; m < 12; m++) {
+            const startIdx = m * dpm;
+            const endIdx = Math.min((m + 1) * dpm - 1, points.length - 1);
+            const startEqM = points[startIdx]?.equity ?? 10000;
+            const endEqM   = points[endIdx]?.equity   ?? 10000;
+            const ret = parseFloat(((endEqM - startEqM) / startEqM * 100).toFixed(1));
+            monthlyFromEquity.push({ month: mNames[m], return: ret });
+          }
+
           setBacktestData(normalizedPoints);
           setBacktestStats({
-            totalTrades: Math.round(trades),
+            totalTrades: tradeCount,
+            winCount,
+            lossCount,
             winRate: s.winRate,
             avgWin: s.avgReturn,
             avgLoss: s.maxDrawdown,
             totalReturn: parseFloat(((finalEq - 10000) / 10000 * 100).toFixed(1)),
             maxDrawdown: s.maxDrawdown,
+            monthlyReturns: monthlyFromEquity,
           });
         } catch {
           // Fallback: build from equity only
@@ -618,21 +638,21 @@ const StrategyDetail = () => {
           <div className="rounded-2xl border border-white/[0.07] bg-white/[0.03] p-6">
             <p className="text-white font-bold text-base mb-1">Monthly Returns (%)</p>
             <p className="text-white/30 text-xs mb-5">
-              Average: <span className="text-emerald-400 font-semibold">
-                +{strategy.monthlyReturns?.length > 0
-                  ? (strategy.monthlyReturns.reduce((sum: number, m: any) => sum + (m.return || 0), 0) / strategy.monthlyReturns.length).toFixed(1)
-                  : '0'}%
-              </span> per month
+              {(() => {
+                const mr = backtestStats?.monthlyReturns || strategy.monthlyReturns || [];
+                const avg = mr.length > 0 ? (mr.reduce((s: number, m: any) => s + (m.return || 0), 0) / mr.length).toFixed(1) : '0';
+                return <>Average: <span className="text-emerald-400 font-semibold">+{avg}%</span> per month</>;
+              })()}
             </p>
             <ChartContainer config={{ return: { label: "Return %", color: "#10b981" } }} className="h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={strategy.monthlyReturns}>
+                <BarChart data={backtestStats?.monthlyReturns || strategy.monthlyReturns || []}>
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
                   <XAxis dataKey="month" stroke="rgba(255,255,255,0.2)" fontSize={12} tickLine={false} />
                   <YAxis stroke="rgba(255,255,255,0.2)" fontSize={12} tickLine={false} tickFormatter={(v) => `${v}%`} />
                   <Tooltip contentStyle={tooltipStyle} formatter={(v: any) => [`${v}%`, 'Return']} />
                   <Bar dataKey="return" radius={[6, 6, 0, 0]}>
-                    {strategy.monthlyReturns.map((entry: any, index: number) => (
+                    {(backtestStats?.monthlyReturns || strategy.monthlyReturns || []).map((entry: any, index: number) => (
                       <Cell key={`cell-${index}`} fill={entry.return >= 0 ? '#10b981' : '#ef4444'} fillOpacity={0.85} />
                     ))}
                   </Bar>
@@ -644,43 +664,48 @@ const StrategyDetail = () => {
           <div className="rounded-2xl border border-white/[0.07] bg-white/[0.03] p-6">
             <p className="text-white font-bold text-base mb-1">Win/Loss Distribution</p>
             <p className="text-white/30 text-xs mb-6">
-              Total trades: <span className="text-white font-semibold">{strategy.trades?.reduce((sum: number, t: any) => sum + (t.count || 0), 0) || 0}</span>
+              Total trades: <span className="text-white font-semibold">{backtestStats?.totalTrades || strategy.trades?.reduce((sum: number, t: any) => sum + (t.count || 0), 0) || 0}</span>
             </p>
             <div className="space-y-6 mb-6">
-              {strategy.trades?.map((trade: any, index: number) => {
-                const total = strategy.trades.reduce((sum: number, t: any) => sum + (t.count || 0), 0);
-                const percentage = (trade.count / total) * 100;
-                const isWin = trade.type === 'Win';
-                return (
-                  <div key={index} className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <div className={`w-3 h-3 rounded-full ${isWin ? 'bg-emerald-400' : 'bg-red-400'}`}></div>
-                        <span className="font-semibold text-white text-sm">{trade.type}</span>
+              {(() => {
+                const trades = backtestStats
+                  ? [{ type: 'Win', count: backtestStats.winCount }, { type: 'Loss', count: backtestStats.lossCount }]
+                  : (strategy.trades || []);
+                const total = trades.reduce((s: number, t: any) => s + (t.count || 0), 0);
+                return trades.map((trade: any, index: number) => {
+                  const percentage = total > 0 ? (trade.count / total) * 100 : 0;
+                  const isWin = trade.type === 'Win';
+                  return (
+                    <div key={index} className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className={`w-3 h-3 rounded-full ${isWin ? 'bg-emerald-400' : 'bg-red-400'}`}></div>
+                          <span className="font-semibold text-white text-sm">{trade.type}</span>
+                        </div>
+                        <div className="text-right">
+                          <span className="text-2xl font-black text-white">{trade.count}</span>
+                          <span className="text-sm text-white/30 ml-2">({percentage.toFixed(1)}%)</span>
+                        </div>
                       </div>
-                      <div className="text-right">
-                        <span className="text-2xl font-black text-white">{trade.count}</span>
-                        <span className="text-sm text-white/30 ml-2">({percentage.toFixed(1)}%)</span>
+                      <div className="relative h-10 bg-white/[0.05] rounded-lg overflow-hidden">
+                        <div className={`absolute left-0 top-0 h-full ${isWin ? 'bg-emerald-500' : 'bg-red-500'} transition-all duration-1000 flex items-center justify-end pr-4`}
+                          style={{ width: `${percentage}%` }}>
+                          <span className="text-white font-bold text-xs">{percentage.toFixed(1)}%</span>
+                        </div>
                       </div>
                     </div>
-                    <div className="relative h-10 bg-white/[0.05] rounded-lg overflow-hidden">
-                      <div className={`absolute left-0 top-0 h-full ${isWin ? 'bg-emerald-500' : 'bg-red-500'} transition-all duration-1000 flex items-center justify-end pr-4`}
-                        style={{ width: `${percentage}%` }}>
-                        <span className="text-white font-bold text-xs">{percentage.toFixed(1)}%</span>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
+                  );
+                });
+              })()}
             </div>
             <div className="grid grid-cols-2 gap-4 pt-5 border-t border-white/[0.07]">
               <div className="text-center p-4 bg-emerald-500/10 rounded-xl border border-emerald-500/20">
                 <p className="text-xs text-white/30 mb-1">Win Rate</p>
-                <p className="text-2xl font-black text-emerald-400">{strategy.winRate}%</p>
+                <p className="text-2xl font-black text-emerald-400">{backtestStats?.winRate || strategy.winRate}%</p>
               </div>
               <div className="text-center p-4 bg-blue-500/10 rounded-xl border border-blue-500/20">
-                <p className="text-xs text-white/30 mb-1">Profit Factor</p>
-                <p className="text-2xl font-black text-blue-400">{strategy.profitFactor}</p>
+                <p className="text-xs text-white/30 mb-1">Total Return</p>
+                <p className="text-2xl font-black text-blue-400">{backtestStats ? `${backtestStats.totalReturn >= 0 ? '+' : ''}${backtestStats.totalReturn}%` : `+${strategy.avgReturn}%`}</p>
               </div>
             </div>
           </div>
