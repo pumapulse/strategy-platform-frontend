@@ -11,6 +11,8 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  // Read redirect param from URL
+  const redirectTo = new URLSearchParams(window.location.search).get('redirect') || '/dashboard';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,7 +33,7 @@ export default function Login() {
           endDate: new Date(Date.now() + 100 * 365 * 24 * 60 * 60 * 1000).toISOString(),
         }));
         toast({ title: 'Welcome back!', description: 'Logged in successfully' });
-        navigate('/dashboard');
+        navigate(redirectTo);
       } else {
         toast({ title: 'Login failed', description: data.error || 'Invalid credentials', variant: 'destructive' });
       }
@@ -63,7 +65,7 @@ export default function Login() {
             <div className="flex gap-10 mt-10">
               {[
                 { icon: TrendingUp, label: 'Free Strategies', value: '12' },
-                { icon: Zap,        label: 'Best Win Rate',   value: '71%' },
+                { icon: Zap,        label: 'Best Win Rate',   value: '63%' },
                 { icon: ShieldCheck,label: 'Backtested',      value: '100%' },
               ].map(({ icon: Icon, label, value }) => (
                 <div key={label}>

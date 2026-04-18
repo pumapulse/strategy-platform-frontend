@@ -17,6 +17,17 @@ const StrategyDetail = () => {
   const [backtestStats, setBacktestStats] = useState<any>(null);
   const [backtestLoading, setBacktestLoading] = useState(false);
 
+  // Strategies 5-12 require login
+  useEffect(() => {
+    const stratId = Number(id);
+    if (stratId >= 5) {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        navigate(`/login?redirect=/strategy/${id}`);
+      }
+    }
+  }, [id]);
+
   useEffect(() => {
     const fetchStrategy = async () => {
       try {
