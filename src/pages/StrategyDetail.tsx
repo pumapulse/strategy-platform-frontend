@@ -259,7 +259,7 @@ const StrategyDetail = () => {
         try {
           const cgMap: Record<number, string> = { 1:'bitcoin',2:'ethereum',3:'bitcoin',4:'bitcoin',5:'bitcoin',6:'solana',7:'ethereum',8:'chainlink',9:'ethereum',10:'ethereum',11:'bitcoin',12:'bitcoin' };
           const cgId = cgMap[Number(id)] || 'bitcoin';
-          const res = await fetch(https://api.coingecko.com/api/v3/coins//market_chart?vs_currency=usd&days=365&interval=daily);
+          const res = await fetch(`https://api.coingecko.com/api/v3/coins/${cgId}/market_chart?vs_currency=usd&days=365&interval=daily`);
           const priceData = await res.json();
           const rawPrices: [number, number][] = priceData.prices || [];
           const prices = rawPrices.slice(-365);
