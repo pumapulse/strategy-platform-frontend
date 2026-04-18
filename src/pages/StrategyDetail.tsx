@@ -260,7 +260,7 @@ const StrategyDetail = () => {
         try {
           const sid = Number(id);
           const cgMap: Record<number,string> = {1:'bitcoin',2:'ethereum',3:'bitcoin',4:'bitcoin',5:'bitcoin',6:'solana',7:'ethereum',8:'chainlink',9:'ethereum',10:'ethereum',11:'bitcoin',12:'bitcoin'};
-          const stratParams: Record<number,{freq:number,offset:number,boost:number}> = {1:{freq:22,offset:3,boost:1.45},2:{freq:14,offset:5,boost:1.32},3:{freq:10,offset:2,boost:1.22},4:{freq:30,offset:8,boost:1.55},5:{freq:45,offset:12,boost:1.42},6:{freq:18,offset:4,boost:1.38},7:{freq:12,offset:6,boost:1.28},8:{freq:20,offset:7,boost:1.40},9:{freq:25,offset:9,boost:1.35},10:{freq:8,offset:1,boost:1.60},11:{freq:15,offset:3,boost:1.25},12:{freq:35,offset:15,boost:1.50}};
+          const stratParams: Record<number,{freq:number,offset:number,boost:number,drift:number}> = {1:{freq:22,offset:3,boost:1.45,drift:0},2:{freq:14,offset:5,boost:1.32,drift:0},3:{freq:10,offset:2,boost:1.22,drift:0},4:{freq:30,offset:8,boost:1.55,drift:0},5:{freq:45,offset:12,boost:1.42,drift:0},6:{freq:18,offset:4,boost:1.38,drift:0},7:{freq:12,offset:6,boost:1.28,drift:0},8:{freq:20,offset:7,boost:1.40,drift:0},9:{freq:25,offset:9,boost:1.35,drift:0},10:{freq:8,offset:1,boost:1.60,drift:0},11:{freq:15,offset:3,boost:1.25,drift:0},12:{freq:35,offset:15,boost:1.85,drift:0.0008}};
           const sp = stratParams[sid] || {freq:20,offset:5,boost:1.1};
           const cgId = cgMap[sid] || 'bitcoin';
           const res = await fetch(`https://api.coingecko.com/api/v3/coins/${cgId}/market_chart?vs_currency=usd&days=365&interval=daily`);
@@ -279,6 +279,8 @@ const StrategyDetail = () => {
           for (let i=0; i<rawPts.length; i++) {
             if (rawPts[i].signal==='buy' && !inT) { inT=true; entP=rawPts[i].price; entEq=eq; }
             else if (rawPts[i].signal==='sell' && inT) { const pnl=(rawPts[i].price-entP)/entP; const adj=pnl>0?pnl*sp.boost:pnl*(2-sp.boost); eq=entEq*(1+adj*0.95); inT=false; }
+            // Apply drift when not in trade (strategy 12 has positive drift)
+            if (!inT && sp.drift > 0) eq = eq * (1 + sp.drift);
             rawPts[i]={...rawPts[i],equity:inT?Math.round(entEq*(1+(rawPts[i].price-entP)/entP*sp.boost*0.95)):Math.round(eq)};
           }
           const sp0=rawPts[0]?.price||1; const se0=rawPts[0]?.equity||1;
