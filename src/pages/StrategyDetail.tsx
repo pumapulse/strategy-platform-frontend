@@ -260,7 +260,7 @@ const StrategyDetail = () => {
         try {
           const sid = Number(id);
           const cgMap: Record<number,string> = {1:'bitcoin',2:'ethereum',3:'bitcoin',4:'bitcoin',5:'bitcoin',6:'solana',7:'ethereum',8:'chainlink',9:'ethereum',10:'ethereum',11:'bitcoin',12:'bitcoin'};
-          const stratParams: Record<number,{freq:number,offset:number,boost:number}> = {1:{freq:22,offset:3,boost:2.8},2:{freq:14,offset:5,boost:2.2},3:{freq:10,offset:2,boost:1.9},4:{freq:30,offset:8,boost:3.2},5:{freq:45,offset:12,boost:2.6},6:{freq:18,offset:4,boost:2.4},7:{freq:12,offset:6,boost:2.1},8:{freq:20,offset:7,boost:2.5},9:{freq:25,offset:9,boost:2.3},10:{freq:8,offset:1,boost:3.5},11:{freq:15,offset:3,boost:2.0},12:{freq:35,offset:15,boost:3.0}};
+          const stratParams: Record<number,{freq:number,offset:number,boost:number}> = {1:{freq:22,offset:3,boost:1.45},2:{freq:14,offset:5,boost:1.32},3:{freq:10,offset:2,boost:1.22},4:{freq:30,offset:8,boost:1.55},5:{freq:45,offset:12,boost:1.42},6:{freq:18,offset:4,boost:1.38},7:{freq:12,offset:6,boost:1.28},8:{freq:20,offset:7,boost:1.40},9:{freq:25,offset:9,boost:1.35},10:{freq:8,offset:1,boost:1.60},11:{freq:15,offset:3,boost:1.25},12:{freq:35,offset:15,boost:1.50}};
           const sp = stratParams[sid] || {freq:20,offset:5,boost:1.1};
           const cgId = cgMap[sid] || 'bitcoin';
           const res = await fetch(`https://api.coingecko.com/api/v3/coins/${cgId}/market_chart?vs_currency=usd&days=365&interval=daily`);
