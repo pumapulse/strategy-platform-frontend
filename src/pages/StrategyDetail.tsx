@@ -4,7 +4,7 @@ import { ArrowLeft, TrendingUp, TrendingDown, Target, BarChart2, Download, Refre
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, Cell } from "recharts";
 import { ChartContainer } from "@/components/ui/chart";
 import Footer from "@/components/Footer";
-import { BacktestPoint, BacktestStats } from "@/lib/backtester";
+import { runBacktest, BacktestPoint, BacktestStats } from "@/lib/backtester";
 import { getPlanTier, canDownloadScript, getRemainingDownloads, recordDownload } from "@/lib/subscription";
 
 const StrategyDetail = () => {
@@ -254,134 +254,49 @@ const StrategyDetail = () => {
         setStrategy(s);
         setError(null);
 
-        // Build backtest chart: real price from CoinGecko + seeded equity curve as portfolio
+        // Build backtest chart: use real backtester with strategy-specific signals
+        // Build backtest chart: use real backtester with strategy-specific signals
         setBacktestLoading(true);
         try {
-          const cgMap: Record<string, string> = {
-            'Crypto': 'bitcoin', 'Forex': 'ethereum', 'Stocks': 'bitcoin',
-          };
-          const cgId = cgMap[s.market] || 'bitcoin';
-          const res = await fetch(
-            `https://api.coingecko.com/api/v3/coins/${cgId}/market_chart?vs_currency=usd&days=365&interval=daily`
-          );
-          const priceData = await res.json();
-          const rawPrices: [number, number][] = priceData.prices || [];
-
-          // Use last 12 months of price data
-          const prices = rawPrices.slice(-365);
-          const equityArr: number[] = s.equity.map((e: any) => typeof e === 'object' ? e.value : e);
-          const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-
-          // Map equity monthly values to daily points matching price data length
-          const totalDays = prices.length;
-          const totalMonths = equityArr.length;
-          const daysPerMonth = totalDays / totalMonths;
-
-          const points: BacktestPoint[] = prices.map(([ts, price], i) => {
-            const d = new Date(ts);
-            const date = `${monthNames[d.getMonth()]} ${d.getDate()}`;
-            const monthFloat = i / daysPerMonth;
-            // Place buy at start of each month, sell near end
-            const dayInMonth = Math.round((monthFloat % 1) * daysPerMonth);
-            let signal: 'buy' | 'sell' | null = null;
-            if (dayInMonth === 1) signal = 'buy';
-            else if (dayInMonth === Math.round(daysPerMonth * 0.8)) signal = 'sell';
-
-            return { date, price: Math.round(price * 100) / 100, equity: 10000, signal };
-          });
-
-          // Now compute equity properly: only changes on SELL based on actual price movement
-          let equity = 10000;
-          let inTrade = false;
-          let entryPrice = 0;
-          let entryEquity = 0;
-          for (let i = 0; i < points.length; i++) {
-            if (points[i].signal === 'buy' && !inTrade) {
-              inTrade = true;
-              entryPrice = points[i].price;
-              entryEquity = equity;
-            } else if (points[i].signal === 'sell' && inTrade) {
-              const pnl = (points[i].price - entryPrice) / entryPrice;
-              equity = entryEquity * (1 + pnl * 0.95);
-              inTrade = false;
-            }
-            // Mark-to-market while in trade
-            if (inTrade && entryPrice > 0) {
-              const unrealized = (points[i].price - entryPrice) / entryPrice;
-              points[i] = { ...points[i], equity: Math.round(entryEquity * (1 + unrealized * 0.95)) };
-            } else {
-              points[i] = { ...points[i], equity: Math.round(equity) };
-            }
-          }
-
-          // Normalize to % change from start for comparable chart display
-          const startPrice0  = points[0]?.price  || 1;
-          const startEquity0 = points[0]?.equity || 1;
-          const normalizedPoints = points.map(p => ({
-            ...p,
-            originalPrice:  p.price,
-            originalEquity: p.equity,
-            price:  parseFloat((((p.price  - startPrice0)  / startPrice0)  * 100).toFixed(2)),
-            equity: parseFloat((((p.equity - startEquity0) / startEquity0) * 100).toFixed(2)),
-          }));
-
-          // Compute stats from actual trade signals
-          const finalEq = points[points.length - 1]?.equity ?? 10000;
-          const signalPoints = points.filter(p => p.signal !== null);
-          const tradeCount = Math.floor(signalPoints.length / 2);
-          const winCount = Math.round(tradeCount * (s.winRate / 100));
-          const lossCount = tradeCount - winCount;
-
-          // Compute monthly returns from equity curve
-          const monthlyFromEquity: { month: string; return: number }[] = [];
-          const mNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-          const dpm = Math.floor(points.length / 12);
-          for (let m = 0; m < 12; m++) {
-            const startIdx = m * dpm;
-            const endIdx = Math.min((m + 1) * dpm - 1, points.length - 1);
-            const startEqM = points[startIdx]?.equity ?? 10000;
-            const endEqM   = points[endIdx]?.equity   ?? 10000;
-            const ret = parseFloat(((endEqM - startEqM) / startEqM * 100).toFixed(1));
-            monthlyFromEquity.push({ month: mNames[m], return: ret });
-          }
-
-          setBacktestData(normalizedPoints);
-          setBacktestStats({
-            totalTrades: tradeCount,
-            winCount,
-            lossCount,
-            winRate: s.winRate,
-            avgWin: s.avgReturn,
-            avgLoss: s.maxDrawdown,
-            totalReturn: parseFloat(((finalEq - 10000) / 10000 * 100).toFixed(1)),
-            maxDrawdown: s.maxDrawdown,
-            monthlyReturns: monthlyFromEquity,
-          });
+          const { points: btPoints, stats: btStats } = await runBacktest(Number(id), s.market);
+          if (btPoints.length > 0) {
+            const sp = btPoints[0]?.price  || 1;
+            const se = btPoints[0]?.equity || 1;
+            const norm = btPoints.map(p => ({
+              ...p, originalPrice: p.price, originalEquity: p.equity,
+              price:  parseFloat((((p.price  - sp) / sp) * 100).toFixed(2)),
+              equity: parseFloat((((p.equity - se) / se) * 100).toFixed(2)),
+            }));
+            const finalEqReal = btPoints[btPoints.length-1]?.equity ?? 10000;
+            const winCount  = Math.round(btStats.totalTrades * (btStats.winRate / 100));
+            const lossCount = btStats.totalTrades - winCount;
+            const mN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+            const dpm2 = Math.max(1, Math.floor(btPoints.length / 12));
+            const monthlyEq = Array.from({ length: 12 }, (_, m) => {
+              const si = m * dpm2; const ei = Math.min((m+1)*dpm2-1, btPoints.length-1);
+              const s2 = btPoints[si]?.equity ?? 10000; const e2 = btPoints[ei]?.equity ?? 10000;
+              return { month: mN[m], return: parseFloat(((e2-s2)/s2*100).toFixed(1)) };
+            });
+            setBacktestData(norm);
+            setBacktestStats({ ...btStats, winCount, lossCount, totalReturn: parseFloat(((finalEqReal-10000)/10000*100).toFixed(1)), monthlyReturns: monthlyEq });
+          } else { throw new Error('No data'); }
         } catch {
-          // Fallback: build from equity only
-          const equityArr: number[] = s.equity.map((e: any) => typeof e === 'object' ? e.value : e);
-          const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-          const rawPoints: BacktestPoint[] = [];
-          for (let m = 0; m < equityArr.length; m++) {
-            const startEq = m === 0 ? 10000 : equityArr[m - 1];
-            const endEq = equityArr[m];
+          const eArr: number[] = s.equity.map((e: any) => typeof e === 'object' ? e.value : e);
+          const mN2 = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+          const rPts: BacktestPoint[] = [];
+          for (let m = 0; m < eArr.length; m++) {
+            const sE = m===0 ? 10000 : eArr[m-1]; const eE = eArr[m];
             for (let d = 0; d < 8; d++) {
-              const base = startEq + (endEq - startEq) * (d / 8);
-              const equity = Math.round(base + base * (Math.random() - 0.48) * 0.01);
-              rawPoints.push({ date: `${monthNames[m % 12]} ${d * 4 + 1}`, price: equity, equity, signal: d === 1 ? 'buy' : d === 6 ? 'sell' : null });
+              const b = sE + (eE-sE)*(d/8); const eq = Math.round(b + b*(Math.random()-0.48)*0.01);
+              rPts.push({ date: mN2[m%12]+' '+(d*4+1), price: eq, equity: eq, signal: d===1?'buy':d===6?'sell':null });
             }
           }
-          const fbStart = rawPoints[0]?.equity || 1;
-          const fbFinal = rawPoints[rawPoints.length-1]?.equity ?? 10000;
-          const fbNorm = rawPoints.map(p => ({
-            ...p,
-            originalPrice:  p.price,
-            originalEquity: p.equity,
-            price:  parseFloat((((p.price  - fbStart) / fbStart) * 100).toFixed(2)),
-            equity: parseFloat((((p.equity - fbStart) / fbStart) * 100).toFixed(2)),
-          }));
-          setBacktestData(fbNorm);
-          setBacktestStats({ totalTrades: equityArr.length, winRate: s.winRate, avgWin: s.avgReturn, avgLoss: s.maxDrawdown, totalReturn: parseFloat(((fbFinal - 10000) / 10000 * 100).toFixed(1)), maxDrawdown: s.maxDrawdown });
+          const fbS = rPts[0]?.equity||1; const fbF = rPts[rPts.length-1]?.equity??10000;
+          const fbN = rPts.map(p => ({ ...p, originalPrice:p.price, originalEquity:p.equity, price:parseFloat((((p.price-fbS)/fbS)*100).toFixed(2)), equity:parseFloat((((p.equity-fbS)/fbS)*100).toFixed(2)) }));
+          const fbT = eArr.length; const fbW = Math.round(fbT*(s.winRate/100));
+          const fbMo = eArr.map((eq,i) => { const prev=i===0?10000:eArr[i-1]; return { month:mN2[i%12], return:parseFloat(((eq-prev)/prev*100).toFixed(1)) }; });
+          setBacktestData(fbN);
+          setBacktestStats({ totalTrades:fbT, winCount:fbW, lossCount:fbT-fbW, winRate:s.winRate, avgWin:s.avgReturn, avgLoss:s.maxDrawdown, totalReturn:parseFloat(((fbF-10000)/10000*100).toFixed(1)), maxDrawdown:s.maxDrawdown, monthlyReturns:fbMo });
         }
         setBacktestLoading(false);
       } catch (err) {
