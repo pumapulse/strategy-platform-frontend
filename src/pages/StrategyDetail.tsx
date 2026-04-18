@@ -306,6 +306,8 @@ const StrategyDetail = () => {
           const startEquity0 = points[0]?.equity || 1;
           const normalizedPoints = points.map(p => ({
             ...p,
+            originalPrice:  p.price,
+            originalEquity: p.equity,
             price:  parseFloat((((p.price  - startPrice0)  / startPrice0)  * 100).toFixed(2)),
             equity: parseFloat((((p.equity - startEquity0) / startEquity0) * 100).toFixed(2)),
           }));
@@ -340,6 +342,8 @@ const StrategyDetail = () => {
           const fbFinal = rawPoints[rawPoints.length-1]?.equity ?? 10000;
           const fbNorm = rawPoints.map(p => ({
             ...p,
+            originalPrice:  p.price,
+            originalEquity: p.equity,
             price:  parseFloat((((p.price  - fbStart) / fbStart) * 100).toFixed(2)),
             equity: parseFloat((((p.equity - fbStart) / fbStart) * 100).toFixed(2)),
           }));
@@ -562,8 +566,8 @@ const StrategyDetail = () => {
           ) : backtestData.length > 0 ? (
             <>
               <div className="flex items-center gap-6 mb-4 p-3 rounded-xl bg-white/[0.03] border border-white/[0.05] flex-wrap">
-                <span className="flex items-center gap-2 text-xs text-white/50"><span className="w-3 h-3 rounded-full bg-blue-400 inline-block" />Real Price (% change)</span>
-                <span className="flex items-center gap-2 text-xs text-white/50"><span className="w-3 h-3 rounded-full bg-emerald-400 inline-block" />Portfolio (% change)</span>
+                <span className="flex items-center gap-2 text-xs text-white/50"><span className="w-3 h-3 rounded-full bg-blue-400 inline-block" />Real Price</span>
+                <span className="flex items-center gap-2 text-xs text-white/50"><span className="w-3 h-3 rounded-full bg-emerald-400 inline-block" />Portfolio Equity</span>
                 <span className="flex items-center gap-2 text-xs text-white/50"><TrendingUp className="w-3 h-3 text-emerald-400" />Buy Signal</span>
                 <span className="flex items-center gap-2 text-xs text-white/50"><TrendingDown className="w-3 h-3 text-red-400" />Sell Signal</span>
               </div>
