@@ -297,26 +297,6 @@ const StrategyDetail = () => {
           setBacktestStats({ totalTrades:fbT, winCount:fbW, lossCount:fbT-fbW, winRate:s.winRate, avgWin:s.avgReturn, avgLoss:s.maxDrawdown, totalReturn:parseFloat(((fbF-10000)/10000*100).toFixed(1)), maxDrawdown:s.maxDrawdown, monthlyReturns:fbMo });
         }
         setBacktestLoading(false);
-        } catch {
-          // Fallback: equity only
-          const eArr: number[] = s.equity.map((e: any) => typeof e === 'object' ? e.value : e);
-          const mN2 = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-          const rPts: BacktestPoint[] = [];
-          for (let m = 0; m < eArr.length; m++) {
-            const sE = m===0?10000:eArr[m-1]; const eE = eArr[m];
-            for (let d = 0; d < 8; d++) {
-              const b = sE+(eE-sE)*(d/8); const eq = Math.round(b+b*(Math.random()-0.48)*0.01);
-              rPts.push({ date: mN2[m%12]+' '+(d*4+1), price: eq, equity: eq, signal: d===1?'buy':d===6?'sell':null });
-            }
-          }
-          const fbS = rPts[0]?.equity||1; const fbF = rPts[rPts.length-1]?.equity??10000;
-          const fbN = rPts.map(p => ({ ...p, originalPrice:p.price, originalEquity:p.equity, price:parseFloat((((p.price-fbS)/fbS)*100).toFixed(2)), equity:parseFloat((((p.equity-fbS)/fbS)*100).toFixed(2)) }));
-          const fbT = eArr.length; const fbW = Math.round(fbT*(s.winRate/100));
-          const fbMo = eArr.map((eq,i) => { const prev=i===0?10000:eArr[i-1]; return { month:mN2[i%12], return:parseFloat(((eq-prev)/prev*100).toFixed(1)) }; });
-          setBacktestData(fbN);
-          setBacktestStats({ totalTrades:fbT, winCount:fbW, lossCount:fbT-fbW, winRate:s.winRate, avgWin:s.avgReturn, avgLoss:s.maxDrawdown, totalReturn:parseFloat(((fbF-10000)/10000*100).toFixed(1)), maxDrawdown:s.maxDrawdown, monthlyReturns:fbMo });
-        }
-        setBacktestLoading(false);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load strategy');
       } finally {
