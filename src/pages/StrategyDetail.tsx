@@ -572,7 +572,7 @@ const StrategyDetail = () => {
                 equity: { label: "Portfolio", color: "#10b981" }
               }} className="h-[500px]">
                 <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={backtestData.map(d => ({ ...d, priceChg: backtestData[0]?.price ? parseFloat((((d.price - backtestData[0].price) / backtestData[0].price) * 100).toFixed(2)) : 0, equityChg: backtestData[0]?.equity ? parseFloat((((d.equity - backtestData[0].equity) / backtestData[0].equity) * 100).toFixed(2)) : 0 }))} margin={{ top: 20, right: 60, left: 20, bottom: 5 }}>
+                  <LineChart data={backtestData} margin={{ top: 20, right: 20, left: 20, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
                     <XAxis dataKey="date" stroke="rgba(255,255,255,0.2)" fontSize={11} tickLine={false} interval={Math.floor(backtestData.length / 8)} />
                     <YAxis stroke="rgba(255,255,255,0.2)" fontSize={11} tickLine={false} tickFormatter={(v) => `${Number(v) > 0 ? "+" : ""}${Number(v).toFixed(0)}%`} />
