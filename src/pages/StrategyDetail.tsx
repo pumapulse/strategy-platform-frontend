@@ -316,7 +316,8 @@ const StrategyDetail = () => {
           setBacktestData(fbN);
           setBacktestStats({ totalTrades:fbT, winCount:fbW, lossCount:fbT-fbW, winRate:s.winRate, avgWin:s.avgReturn, avgLoss:s.maxDrawdown, totalReturn:parseFloat(((fbF-10000)/10000*100).toFixed(1)), maxDrawdown:s.maxDrawdown, monthlyReturns:fbMo });
         }
-        setBacktestLoading(false);      } catch (err) {
+        setBacktestLoading(false);
+      } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load strategy');
       } finally {
         setLoading(false);
