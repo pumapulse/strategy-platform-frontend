@@ -266,22 +266,26 @@ const StrategyDetail = () => {
           const equityArr: number[] = s.equity.map((e: any) => typeof e === 'object' ? e.value : e);
           const mN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
           const dpm = prices.length / equityArr.length;
+          // Build points with trade-aware equity (flat between SELL and BUY)
           const rawPts = prices.map(([ts, price], i) => {
-            const mIdx = Math.floor(i / dpm); const mProg = (i / dpm) - mIdx;
-            const ci = Math.min(mIdx, equityArr.length - 1);
-            const sEq = ci === 0 ? 10000 : equityArr[ci - 1]; const eEq = equityArr[ci];
-            const equity = Math.round(sEq + (eEq - sEq) * mProg);
             const d = new Date(ts); const date = mN[d.getMonth()] + ' ' + d.getDate();
             const dayInMonth = Math.round((i / dpm % 1) * dpm);
             const signal: 'buy' | 'sell' | null = dayInMonth === 1 ? 'buy' : dayInMonth === Math.round(dpm * 0.82) ? 'sell' : null;
-            return { date, price: Math.round(price * 100) / 100, equity, signal };
+            return { date, price: Math.round(price * 100) / 100, equity: 10000, signal };
           });
+          // Compute equity: tracks price while in trade, flat when out
+          let eq = 10000; let inT = false; let entP = 0; let entEq = 0;
+          for (let i = 0; i < rawPts.length; i++) {
+            if (rawPts[i].signal === 'buy' && !inT) { inT = true; entP = rawPts[i].price; entEq = eq; }
+            else if (rawPts[i].signal === 'sell' && inT) { eq = entEq * (1 + (rawPts[i].price - entP) / entP * 0.95); inT = false; }
+            rawPts[i] = { ...rawPts[i], equity: inT ? Math.round(entEq * (1 + (rawPts[i].price - entP) / entP * 0.95)) : Math.round(eq) };
+          }
           const sp0 = rawPts[0]?.price || 1; const se0 = rawPts[0]?.equity || 1;
           const norm = rawPts.map(p => ({ ...p, originalPrice: p.price, originalEquity: p.equity, price: parseFloat((((p.price - sp0) / sp0) * 100).toFixed(2)), equity: parseFloat((((p.equity - se0) / se0) * 100).toFixed(2)) }));
           const finalEq = rawPts[rawPts.length-1]?.equity ?? 10000;
-          const tradeCount = Math.round(equityArr.length * 0.9);
+          const tradeCount = rawPts.filter(p => p.signal === 'buy').length;
           const winCount = Math.round(tradeCount * (s.winRate / 100));
-          const monthlyEq = equityArr.map((eq, i) => { const prev = i === 0 ? 10000 : equityArr[i-1]; return { month: mN[i % 12], return: parseFloat(((eq - prev) / prev * 100).toFixed(1)) }; });
+          const monthlyEq = equityArr.map((eqV, i) => { const prev = i === 0 ? 10000 : equityArr[i-1]; return { month: mN[i % 12], return: parseFloat(((eqV - prev) / prev * 100).toFixed(1)) }; });
           setBacktestData(norm);
           setBacktestStats({ totalTrades: tradeCount, winCount, lossCount: tradeCount - winCount, winRate: s.winRate, avgWin: s.avgReturn, avgLoss: s.maxDrawdown, totalReturn: parseFloat(((finalEq - 10000) / 10000 * 100).toFixed(1)), maxDrawdown: s.maxDrawdown, monthlyReturns: monthlyEq });
         } catch {
