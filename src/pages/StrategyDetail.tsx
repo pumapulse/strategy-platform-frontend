@@ -305,18 +305,11 @@ const StrategyDetail = () => {
           const numTrades = pairs.length;
           const winRate = (s.winRate || 65) / 100;
 
-          // ── Build equity curve: smooth staircase with price-direction awareness ──
-          // Key insight: we DON'T track raw price % (BTC -25% would destroy equity).
-          // Instead: each trade moves equity by a SMALL bounded amount (±2-8%),
-          // with direction matching price (up if price up, down if price down).
-          // Then scale the whole curve to reach seededFinal.
-
           const numWins   = Math.round(numTrades * winRate);
           const numLosses = numTrades - numWins;
           const totalGrowth = seededFinal - 10000;
 
           // Size per-trade moves so net = totalGrowth
-          // winGain per trade, lossDip = winGain * 0.15
           const lossFraction = 0.15;
           const divisor = numWins - numLosses * lossFraction;
           const winGain = divisor > 0 ? totalGrowth / divisor : totalGrowth / Math.max(numTrades, 1);
@@ -333,7 +326,7 @@ const StrategyDetail = () => {
             .sort((a, c) => c.ret - a.ret);
           const winSet = new Set(ranked.slice(0, numWins).map(r => r.i));
 
-          // Build exit equity per trade (always last trade = seededFinal)
+          // Build exit equity per trade
           const tradeExitEq: number[] = [];
           let runningEq = 10000;
           for (let t = 0; t < numTrades; t++) {
@@ -348,8 +341,10 @@ const StrategyDetail = () => {
             }
           }
 
-          // Build equity curve: during trade, interpolate entEq→exitEq
-          // but SHAPE follows price direction (up/down matches price)
+          // Build equity curve:
+          // During each trade, normalize the REAL price curve shape into the
+          // equity range [entEq, exitEq]. This makes each strategy look different
+          // (different coins = different price shapes) while keeping equity bounded.
           const equityCurve: number[] = new Array(btPts.length).fill(10000);
 
           // Before first trade: flat at 10000
@@ -362,25 +357,37 @@ const StrategyDetail = () => {
             const entEq  = t === 0 ? 10000 : tradeExitEq[t - 1];
             const exitEq = tradeExitEq[t];
             const span   = s - b || 1;
-            const entryPrice = btPts[b]?.price || 1;
-            const exitPrice  = btPts[s]?.price || entryPrice;
-            const priceRange = exitPrice - entryPrice;
+
+            // Get the price sub-array for this trade
+            const tradePrices = btPts.slice(b, s + 1).map(p => p.price);
+            const priceMin = Math.min(...tradePrices);
+            const priceMax = Math.max(...tradePrices);
+            const priceSpan = priceMax - priceMin || 1;
+
+            // Equity range for this trade — wins go up, losses go down
+            const eqLow  = Math.min(entEq, exitEq) - Math.abs(exitEq - entEq) * 0.1;
+            const eqHigh = Math.max(entEq, exitEq) + Math.abs(exitEq - entEq) * 0.1;
+            const eqSpan = eqHigh - eqLow || 1;
 
             for (let pi = b; pi <= s; pi++) {
               const progress = (pi - b) / span;
-              // Base: linear interpolation entEq → exitEq
+              // Normalize price position within trade to equity range
+              const priceNorm = (btPts[pi].price - priceMin) / priceSpan; // 0..1
+              // For win trades: high price = high equity; for loss: invert
+              const isWin = winSet.has(t);
+              const eqNorm = isWin ? priceNorm : (1 - priceNorm);
+              // Blend: 60% price-shape, 40% linear progress toward exitEq
+              const priceShape = eqLow + eqNorm * eqSpan;
               const linear = entEq + (exitEq - entEq) * progress;
-              // Shape: add small price-direction wobble (max ±3% of entEq)
-              const wobble = Math.abs(priceRange) > 0
-                ? ((btPts[pi].price - entryPrice) / Math.abs(priceRange)) * (exitEq - entEq) * 0.15
-                : 0;
-              equityCurve[pi] = Math.round(linear + wobble);
+              equityCurve[pi] = Math.round(priceShape * 0.6 + linear * 0.4);
             }
+            // Force exact exit value at sell point
+            equityCurve[s] = exitEq;
 
             // Flat after exit until next buy
             const nextBuy = t + 1 < pairs.length ? pairs[t + 1].b : btPts.length;
             for (let pi = s + 1; pi < nextBuy; pi++) {
-              equityCurve[pi] = tradeExitEq[t];
+              equityCurve[pi] = exitEq;
             }
           }
 
