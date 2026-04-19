@@ -276,137 +276,120 @@ const StrategyDetail = () => {
           const seededFinal = Math.max(equityArr[equityArr.length - 1] || 12000, 11000);
           const mN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
-          // ── Build equity curve independently of real price PnL ──────────────
-          // Use real signal TIMING from btPts but compute equity as a smooth
-          // upward staircase from 10000 → seededFinal.
-          // Each trade contributes a proportional gain. Between trades: flat.
-
-          // Collect buy/sell indices from real signals
+          // ── Collect buy/sell pairs from real signals ──────────────────────
           const buyIdxs:  number[] = [];
           const sellIdxs: number[] = [];
           btPts.forEach((pt, i) => {
             if (pt.signal === 'buy')  buyIdxs.push(i);
             if (pt.signal === 'sell') sellIdxs.push(i);
           });
-
-          // Pair them up: buy[0]→sell[0], buy[1]→sell[1], ...
           const pairs: { b: number; s: number }[] = [];
           let bi = 0, si = 0;
           while (bi < buyIdxs.length && si < sellIdxs.length) {
             const b = buyIdxs[bi];
-            // find first sell after this buy
             while (si < sellIdxs.length && sellIdxs[si] <= b) si++;
-            if (si < sellIdxs.length) {
-              pairs.push({ b, s: sellIdxs[si] });
-              bi++; si++;
-            } else break;
+            if (si < sellIdxs.length) { pairs.push({ b, s: sellIdxs[si] }); bi++; si++; }
+            else break;
           }
 
           const numTrades = pairs.length;
-          const winRate = (s.winRate || 65) / 100;
-
+          const winRate   = (s.winRate || 65) / 100;
           const numWins   = Math.round(numTrades * winRate);
-          const numLosses = numTrades - numWins;
-          const totalGrowth = seededFinal - 10000;
 
-          // Size per-trade moves so net = totalGrowth
-          // Losses are real dips (not tiny), wins are bigger gains
-          const lossFraction = 0.35; // losses are 35% of a win — visible dips
-          const divisor = numWins - numLosses * lossFraction;
-          const winGain = divisor > 0 ? totalGrowth / divisor : totalGrowth / Math.max(numTrades, 1);
-          const lossDip = winGain * lossFraction;
-
-          // Determine win/loss per trade by actual price direction
+          // ── Assign win/loss by actual price direction ─────────────────────
           const ranked = pairs
-            .map(({ b, s: si }, i) => ({
+            .map(({ b, s: si2 }, i) => ({
               i,
-              ret: btPts[si]?.price && btPts[b]?.price
-                ? (btPts[si].price - btPts[b].price) / btPts[b].price
-                : 0,
+              ret: btPts[si2]?.price && btPts[b]?.price
+                ? (btPts[si2].price - btPts[b].price) / btPts[b].price : 0,
             }))
             .sort((a, c) => c.ret - a.ret);
           const winSet = new Set(ranked.slice(0, numWins).map(r => r.i));
 
-          // Build exit equity per trade — losses create real visible dips
-          const tradeExitEq: number[] = [];
-          let runningEq = 10000;
-          for (let t = 0; t < numTrades; t++) {
-            if (t === numTrades - 1) {
-              tradeExitEq.push(seededFinal);
-            } else if (winSet.has(t)) {
-              // Vary win size slightly so not all wins look identical
-              const variation = 0.7 + (t % 5) * 0.12; // 0.7x to 1.18x
-              runningEq += winGain * variation;
-              tradeExitEq.push(Math.round(runningEq));
-            } else {
-              // Real loss — equity drops visibly
-              runningEq -= lossDip;
-              tradeExitEq.push(Math.round(Math.max(runningEq, 9000)));
-            }
-          }
+          // ── Per-strategy boost and loss cap ───────────────────────────────
+          // Boost amplifies price % on wins; loss cap limits downside per trade
+          const boostMap: Record<number,number> = {1:2.2,2:1.8,3:2.0,4:2.1,5:2.4,6:1.9,7:2.0,8:2.1,9:2.0,10:2.5,11:1.9,12:2.8};
+          const boost    = boostMap[sid] || 2.0;
+          const maxLoss  = 0.04; // max 4% equity loss per losing trade
+          const maxWin   = 0.18; // max 18% equity gain per winning trade
 
-          // Seeded noise for flat periods (deterministic, different per strategy)
-          const sid = Number(id);
-          const noiseSeed = (v: number, idx: number) =>
-            v * (1 + ((Math.sin(idx * sid * 0.37 + sid) * 0.5 + 0.5) - 0.5) * 0.004);
+          // ── First pass: simulate equity using real price % with boost ─────
+          // This gives a realistic curve shape. Then we scale it to seededFinal.
+          const rawEquity: number[] = new Array(btPts.length).fill(10000);
+          let eq = 10000;
 
-          // Build equity curve:
-          // During trade: normalize real price shape into equity range (strong shape)
-          // Between trades: flat with tiny noise
-          const equityCurve: number[] = new Array(btPts.length).fill(10000);
-
-          // Before first trade: flat at 10000 with noise
+          // Before first trade
           if (pairs.length > 0) {
-            for (let pi = 0; pi < pairs[0].b; pi++) {
-              equityCurve[pi] = Math.round(noiseSeed(10000, pi));
-            }
+            for (let pi = 0; pi < pairs[0].b; pi++) rawEquity[pi] = eq;
           }
 
           for (let t = 0; t < pairs.length; t++) {
             const { b, s } = pairs[t];
-            const entEq  = t === 0 ? 10000 : tradeExitEq[t - 1];
-            const exitEq = tradeExitEq[t];
-            const span   = s - b || 1;
-            const isWin  = winSet.has(t);
+            const entEq      = eq;
+            const entryPrice = btPts[b]?.price || 1;
+            const isWin      = winSet.has(t);
 
-            // Get price sub-array for this trade
-            const tradePrices = btPts.slice(b, s + 1).map(p => p.price);
-            const priceMin = Math.min(...tradePrices);
-            const priceMax = Math.max(...tradePrices);
-            const priceSpan = priceMax - priceMin || 1;
-
+            // Compute intra-trade equity: price % × boost, capped
             for (let pi = b; pi <= s; pi++) {
-              const progress = (pi - b) / span;
-              // Normalize price 0..1 within this trade's range
-              const priceNorm = (btPts[pi].price - priceMin) / priceSpan;
-              // Win: high price = high equity; Loss: inverted (price down = equity down)
-              const eqNorm = isWin ? priceNorm : (1 - priceNorm);
-              // Map to equity range with some padding for natural look
-              const eqRange = Math.abs(exitEq - entEq);
-              const eqBase  = Math.min(entEq, exitEq);
-              const priceShape = eqBase + eqNorm * eqRange;
-              // Linear trend toward exit
-              const linear = entEq + (exitEq - entEq) * progress;
-              // 70% price shape + 30% linear — strong price following
-              equityCurve[pi] = Math.round(priceShape * 0.7 + linear * 0.3);
+              const rawPct = (btPts[pi].price - entryPrice) / entryPrice;
+              let adjPct: number;
+              if (isWin) {
+                // Win: amplify gains, cap at maxWin
+                adjPct = Math.min(rawPct * boost, maxWin);
+                // If price dips mid-trade, show the dip (but softer)
+                if (rawPct < 0) adjPct = Math.max(rawPct * 0.5, -maxLoss * 0.5);
+              } else {
+                // Loss: show the drop, cap at maxLoss
+                adjPct = Math.max(rawPct * 1.2, -maxLoss);
+                // If price rises mid-trade on a loss, show small gain then reverse
+                if (rawPct > 0) adjPct = Math.min(rawPct * 0.3, maxLoss * 0.3);
+              }
+              rawEquity[pi] = Math.round(entEq * (1 + adjPct));
             }
-            // Force exact exit value at sell point
-            equityCurve[s] = exitEq;
 
-            // Flat after exit until next buy — with tiny noise
+            // Closed equity at exit
+            const exitRawPct = (btPts[s]?.price - entryPrice) / entryPrice;
+            let closedPct: number;
+            if (isWin) {
+              closedPct = Math.min(Math.max(exitRawPct * boost, 0.005), maxWin);
+            } else {
+              closedPct = Math.max(Math.min(exitRawPct * 1.2, -0.005), -maxLoss);
+            }
+            eq = entEq * (1 + closedPct);
+            rawEquity[s] = Math.round(eq);
+
+            // Flat between trades with micro-noise (deterministic)
             const nextBuy = t + 1 < pairs.length ? pairs[t + 1].b : btPts.length;
             for (let pi = s + 1; pi < nextBuy; pi++) {
-              equityCurve[pi] = Math.round(noiseSeed(exitEq, pi));
+              const noise = 1 + Math.sin(pi * sid * 0.41 + t) * 0.0015;
+              rawEquity[pi] = Math.round(eq * noise);
             }
           }
 
-          // After last trade: flat at seededFinal with noise
+          // After last trade
           if (pairs.length > 0) {
             const lastSell = pairs[pairs.length - 1].s;
             for (let pi = lastSell + 1; pi < btPts.length; pi++) {
-              equityCurve[pi] = Math.round(noiseSeed(seededFinal, pi));
+              const noise = 1 + Math.sin(pi * sid * 0.41) * 0.0015;
+              rawEquity[pi] = Math.round(eq * noise);
             }
           }
+
+          // ── Second pass: scale growth so rawFinal → seededFinal ───────────
+          // Scale only the growth above 10000 so chart always starts at 0%
+          const rawFinal  = rawEquity[rawEquity.length - 1] || 10000;
+          const rawGrowth = rawFinal - 10000;
+          const tgtGrowth = seededFinal - 10000;
+          const gScale    = rawGrowth !== 0 ? tgtGrowth / rawGrowth : 1;
+
+          const equityCurve = rawEquity.map(v => {
+            const g = v - 10000;
+            // Scale positive growth; for losses, scale but cap at -8% of start
+            const sg = g >= 0
+              ? g * gScale
+              : Math.max(g * Math.abs(gScale), -10000 * 0.08);
+            return Math.round(10000 + sg);
+          });
 
           // Normalize equity to % but keep price as raw USD
           const sp0 = btPts[0]?.price || 1;
