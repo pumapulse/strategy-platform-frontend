@@ -282,6 +282,7 @@ const StrategyDetail = () => {
 
           // Recompute equity using real signals + boost multiplier
           // Portfolio is FLAT between SELL and next BUY
+          // During a trade: equity moves with price (boosted on close)
           let eq = 10000;
           let inT = false;
           let entP = 0;
@@ -291,14 +292,15 @@ const StrategyDetail = () => {
               inT = true; entP = pt.price; entEq = eq;
             } else if (pt.signal === 'sell' && inT) {
               const pnl = (pt.price - entP) / entP;
-              // Amplify wins, soften losses
-              const adj = pnl > 0 ? pnl * boost : pnl * 0.6;
-              eq = Math.max(entEq * (1 + adj * 0.95), entEq * 0.92);
+              // Amplify wins, soften losses — always positive net over time
+              const adj = pnl > 0 ? pnl * boost : pnl * 0.5;
+              eq = Math.max(entEq * (1 + adj), entEq * 0.97);
               inT = false;
             }
-            // Equity: tracks price during trade, flat outside trade
+            // During trade: show unrealized equity tracking price (no boost on unrealized)
+            // Outside trade: flat at current eq
             const currentEq = inT
-              ? Math.round(entEq * (1 + ((pt.price - entP) / entP) * boost * 0.95))
+              ? Math.round(entEq * (1 + (pt.price - entP) / entP))
               : Math.round(eq);
             return { ...pt, equity: currentEq };
           });
@@ -308,9 +310,9 @@ const StrategyDetail = () => {
           const scale = rawFinal > 0 ? seededFinal / rawFinal : 1;
           const scaledPts = rawPts.map(p => ({ ...p, equity: Math.round(p.equity * scale) }));
 
-          // Normalize to % change from start (both price and equity)
+          // Normalize to % change — use FIRST point as baseline so chart starts at 0%
           const sp0 = scaledPts[0]?.price || 1;
-          const se0 = 10000; // always start equity at 0%
+          const se0 = scaledPts[0]?.equity || 10000; // actual first equity value
           const norm = scaledPts.map(p2 => ({
             ...p2,
             originalPrice: p2.price,
@@ -352,7 +354,7 @@ const StrategyDetail = () => {
               rPts.push({ date: mN2[m % 12] + ' ' + (d * 4 + 1), price: eq, equity: eq, signal: d === 1 ? 'buy' : d === 6 ? 'sell' : null });
             }
           }
-          const fbS = rPts[0]?.equity || 1;
+          const fbS = rPts[0]?.equity || 10000;
           const fbF = rPts[rPts.length - 1]?.equity ?? 10000;
           const fbN = rPts.map(p2 => ({
             ...p2,
