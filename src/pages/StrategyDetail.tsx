@@ -395,11 +395,16 @@ const StrategyDetail = () => {
           });
 
           setBacktestData(norm);
+          // Use seeded winRate to compute winCount so all numbers are consistent:
+          // winCount/totalTrades * 100 = winRate (rounded to match)
+          const displayWinRate = s.winRate; // e.g. 55
+          const winCount = Math.round(numTrades * displayWinRate / 100);
+          const lossCount = numTrades - winCount;
           setBacktestStats({
             totalTrades: numTrades,
-            winCount:    Math.round(numTrades * winRate),
-            lossCount:   numTrades - Math.round(numTrades * winRate),
-            winRate:     s.winRate,
+            winCount,
+            lossCount,
+            winRate:     displayWinRate,
             avgWin:      s.avgReturn,
             avgLoss:     s.maxDrawdown,
             totalReturn: parseFloat(((seededFinal - 10000) / 10000 * 100).toFixed(1)),
@@ -760,9 +765,12 @@ const StrategyDetail = () => {
                   ? [{ type: 'Win', count: backtestStats.winCount }, { type: 'Loss', count: backtestStats.lossCount }]
                   : (strategy.trades || []);
                 const total = trades.reduce((s: number, t: any) => s + (t.count || 0), 0);
+                // Use seeded winRate for percentage display so it matches the Win Rate box
+                const seededWinRate = backtestStats?.winRate || strategy.winRate || 50;
                 return trades.map((trade: any, index: number) => {
-                  const percentage = total > 0 ? (trade.count / total) * 100 : 0;
                   const isWin = trade.type === 'Win';
+                  // Win bar = seededWinRate%, Loss bar = (100 - seededWinRate)%
+                  const percentage = isWin ? seededWinRate : (100 - seededWinRate);
                   return (
                     <div key={index} className="space-y-2">
                       <div className="flex items-center justify-between">
