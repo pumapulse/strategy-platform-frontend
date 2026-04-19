@@ -397,12 +397,11 @@ const StrategyDetail = () => {
             equity: parseFloat(((equityCurve[pi] - 10000) / 10000 * 100).toFixed(2)),
           }));
 
-          // ── Compute monthly returns from the ACTUAL equity curve ───────────
-          // Group equity curve points by calendar month, compute month-over-month return
-          // This makes each strategy's monthly chart unique (driven by real price data)
+          // ── Compute all stats from the ACTUAL equity curve ────────────────
+
+          // Monthly returns: group by calendar month
           const monthlyMap: Record<string, { start: number; end: number }> = {};
           btPts.forEach((pt, pi) => {
-            // Extract month label from date string (e.g. "Apr 20" → "Apr")
             const monthLabel = pt.date.split(' ')[0];
             if (!monthlyMap[monthLabel]) {
               monthlyMap[monthLabel] = { start: equityCurve[pi], end: equityCurve[pi] };
@@ -410,32 +409,55 @@ const StrategyDetail = () => {
               monthlyMap[monthLabel].end = equityCurve[pi];
             }
           });
-
-          // Build ordered monthly returns (preserve calendar order)
           const monthOrder = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
           const monthlyEq = monthOrder
             .filter(m => monthlyMap[m])
             .map(m => {
               const { start, end } = monthlyMap[m];
-              const ret = start > 0 ? parseFloat(((end - start) / start * 100).toFixed(1)) : 0;
-              return { month: m, return: ret };
+              return { month: m, return: start > 0 ? parseFloat(((end - start) / start * 100).toFixed(1)) : 0 };
             });
 
+          // Win/loss counts from exitEqArr vs entEq
+          const actualWins   = exitEqArr.filter((eq, t) => {
+            const entEq = t === 0 ? 10000 : exitEqArr[t - 1];
+            return eq > entEq;
+          }).length;
+          const actualLosses = numTrades - actualWins;
+          const actualWinRate = numTrades > 0 ? Math.round((actualWins / numTrades) * 100) : 0;
+
+          // Total return from actual final equity
+          const actualFinal  = equityCurve[equityCurve.length - 1] ?? 10000;
+          const actualReturn = parseFloat(((actualFinal - 10000) / 10000 * 100).toFixed(1));
+
+          // Max drawdown from equity curve
+          let peak = 10000, maxDD = 0;
+          equityCurve.forEach(v => {
+            if (v > peak) peak = v;
+            const dd = (peak - v) / peak * 100;
+            if (dd > maxDD) maxDD = dd;
+          });
+
+          // Avg win/loss % from trade exits
+          const winPcts: number[]  = [];
+          const lossPcts: number[] = [];
+          exitEqArr.forEach((eq, t) => {
+            const entEq = t === 0 ? 10000 : exitEqArr[t - 1];
+            const pct = (eq - entEq) / entEq * 100;
+            if (pct > 0) winPcts.push(pct); else lossPcts.push(Math.abs(pct));
+          });
+          const avgWin  = winPcts.length  > 0 ? parseFloat((winPcts.reduce((a,b)=>a+b,0)  / winPcts.length).toFixed(1))  : 0;
+          const avgLoss = lossPcts.length > 0 ? parseFloat((lossPcts.reduce((a,b)=>a+b,0) / lossPcts.length).toFixed(1)) : 0;
+
           setBacktestData(norm);
-          // Use seeded winRate to compute winCount so all numbers are consistent:
-          // winCount/totalTrades * 100 = winRate (rounded to match)
-          const displayWinRate = s.winRate; // e.g. 55
-          const winCount = Math.round(numTrades * displayWinRate / 100);
-          const lossCount = numTrades - winCount;
           setBacktestStats({
             totalTrades: numTrades,
-            winCount,
-            lossCount,
-            winRate:     displayWinRate,
-            avgWin:      s.avgReturn,
-            avgLoss:     s.maxDrawdown,
-            totalReturn: parseFloat(((seededFinal - 10000) / 10000 * 100).toFixed(1)),
-            maxDrawdown: s.maxDrawdown,
+            winCount:    actualWins,
+            lossCount:   actualLosses,
+            winRate:     actualWinRate,
+            avgWin,
+            avgLoss,
+            totalReturn: actualReturn,
+            maxDrawdown: parseFloat(maxDD.toFixed(1)),
             monthlyReturns: monthlyEq,
           });
         } catch {
@@ -659,7 +681,7 @@ const StrategyDetail = () => {
                 <BarChart2 className="w-4 h-4 text-emerald-400" />
                 <p className="text-white font-bold text-base">Backtesting Results � 12 Month Performance</p>
               </div>
-              <p className="text-white/30 text-xs">Historical strategy performance � {backtestStats ? `${backtestStats.totalTrades} trades � ${strategy.winRate}% win rate` : 'Loading...'}</p>
+              <p className="text-white/30 text-xs">Historical strategy performance � {backtestStats ? `${backtestStats.totalTrades} trades � ${backtestStats.winRate}% win rate` : 'Loading...'}</p>
             </div>
             {backtestData.length > 0 && backtestStats && (
               <div className="flex gap-6">
