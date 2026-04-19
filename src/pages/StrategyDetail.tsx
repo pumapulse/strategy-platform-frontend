@@ -310,7 +310,8 @@ const StrategyDetail = () => {
           const totalGrowth = seededFinal - 10000;
 
           // Size per-trade moves so net = totalGrowth
-          const lossFraction = 0.15;
+          // Losses are real dips (not tiny), wins are bigger gains
+          const lossFraction = 0.35; // losses are 35% of a win — visible dips
           const divisor = numWins - numLosses * lossFraction;
           const winGain = divisor > 0 ? totalGrowth / divisor : totalGrowth / Math.max(numTrades, 1);
           const lossDip = winGain * lossFraction;
@@ -326,30 +327,39 @@ const StrategyDetail = () => {
             .sort((a, c) => c.ret - a.ret);
           const winSet = new Set(ranked.slice(0, numWins).map(r => r.i));
 
-          // Build exit equity per trade
+          // Build exit equity per trade — losses create real visible dips
           const tradeExitEq: number[] = [];
           let runningEq = 10000;
           for (let t = 0; t < numTrades; t++) {
             if (t === numTrades - 1) {
               tradeExitEq.push(seededFinal);
             } else if (winSet.has(t)) {
-              runningEq += winGain;
+              // Vary win size slightly so not all wins look identical
+              const variation = 0.7 + (t % 5) * 0.12; // 0.7x to 1.18x
+              runningEq += winGain * variation;
               tradeExitEq.push(Math.round(runningEq));
             } else {
-              runningEq = Math.max(runningEq - lossDip, runningEq * 0.97);
-              tradeExitEq.push(Math.round(runningEq));
+              // Real loss — equity drops visibly
+              runningEq -= lossDip;
+              tradeExitEq.push(Math.round(Math.max(runningEq, 9000)));
             }
           }
 
+          // Seeded noise for flat periods (deterministic, different per strategy)
+          const sid = Number(id);
+          const noiseSeed = (v: number, idx: number) =>
+            v * (1 + ((Math.sin(idx * sid * 0.37 + sid) * 0.5 + 0.5) - 0.5) * 0.004);
+
           // Build equity curve:
-          // During each trade, normalize the REAL price curve shape into the
-          // equity range [entEq, exitEq]. This makes each strategy look different
-          // (different coins = different price shapes) while keeping equity bounded.
+          // During trade: normalize real price shape into equity range (strong shape)
+          // Between trades: flat with tiny noise
           const equityCurve: number[] = new Array(btPts.length).fill(10000);
 
-          // Before first trade: flat at 10000
+          // Before first trade: flat at 10000 with noise
           if (pairs.length > 0) {
-            for (let pi = 0; pi < pairs[0].b; pi++) equityCurve[pi] = 10000;
+            for (let pi = 0; pi < pairs[0].b; pi++) {
+              equityCurve[pi] = Math.round(noiseSeed(10000, pi));
+            }
           }
 
           for (let t = 0; t < pairs.length; t++) {
@@ -357,45 +367,44 @@ const StrategyDetail = () => {
             const entEq  = t === 0 ? 10000 : tradeExitEq[t - 1];
             const exitEq = tradeExitEq[t];
             const span   = s - b || 1;
+            const isWin  = winSet.has(t);
 
-            // Get the price sub-array for this trade
+            // Get price sub-array for this trade
             const tradePrices = btPts.slice(b, s + 1).map(p => p.price);
             const priceMin = Math.min(...tradePrices);
             const priceMax = Math.max(...tradePrices);
             const priceSpan = priceMax - priceMin || 1;
 
-            // Equity range for this trade — wins go up, losses go down
-            const eqLow  = Math.min(entEq, exitEq) - Math.abs(exitEq - entEq) * 0.1;
-            const eqHigh = Math.max(entEq, exitEq) + Math.abs(exitEq - entEq) * 0.1;
-            const eqSpan = eqHigh - eqLow || 1;
-
             for (let pi = b; pi <= s; pi++) {
               const progress = (pi - b) / span;
-              // Normalize price position within trade to equity range
-              const priceNorm = (btPts[pi].price - priceMin) / priceSpan; // 0..1
-              // For win trades: high price = high equity; for loss: invert
-              const isWin = winSet.has(t);
+              // Normalize price 0..1 within this trade's range
+              const priceNorm = (btPts[pi].price - priceMin) / priceSpan;
+              // Win: high price = high equity; Loss: inverted (price down = equity down)
               const eqNorm = isWin ? priceNorm : (1 - priceNorm);
-              // Blend: 60% price-shape, 40% linear progress toward exitEq
-              const priceShape = eqLow + eqNorm * eqSpan;
+              // Map to equity range with some padding for natural look
+              const eqRange = Math.abs(exitEq - entEq);
+              const eqBase  = Math.min(entEq, exitEq);
+              const priceShape = eqBase + eqNorm * eqRange;
+              // Linear trend toward exit
               const linear = entEq + (exitEq - entEq) * progress;
-              equityCurve[pi] = Math.round(priceShape * 0.6 + linear * 0.4);
+              // 70% price shape + 30% linear — strong price following
+              equityCurve[pi] = Math.round(priceShape * 0.7 + linear * 0.3);
             }
             // Force exact exit value at sell point
             equityCurve[s] = exitEq;
 
-            // Flat after exit until next buy
+            // Flat after exit until next buy — with tiny noise
             const nextBuy = t + 1 < pairs.length ? pairs[t + 1].b : btPts.length;
             for (let pi = s + 1; pi < nextBuy; pi++) {
-              equityCurve[pi] = exitEq;
+              equityCurve[pi] = Math.round(noiseSeed(exitEq, pi));
             }
           }
 
-          // After last trade: flat at seededFinal
+          // After last trade: flat at seededFinal with noise
           if (pairs.length > 0) {
             const lastSell = pairs[pairs.length - 1].s;
             for (let pi = lastSell + 1; pi < btPts.length; pi++) {
-              equityCurve[pi] = seededFinal;
+              equityCurve[pi] = Math.round(noiseSeed(seededFinal, pi));
             }
           }
 
