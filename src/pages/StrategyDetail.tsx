@@ -375,20 +375,16 @@ const StrategyDetail = () => {
             }
           }
 
-          // ── Second pass: scale growth so rawFinal → seededFinal ───────────
-          // Scale only the growth above 10000 so chart always starts at 0%
-          const rawFinal  = rawEquity[rawEquity.length - 1] || 10000;
-          const rawGrowth = rawFinal - 10000;
-          const tgtGrowth = seededFinal - 10000;
-          const gScale    = rawGrowth !== 0 ? tgtGrowth / rawGrowth : 1;
+          // ── Second pass: remap entire curve so rawFinal → seededFinal ──────
+          // Linear remap: rawEquity[i] maps from [10000..rawFinal] → [10000..seededFinal]
+          // This preserves the exact shape (dips, peaks, flat periods) without distortion.
+          const rawFinal = rawEquity[rawEquity.length - 1] || 10000;
 
           const equityCurve = rawEquity.map(v => {
-            const g = v - 10000;
-            // Scale positive growth; for losses, scale but cap at -8% of start
-            const sg = g >= 0
-              ? g * gScale
-              : Math.max(g * Math.abs(gScale), -10000 * 0.08);
-            return Math.round(10000 + sg);
+            if (rawFinal === 10000) return v; // no growth, keep as-is
+            // Remap: 10000 stays 10000, rawFinal becomes seededFinal, everything scales proportionally
+            const t2 = (v - 10000) / (rawFinal - 10000);
+            return Math.round(10000 + t2 * (seededFinal - 10000));
           });
 
           // Normalize equity to % but keep price as raw USD
