@@ -346,22 +346,27 @@ const StrategyDetail = () => {
             }
           }
 
-          // Scale so the final equity matches seededFinal
+          // Scale only the GROWTH above 10000 so the curve starts at exactly 10000
+          // and ends at seededFinal. This prevents the +xx% start bug.
           const rawFinal = rawEquity[rawEquity.length - 1] || 10000;
-          const scale = rawFinal > 0 ? seededFinal / rawFinal : 1;
-          const scaledEquity = rawEquity.map(v => Math.round(v * scale));
+          const rawGrowth = rawFinal - 10000;
+          const targetGrowth = seededFinal - 10000;
+          const growthScale = rawGrowth > 0 ? targetGrowth / rawGrowth : 1;
+          const scaledEquity = rawEquity.map(v => {
+            const growth = v - 10000;
+            return Math.round(10000 + growth * growthScale);
+          });
 
           const scaledPts = btPts.map((pt, pi) => ({ ...pt, equity: scaledEquity[pi] }));
 
-          // Normalize to % — both lines start at 0%
+          // Normalize to % — equity always starts at 0% (10000 → 0%)
           const sp0 = scaledPts[0]?.price || 1;
-          const se0 = 10000; // equity always starts at $10k = 0%
           const norm = scaledPts.map(p2 => ({
             ...p2,
             originalPrice: p2.price,
             originalEquity: p2.equity,
-            price:  parseFloat((((p2.price  - sp0) / sp0)   * 100).toFixed(2)),
-            equity: parseFloat((((p2.equity - se0) / se0)   * 100).toFixed(2)),
+            price:  parseFloat((((p2.price  - sp0) / sp0) * 100).toFixed(2)),
+            equity: parseFloat(((p2.equity - 10000) / 10000 * 100).toFixed(2)),
           }));
 
           const tradeCount = closedTrades.length;
