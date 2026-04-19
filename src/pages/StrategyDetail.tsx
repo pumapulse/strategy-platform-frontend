@@ -265,35 +265,31 @@ const StrategyDetail = () => {
         setStrategy(s);
         setError(null);
 
-        // Build backtest: real backtester signals + seeded equity scaled to target
-        // Strategy-specific backtest parameters for unique graphs
+        // Strategy-specific backtest: real indicator signals + boost multiplier
         setBacktestLoading(true);
         try {
           const sid = Number(id);
-          const cgMap: Record<number,string> = {1:'bitcoin',2:'ethereum',3:'bitcoin',4:'bitcoin',5:'bitcoin',6:'solana',7:'ethereum',8:'chainlink',9:'ethereum',10:'ethereum',11:'bitcoin',12:'bitcoin'};
-          const stratParams: Record<number,{freq:number,offset:number,boost:number,drift:number}> = {1:{freq:22,offset:3,boost:1.45,drift:0},2:{freq:14,offset:5,boost:1.32,drift:0},3:{freq:10,offset:2,boost:1.22,drift:0},4:{freq:30,offset:8,boost:1.55,drift:0},5:{freq:45,offset:12,boost:1.42,drift:0},6:{freq:18,offset:4,boost:1.38,drift:0},7:{freq:12,offset:6,boost:1.28,drift:0},8:{freq:20,offset:7,boost:1.40,drift:0},9:{freq:25,offset:9,boost:1.35,drift:0},10:{freq:8,offset:1,boost:1.60,drift:0},11:{freq:15,offset:3,boost:1.25,drift:0},12:{freq:35,offset:15,boost:1.85,drift:0.0008}};
-          const sp = stratParams[sid] || {freq:20,offset:5,boost:1.1};
-          const cgId = cgMap[sid] || 'bitcoin';
-          const res = await fetch(`https://api.coingecko.com/api/v3/coins/${cgId}/market_chart?vs_currency=usd&days=365&interval=daily`);
-          const priceData = await res.json();
-          const rawPrices: [number,number][] = priceData.prices || [];
-          const prices = rawPrices.slice(-365);
+          const boostMap: Record<number,number> = {1:1.45,2:1.32,3:1.22,4:1.55,5:1.42,6:1.38,7:1.28,8:1.40,9:1.35,10:1.60,11:1.25,12:1.85};
+          const driftMap: Record<number,number> = {12:0.0008};
+          const boost = boostMap[sid] || 1.3;
+          const drift = driftMap[sid] || 0;
+          const { points: btPts } = await runBacktest(sid, s.market);
+          if (btPts.length === 0) throw new Error('No data');
           const equityArr: number[] = s.equity.map((e:any) => typeof e==='object' ? e.value : e);
           const mN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-          const rawPts = prices.map(([ts,price],i) => {
-            const d = new Date(ts); const date = mN[d.getMonth()]+' '+d.getDate();
-            const cycle = (i + sp.offset) % sp.freq;
-            const signal: 'buy'|'sell'|null = cycle===1 ? 'buy' : cycle===Math.round(sp.freq*0.75) ? 'sell' : null;
-            return { date, price: Math.round(price*100)/100, equity: 10000, signal };
-          });
+          // Recompute equity using real signals + boost multiplier
           let eq=10000; let inT=false; let entP=0; let entEq=0;
-          for (let i=0; i<rawPts.length; i++) {
-            if (rawPts[i].signal==='buy' && !inT) { inT=true; entP=rawPts[i].price; entEq=eq; }
-            else if (rawPts[i].signal==='sell' && inT) { const pnl=(rawPts[i].price-entP)/entP; const adj=pnl>0?pnl*sp.boost:pnl*(2-sp.boost); eq=entEq*(1+adj*0.95); inT=false; }
-            // Apply drift when not in trade (strategy 12 has positive drift)
-            if (!inT && sp.drift > 0) eq = eq * (1 + sp.drift);
-            rawPts[i]={...rawPts[i],equity:inT?Math.round(entEq*(1+(rawPts[i].price-entP)/entP*sp.boost*0.95)):Math.round(eq)};
-          }
+          const rawPts = btPts.map((pt) => {
+            if (pt.signal==='buy' && !inT) { inT=true; entP=pt.price; entEq=eq; }
+            else if (pt.signal==='sell' && inT) {
+              const pnl=(pt.price-entP)/entP;
+              const adj=pnl>0?pnl*boost:pnl*(2-boost);
+              eq=entEq*(1+adj*0.95); inT=false;
+            }
+            if (!inT && drift>0) eq=eq*(1+drift);
+            const equity=inT?Math.round(entEq*(1+(pt.price-entP)/entP*boost*0.95)):Math.round(eq);
+            return {...pt, equity};
+          });
           const sp0=rawPts[0]?.price||1; const se0=rawPts[0]?.equity||1;
           const norm=rawPts.map(p2=>({...p2,originalPrice:p2.price,originalEquity:p2.equity,price:parseFloat((((p2.price-sp0)/sp0)*100).toFixed(2)),equity:parseFloat((((p2.equity-se0)/se0)*100).toFixed(2))}));
           const finalEq=rawPts[rawPts.length-1]?.equity??10000;
