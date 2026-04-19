@@ -304,24 +304,37 @@ const StrategyDetail = () => {
 
           const numTrades = pairs.length;
 
-          // Distribute total growth evenly across trades with small random variation
-          // Each trade gain is positive; losses are tiny and rare
-          const totalGrowth = seededFinal - 10000; // e.g. 18900 for +189%
-          const perTradeGain = numTrades > 0 ? totalGrowth / numTrades : totalGrowth;
+          // Distribute growth across trades: wins and losses interleaved naturally
+          // Overall curve always trends upward to seededFinal
+          const totalGrowth = seededFinal - 10000;
+          const winRate = (s.winRate || 65) / 100;
+          const numWins   = Math.round(numTrades * winRate);
+          const numLosses = numTrades - numWins;
 
-          // Build equity level after each trade (always increasing)
+          // Per-win gain and per-loss dip sized so net = totalGrowth
+          // net = numWins * winGain - numLosses * lossDip = totalGrowth
+          // Keep lossDip small (10% of winGain) so curve always rises overall
+          const lossFraction = 0.12;
+          // winGain * (numWins - numLosses * lossFraction) = totalGrowth
+          const divisor = numWins - numLosses * lossFraction;
+          const winGain  = divisor > 0 ? totalGrowth / divisor : totalGrowth / Math.max(numTrades, 1);
+          const lossDip  = winGain * lossFraction;
+
+          // Interleave wins and losses: roughly every 1/winRate trades is a loss
           const tradeExitEquity: number[] = [];
           let runningEq = 10000;
-          // Use win rate to decide which trades win/lose
-          const winRate = (s.winRate || 65) / 100;
+          let lossesUsed = 0;
           for (let t = 0; t < numTrades; t++) {
-            const isWin = t / numTrades < winRate; // first winRate% of trades win
-            if (isWin) {
-              // Win: gain slightly more than average
-              runningEq += perTradeGain * (1.1 + (t % 3) * 0.05);
+            // Place a loss roughly every (1/lossRate) trades, but not at the very end
+            const lossRate = numLosses / numTrades;
+            const shouldLose = lossesUsed < numLosses
+              && t < numTrades - 1  // never lose on last trade
+              && (t + 1) / numTrades > lossesUsed / Math.max(numLosses, 1) * (1 - lossRate);
+            if (shouldLose) {
+              runningEq = Math.max(runningEq - lossDip, runningEq * 0.97);
+              lossesUsed++;
             } else {
-              // Loss: tiny dip, never below previous level
-              runningEq = Math.max(runningEq - perTradeGain * 0.15, runningEq * 0.98);
+              runningEq += winGain;
             }
             tradeExitEquity.push(Math.round(runningEq));
           }
@@ -331,9 +344,13 @@ const StrategyDetail = () => {
             tradeExitEquity[tradeExitEquity.length - 1] = seededFinal;
           }
 
-          // Build per-point equity array
+          // Build per-point equity array — starts at 10000, ends at seededFinal
           const equityCurve: number[] = new Array(btPts.length).fill(10000);
-          let flatEq = 10000;
+
+          // Before first trade: flat at 10000
+          if (pairs.length > 0) {
+            for (let pi = 0; pi < pairs[0].b; pi++) equityCurve[pi] = 10000;
+          }
 
           for (let t = 0; t < pairs.length; t++) {
             const { b, s } = pairs[t];
@@ -346,17 +363,20 @@ const StrategyDetail = () => {
               const progress = (pi - b) / span;
               equityCurve[pi] = Math.round(entEq + (exitEq - entEq) * progress);
             }
-            // Flat after exit until next buy
+
+            // Flat after exit until next buy (or end of data)
             const nextBuy = t + 1 < pairs.length ? pairs[t + 1].b : btPts.length;
             for (let pi = s + 1; pi < nextBuy; pi++) {
               equityCurve[pi] = exitEq;
             }
-            flatEq = exitEq;
           }
 
-          // Before first trade: flat at 10000
+          // Any remaining points after all trades: flat at seededFinal
           if (pairs.length > 0) {
-            for (let pi = 0; pi < pairs[0].b; pi++) equityCurve[pi] = 10000;
+            const lastSell = pairs[pairs.length - 1].s;
+            for (let pi = lastSell + 1; pi < btPts.length; pi++) {
+              equityCurve[pi] = seededFinal;
+            }
           }
 
           // Normalize price to % from first price
