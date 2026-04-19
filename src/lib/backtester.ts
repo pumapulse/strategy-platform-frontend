@@ -151,39 +151,55 @@ function seededRand(seed: number): () => number {
 }
 
 // ── Synthetic price generator for Forex / Stocks ──────────────────────────────
-// Produces 365 daily prices with realistic volatility and trend.
+// Produces realistic prices with clear visible swings (zoomed-out friendly).
 function generateSyntheticPrices(
   market: 'forex' | 'stocks',
   strategyId: number
 ): { prices: number[]; dates: string[] } {
   const rand = seededRand(strategyId * 99991);
 
-  // Realistic starting prices and daily volatility
+  // Higher volatility so price swings are clearly visible on chart
+  // Forex: EUR/USD style ~1.05–1.15, with clear multi-week swings
+  // Stocks: NVDA/SPY style ~$380–$580, with clear bull/bear moves
   const cfg = market === 'forex'
-    ? { start: 1.08 + rand() * 0.04, vol: 0.0035, trend: 0.00008 }   // EUR/USD ~1.08-1.12
-    : { start: 420  + rand() * 80,   vol: 0.012,  trend: 0.0004  };  // SPY/NVDA ~420-500
+    ? { start: 1.08 + rand() * 0.03, vol: 0.008, trend: 0.00005 }   // ±0.8%/day → clear swings
+    : { start: 430  + rand() * 60,   vol: 0.022, trend: 0.0003  };  // ±2.2%/day → clear swings
 
   const prices: number[] = [];
   const dates:  string[] = [];
   let price = cfg.start;
 
+  // Add regime changes: bull/bear/sideways phases for visual interest
+  const regimes = [
+    { trend:  cfg.trend * 3,  vol: cfg.vol * 0.8 },  // bull phase
+    { trend: -cfg.trend * 2,  vol: cfg.vol * 1.2 },  // bear phase
+    { trend:  cfg.trend,      vol: cfg.vol * 0.6 },  // sideways
+    { trend:  cfg.trend * 4,  vol: cfg.vol * 1.0 },  // strong bull
+  ];
+
   const now = new Date();
   const start = new Date(now);
   start.setDate(start.getDate() - 365);
 
-  for (let i = 0; i < 366; i++) {
+  let dayCount = 0;
+  for (let i = 0; i < 400 && prices.length < 365; i++) {
     const d = new Date(start);
     d.setDate(start.getDate() + i);
-    // Skip weekends for stocks/forex realism
     if (market === 'stocks' && (d.getDay() === 0 || d.getDay() === 6)) continue;
 
-    // GBM-like daily move
-    const shock = (rand() - 0.5) * 2;  // -1 to +1
-    const move  = cfg.trend + cfg.vol * shock;
-    price = Math.max(price * (1 + move), cfg.start * 0.7);
+    // Switch regime every ~90 days
+    const regime = regimes[Math.floor(dayCount / 90) % regimes.length];
 
-    prices.push(parseFloat(price.toFixed(market === 'forex' ? 5 : 2)));
+    // Box-Muller for more realistic normal distribution
+    const u1 = Math.max(rand(), 1e-10);
+    const u2 = rand();
+    const normal = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+    const move = regime.trend + regime.vol * normal;
+    price = Math.max(price * (1 + move), cfg.start * 0.75);
+
+    prices.push(parseFloat(price.toFixed(market === 'forex' ? 4 : 2)));
     dates.push(`${d.toLocaleString('default', { month: 'short' })} ${d.getDate()}`);
+    dayCount++;
   }
 
   return { prices, dates };

@@ -303,102 +303,74 @@ const StrategyDetail = () => {
           }
 
           const numTrades = pairs.length;
-
-          // Assign win/loss per trade based on ACTUAL price direction
-          // If price went up during trade → win (boosted). If down → loss (softened).
-          // Then scale all exit equities so the final value = seededFinal.
-          const totalGrowth = seededFinal - 10000;
           const winRate = (s.winRate || 65) / 100;
-          const numWins   = Math.round(numTrades * winRate);
-          const numLosses = numTrades - numWins;
 
-          // Determine which trades are wins based on price movement
-          // Sort trades by price return, assign top numWins as wins
-          const tradeReturns = pairs.map(({ b, s: sellIdx }) => ({
-            pricePct: btPts[sellIdx]?.price && btPts[b]?.price
-              ? (btPts[sellIdx].price - btPts[b].price) / btPts[b].price
-              : 0,
-          }));
+          // ── Build equity curve: price-tracking during trades ──────────────
+          // During each trade: equity = entryEq * (1 + pricePct * boost)
+          // This makes portfolio move WITH price — up when price up, down when down.
+          // Boost > 1 amplifies gains on winning trades.
+          // After all trades, scale the whole curve so final = seededFinal.
 
-          // Rank by price return — top numWins are wins
-          const ranked = tradeReturns
-            .map((r, i) => ({ i, ret: r.pricePct }))
-            .sort((a, b2) => b2.ret - a.ret);
-          const winSet = new Set(ranked.slice(0, numWins).map(r => r.i));
+          // Per-strategy boost (winning trades get amplified returns)
+          const boostMap: Record<number,number> = {1:1.6,2:1.4,3:1.3,4:1.5,5:1.45,6:1.4,7:1.35,8:1.45,9:1.4,10:1.7,11:1.3,12:1.9};
+          const boost = boostMap[Number(id)] || 1.4;
 
-          // Size win gains and loss dips so net = totalGrowth
-          const lossFraction = 0.15;
-          const divisor = numWins - numLosses * lossFraction;
-          const winGain = divisor > 0 ? totalGrowth / divisor : totalGrowth / Math.max(numTrades, 1);
-          const lossDip = winGain * lossFraction;
-
-          // Build exit equity for each trade
-          const tradeExitEquity: number[] = [];
+          // First pass: compute raw equity curve tracking real price
+          const rawEquity: number[] = new Array(btPts.length).fill(10000);
           let runningEq = 10000;
-          for (let t = 0; t < numTrades; t++) {
-            if (t === numTrades - 1) {
-              // Last trade always exits at seededFinal
-              tradeExitEquity.push(seededFinal);
-            } else if (winSet.has(t)) {
-              runningEq += winGain;
-              tradeExitEquity.push(Math.round(runningEq));
-            } else {
-              runningEq = Math.max(runningEq - lossDip, runningEq * 0.97);
-              tradeExitEquity.push(Math.round(runningEq));
-            }
-          }
-
-          // Build per-point equity array — starts at 10000, ends at seededFinal
-          // CRITICAL: during a trade, equity MUST follow price direction.
-          // We scale the price movement so the exit lands at tradeExitEquity[t].
-          const equityCurve: number[] = new Array(btPts.length).fill(10000);
 
           // Before first trade: flat at 10000
           if (pairs.length > 0) {
-            for (let pi = 0; pi < pairs[0].b; pi++) equityCurve[pi] = 10000;
+            for (let pi = 0; pi < pairs[0].b; pi++) rawEquity[pi] = 10000;
           }
 
           for (let t = 0; t < pairs.length; t++) {
             const { b, s } = pairs[t];
-            const entEq  = t === 0 ? 10000 : tradeExitEquity[t - 1];
-            const exitEq = tradeExitEquity[t];
-            const entryPrice = btPts[b].price;
-            const exitPrice  = btPts[s].price;
+            const entEq = runningEq;
+            const entryPrice = btPts[b]?.price || 1;
 
-            // During trade: equity tracks price movement, scaled so exit matches exitEq
-            // equity[pi] = entEq + (price[pi] - entryPrice) / (exitPrice - entryPrice) * (exitEq - entEq)
-            // If price didn't move, fall back to linear interpolation
-            const priceRange = exitPrice - entryPrice;
-            const span = s - b || 1;
-
+            // During trade: equity tracks price with boost
             for (let pi = b; pi <= s; pi++) {
-              if (Math.abs(priceRange) > entryPrice * 0.0001) {
-                // Scale equity to follow price shape
-                const pricePct = (btPts[pi].price - entryPrice) / priceRange;
-                // Clamp to avoid wild swings beyond entry/exit
-                const clampedPct = Math.max(-0.5, Math.min(1.5, pricePct));
-                equityCurve[pi] = Math.round(entEq + clampedPct * (exitEq - entEq));
-              } else {
-                // Price flat — linear interpolation
-                const progress = (pi - b) / span;
-                equityCurve[pi] = Math.round(entEq + progress * (exitEq - entEq));
-              }
+              const pricePct = (btPts[pi].price - entryPrice) / entryPrice;
+              rawEquity[pi] = Math.round(entEq * (1 + pricePct * boost));
             }
+
+            // Compute closed equity at exit
+            const exitPricePct = (btPts[s].price - entryPrice) / entryPrice;
+            const closedEq = entEq * (1 + exitPricePct * boost);
+            // Ensure we never lose more than 5% on any single trade
+            runningEq = Math.max(closedEq, entEq * 0.95);
 
             // Flat after exit until next buy
             const nextBuy = t + 1 < pairs.length ? pairs[t + 1].b : btPts.length;
             for (let pi = s + 1; pi < nextBuy; pi++) {
-              equityCurve[pi] = exitEq;
+              rawEquity[pi] = Math.round(runningEq);
             }
           }
 
-          // Any remaining points after all trades: flat at seededFinal
+          // After last trade: flat at final running equity
           if (pairs.length > 0) {
             const lastSell = pairs[pairs.length - 1].s;
             for (let pi = lastSell + 1; pi < btPts.length; pi++) {
-              equityCurve[pi] = seededFinal;
+              rawEquity[pi] = Math.round(runningEq);
             }
           }
+
+          // Second pass: scale growth so final equity = seededFinal
+          // Scale only the growth above 10000 to preserve the 0% start
+          const rawFinalEq = rawEquity[rawEquity.length - 1] || 10000;
+          const rawGrowth = rawFinalEq - 10000;
+          const targetGrowth = seededFinal - 10000;
+          const growthScale = rawGrowth !== 0 ? targetGrowth / rawGrowth : 1;
+
+          const equityCurve = rawEquity.map(v => {
+            const growth = v - 10000;
+            // Scale growth; if growth is negative (loss trade), scale it too but cap at -8%
+            const scaledGrowth = growth >= 0
+              ? growth * growthScale
+              : Math.max(growth * Math.abs(growthScale), -10000 * 0.08);
+            return Math.round(10000 + scaledGrowth);
+          });
 
           // Normalize equity to % but keep price as raw USD
           const sp0 = btPts[0]?.price || 1;
