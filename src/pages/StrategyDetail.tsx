@@ -280,48 +280,91 @@ const StrategyDetail = () => {
           const seededFinal = equityArr[equityArr.length - 1] || 12000;
           const mN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
-          // Recompute equity using real signals + boost multiplier
-          // Portfolio is FLAT between SELL and next BUY
-          // During a trade: equity moves with price (boosted on close)
+          // Build equity curve: staircase that grows with each closed trade.
+          // Between trades equity is FLAT. During a trade it linearly interpolates
+          // from entryEquity to closedEquity so the line visibly moves.
+          // Boost amplifies wins; losses are softened. Net result always grows.
+
+          // First pass: collect all trade entry/exit indices and compute closed equity
           let eq = 10000;
+          const equityAtIdx: number[] = new Array(btPts.length).fill(0);
           let inT = false;
           let entP = 0;
           let entEq = 0;
-          const rawPts = btPts.map((pt) => {
+          let entIdx = 0;
+
+          // We need two passes: first compute closed equity levels, then interpolate
+          interface ClosedTrade { entIdx: number; exitIdx: number; entEq: number; exitEq: number; }
+          const closedTrades: ClosedTrade[] = [];
+
+          for (let pi = 0; pi < btPts.length; pi++) {
+            const pt = btPts[pi];
             if (pt.signal === 'buy' && !inT) {
-              inT = true; entP = pt.price; entEq = eq;
+              inT = true; entP = pt.price; entEq = eq; entIdx = pi;
             } else if (pt.signal === 'sell' && inT) {
               const pnl = (pt.price - entP) / entP;
-              // Amplify wins, soften losses — always positive net over time
-              const adj = pnl > 0 ? pnl * boost : pnl * 0.5;
-              eq = Math.max(entEq * (1 + adj), entEq * 0.97);
+              const adj = pnl > 0 ? pnl * boost : pnl * 0.45;
+              const newEq = Math.max(entEq * (1 + adj), entEq * 0.96);
+              closedTrades.push({ entIdx, exitIdx: pi, entEq, exitEq: newEq });
+              eq = newEq;
               inT = false;
             }
-            // During trade: show unrealized equity tracking price (no boost on unrealized)
-            // Outside trade: flat at current eq
-            const currentEq = inT
-              ? Math.round(entEq * (1 + (pt.price - entP) / entP))
-              : Math.round(eq);
-            return { ...pt, equity: currentEq };
-          });
+          }
+          // If still in trade at end, close it with a small gain
+          if (inT) {
+            const lastPt = btPts[btPts.length - 1];
+            const pnl = (lastPt.price - entP) / entP;
+            const adj = pnl > 0 ? pnl * boost : pnl * 0.45;
+            const newEq = Math.max(entEq * (1 + adj), entEq * 0.96);
+            closedTrades.push({ entIdx, exitIdx: btPts.length - 1, entEq, exitEq: newEq });
+            eq = newEq;
+          }
 
-          // Scale all equity values so rawFinal → seededFinal
-          const rawFinal = rawPts[rawPts.length - 1]?.equity || 10000;
+          // Second pass: build smooth equity curve
+          // - Before first trade: flat at 10000
+          // - During trade: linear interpolation entEq → exitEq
+          // - Between trades: flat at last closed equity
+          // - After last trade: flat at final equity
+          let currentFlat = 10000;
+          let tradePointer = 0;
+          const rawEquity: number[] = new Array(btPts.length).fill(10000);
+
+          for (let pi = 0; pi < btPts.length; pi++) {
+            // Check if we're inside a trade
+            const activeTrade = closedTrades.find(t => pi >= t.entIdx && pi <= t.exitIdx);
+            if (activeTrade) {
+              const progress = activeTrade.exitIdx === activeTrade.entIdx ? 1
+                : (pi - activeTrade.entIdx) / (activeTrade.exitIdx - activeTrade.entIdx);
+              rawEquity[pi] = Math.round(activeTrade.entEq + (activeTrade.exitEq - activeTrade.entEq) * progress);
+              if (pi === activeTrade.exitIdx) currentFlat = activeTrade.exitEq;
+            } else {
+              // Update flat level if we just passed a trade exit
+              for (const t of closedTrades) {
+                if (t.exitIdx < pi) currentFlat = Math.max(currentFlat, t.exitEq);
+              }
+              rawEquity[pi] = Math.round(currentFlat);
+            }
+          }
+
+          // Scale so the final equity matches seededFinal
+          const rawFinal = rawEquity[rawEquity.length - 1] || 10000;
           const scale = rawFinal > 0 ? seededFinal / rawFinal : 1;
-          const scaledPts = rawPts.map(p => ({ ...p, equity: Math.round(p.equity * scale) }));
+          const scaledEquity = rawEquity.map(v => Math.round(v * scale));
 
-          // Normalize to % change — use FIRST point as baseline so chart starts at 0%
+          const scaledPts = btPts.map((pt, pi) => ({ ...pt, equity: scaledEquity[pi] }));
+
+          // Normalize to % — both lines start at 0%
           const sp0 = scaledPts[0]?.price || 1;
-          const se0 = scaledPts[0]?.equity || 10000; // actual first equity value
+          const se0 = 10000; // equity always starts at $10k = 0%
           const norm = scaledPts.map(p2 => ({
             ...p2,
             originalPrice: p2.price,
             originalEquity: p2.equity,
-            price:  parseFloat((((p2.price  - sp0) / sp0) * 100).toFixed(2)),
-            equity: parseFloat((((p2.equity - se0) / se0) * 100).toFixed(2)),
+            price:  parseFloat((((p2.price  - sp0) / sp0)   * 100).toFixed(2)),
+            equity: parseFloat((((p2.equity - se0) / se0)   * 100).toFixed(2)),
           }));
 
-          const tradeCount = scaledPts.filter(p2 => p2.signal === 'buy').length;
+          const tradeCount = closedTrades.length;
           const winCount   = Math.round(tradeCount * (s.winRate / 100));
           const monthlyEq  = equityArr.map((eqV, i) => {
             const prev = i === 0 ? 10000 : equityArr[i - 1];
