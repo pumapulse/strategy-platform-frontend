@@ -376,15 +376,20 @@ const StrategyDetail = () => {
           }
 
           // ── Second pass: remap entire curve so rawFinal → seededFinal ──────
-          // Linear remap: rawEquity[i] maps from [10000..rawFinal] → [10000..seededFinal]
-          // This preserves the exact shape (dips, peaks, flat periods) without distortion.
+          // Linear remap preserves shape. Clamp to prevent mid-trade overshoots.
           const rawFinal = rawEquity[rawEquity.length - 1] || 10000;
+          const rawMin   = Math.min(...rawEquity);
+          const rawMax   = Math.max(...rawEquity);
+          const rawRange = rawMax - rawMin || 1;
+          // Target range: allow equity to go from ~8500 (max drawdown) to seededFinal
+          const tgtMin   = 10000 * 0.85; // max -15% drawdown visible
+          const tgtMax   = seededFinal;
+          const tgtRange = tgtMax - tgtMin;
 
           const equityCurve = rawEquity.map(v => {
-            if (rawFinal === 10000) return v; // no growth, keep as-is
-            // Remap: 10000 stays 10000, rawFinal becomes seededFinal, everything scales proportionally
-            const t2 = (v - 10000) / (rawFinal - 10000);
-            return Math.round(10000 + t2 * (seededFinal - 10000));
+            // Normalize v into [0..1] based on raw range, then map to target range
+            const norm2 = (v - rawMin) / rawRange;
+            return Math.round(tgtMin + norm2 * tgtRange);
           });
 
           // Normalize equity to % but keep price as raw USD
