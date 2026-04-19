@@ -1,20 +1,13 @@
 /**
- * Backtesting engine — CoinGecko daily prices (365 days) for crypto.
- * Forex/Stocks strategies use synthetic realistic price simulation.
+ * Backtesting engine — CoinGecko daily prices (365 days).
+ * All 12 strategies are crypto-only.
  * Each strategy has a unique cycle rhythm producing 15-30 trades/year.
  */
 
 const STRATEGY_TO_CG: Record<number, string> = {
-  1:  'bitcoin',  2:  'ethereum', 3:  null,       4:  null,
-  5:  'bitcoin',  6:  'solana',   7:  null,        8:  'chainlink',
-  9:  null,       10: 'ethereum', 11: null,         12: 'bitcoin',
-} as unknown as Record<number, string>;
-
-// Market type per strategy
-const STRATEGY_MARKET: Record<number, 'crypto' | 'forex' | 'stocks'> = {
-  1: 'crypto', 2: 'crypto', 3: 'stocks', 4:  'forex',
-  5: 'crypto', 6: 'crypto', 7: 'forex',  8:  'crypto',
-  9: 'forex',  10: 'crypto', 11: 'stocks', 12: 'crypto',
+  1:  'bitcoin',   2:  'ethereum',  3:  'bitcoin',   4:  'ethereum',
+  5:  'bitcoin',   6:  'solana',    7:  'solana',     8:  'chainlink',
+  9:  'bitcoin',   10: 'ethereum',  11: 'ethereum',   12: 'bitcoin',
 };
 
 // ── Indicators ────────────────────────────────────────────────────────────────
@@ -150,95 +143,30 @@ function seededRand(seed: number): () => number {
   };
 }
 
-// ── Synthetic price generator for Forex / Stocks ──────────────────────────────
-// Produces realistic prices with clear visible swings (zoomed-out friendly).
-function generateSyntheticPrices(
-  market: 'forex' | 'stocks',
-  strategyId: number
-): { prices: number[]; dates: string[] } {
-  const rand = seededRand(strategyId * 99991);
-
-  // Higher volatility so price swings are clearly visible on chart
-  // Forex: EUR/USD style ~1.05–1.15, with clear multi-week swings
-  // Stocks: NVDA/SPY style ~$380–$580, with clear bull/bear moves
-  const cfg = market === 'forex'
-    ? { start: 1.08 + rand() * 0.03, vol: 0.008, trend: 0.00005 }   // ±0.8%/day → clear swings
-    : { start: 430  + rand() * 60,   vol: 0.022, trend: 0.0003  };  // ±2.2%/day → clear swings
-
-  const prices: number[] = [];
-  const dates:  string[] = [];
-  let price = cfg.start;
-
-  // Add regime changes: bull/bear/sideways phases for visual interest
-  const regimes = [
-    { trend:  cfg.trend * 3,  vol: cfg.vol * 0.8 },  // bull phase
-    { trend: -cfg.trend * 2,  vol: cfg.vol * 1.2 },  // bear phase
-    { trend:  cfg.trend,      vol: cfg.vol * 0.6 },  // sideways
-    { trend:  cfg.trend * 4,  vol: cfg.vol * 1.0 },  // strong bull
-  ];
-
-  const now = new Date();
-  const start = new Date(now);
-  start.setDate(start.getDate() - 365);
-
-  let dayCount = 0;
-  for (let i = 0; i < 400 && prices.length < 365; i++) {
-    const d = new Date(start);
-    d.setDate(start.getDate() + i);
-    if (market === 'stocks' && (d.getDay() === 0 || d.getDay() === 6)) continue;
-
-    // Switch regime every ~90 days
-    const regime = regimes[Math.floor(dayCount / 90) % regimes.length];
-
-    // Box-Muller for more realistic normal distribution
-    const u1 = Math.max(rand(), 1e-10);
-    const u2 = rand();
-    const normal = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
-    const move = regime.trend + regime.vol * normal;
-    price = Math.max(price * (1 + move), cfg.start * 0.75);
-
-    prices.push(parseFloat(price.toFixed(market === 'forex' ? 4 : 2)));
-    dates.push(`${d.toLocaleString('default', { month: 'short' })} ${d.getDate()}`);
-    dayCount++;
-  }
-
-  return { prices, dates };
-}
-
 // ── Main ──────────────────────────────────────────────────────────────────────
 
 export async function runBacktest(
   strategyId: number,
   _market: string
 ): Promise<{ points: BacktestPoint[]; stats: BacktestStats }> {
+  const cgId = STRATEGY_TO_CG[strategyId] || 'bitcoin';
   const empty = { points: [], stats: { totalTrades: 0, winRate: 0, avgWin: 0, avgLoss: 0, totalReturn: 0, maxDrawdown: 0 } };
 
   let prices: number[] = [];
   let dates:  string[] = [];
 
-  const marketType = STRATEGY_MARKET[strategyId] || 'crypto';
-
-  if (marketType === 'forex' || marketType === 'stocks') {
-    // Use synthetic realistic price data — CoinGecko has no forex/stocks
-    const synthetic = generateSyntheticPrices(marketType, strategyId);
-    prices = synthetic.prices;
-    dates  = synthetic.dates;
-  } else {
-    // Fetch real crypto prices from CoinGecko
-    const cgId = (STRATEGY_TO_CG as Record<number, string>)[strategyId] || 'bitcoin';
-    try {
-      const res = await fetch(
-        `https://api.coingecko.com/api/v3/coins/${cgId}/market_chart?vs_currency=usd&days=365&interval=daily`
-      );
-      const data = await res.json();
-      const raw: [number, number][] = data.prices || [];
-      prices = raw.map(([, p]) => p);
-      dates  = raw.map(([t]) => {
-        const d = new Date(t);
-        return `${d.toLocaleString('default', { month: 'short' })} ${d.getDate()}`;
-      });
-    } catch { return empty; }
-  }
+  try {
+    const res = await fetch(
+      `https://api.coingecko.com/api/v3/coins/${cgId}/market_chart?vs_currency=usd&days=365&interval=daily`
+    );
+    const data = await res.json();
+    const raw: [number, number][] = data.prices || [];
+    prices = raw.map(([, p]) => p);
+    dates  = raw.map(([t]) => {
+      const d = new Date(t);
+      return `${d.toLocaleString('default', { month: 'short' })} ${d.getDate()}`;
+    });
+  } catch { return empty; }
 
   if (prices.length < 30) return empty;
 
