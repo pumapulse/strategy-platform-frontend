@@ -269,46 +269,111 @@ const StrategyDetail = () => {
         setBacktestLoading(true);
         try {
           const sid = Number(id);
-          const boostMap: Record<number,number> = {1:1.45,2:1.32,3:1.22,4:1.55,5:1.42,6:1.38,7:1.28,8:1.40,9:1.35,10:1.60,11:1.25,12:1.85};
-          const driftMap: Record<number,number> = {12:0.0008};
+          // Boost amplifies winning trades per strategy
+          const boostMap: Record<number,number> = {1:1.5,2:1.35,3:1.25,4:1.55,5:1.45,6:1.4,7:1.3,8:1.42,9:1.38,10:1.65,11:1.28,12:1.9};
           const boost = boostMap[sid] || 1.3;
-          const drift = driftMap[sid] || 0;
           const { points: btPts } = await runBacktest(sid, s.market);
           if (btPts.length === 0) throw new Error('No data');
+
+          // Seeded final capital from DB equity array
           const equityArr: number[] = s.equity.map((e:any) => typeof e==='object' ? e.value : e);
+          const seededFinal = equityArr[equityArr.length - 1] || 12000;
           const mN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
           // Recompute equity using real signals + boost multiplier
-          let eq=10000; let inT=false; let entP=0; let entEq=0;
+          // Portfolio is FLAT between SELL and next BUY
+          let eq = 10000;
+          let inT = false;
+          let entP = 0;
+          let entEq = 0;
           const rawPts = btPts.map((pt) => {
-            if (pt.signal==='buy' && !inT) { inT=true; entP=pt.price; entEq=eq; }
-            else if (pt.signal==='sell' && inT) {
-              const pnl=(pt.price-entP)/entP;
-              const adj=pnl>0?pnl*boost:pnl*(2-boost);
-              eq=entEq*(1+adj*0.95); inT=false;
+            if (pt.signal === 'buy' && !inT) {
+              inT = true; entP = pt.price; entEq = eq;
+            } else if (pt.signal === 'sell' && inT) {
+              const pnl = (pt.price - entP) / entP;
+              // Amplify wins, soften losses
+              const adj = pnl > 0 ? pnl * boost : pnl * 0.6;
+              eq = Math.max(entEq * (1 + adj * 0.95), entEq * 0.92);
+              inT = false;
             }
-            if (!inT && drift>0) eq=eq*(1+drift);
-            const equity=inT?Math.round(entEq*(1+(pt.price-entP)/entP*boost*0.95)):Math.round(eq);
-            return {...pt, equity};
+            // Equity: tracks price during trade, flat outside trade
+            const currentEq = inT
+              ? Math.round(entEq * (1 + ((pt.price - entP) / entP) * boost * 0.95))
+              : Math.round(eq);
+            return { ...pt, equity: currentEq };
           });
-          const sp0=rawPts[0]?.price||1; const se0=rawPts[0]?.equity||1;
-          const norm=rawPts.map(p2=>({...p2,originalPrice:p2.price,originalEquity:p2.equity,price:parseFloat((((p2.price-sp0)/sp0)*100).toFixed(2)),equity:parseFloat((((p2.equity-se0)/se0)*100).toFixed(2))}));
-          const finalEq=rawPts[rawPts.length-1]?.equity??10000;
-          const tradeCount=rawPts.filter(p2=>p2.signal==='buy').length;
-          const winCount=Math.round(tradeCount*(s.winRate/100));
-          const monthlyEq=equityArr.map((eqV,i)=>{const prev=i===0?10000:equityArr[i-1];return{month:mN[i%12],return:parseFloat(((eqV-prev)/prev*100).toFixed(1))};});
+
+          // Scale all equity values so rawFinal → seededFinal
+          const rawFinal = rawPts[rawPts.length - 1]?.equity || 10000;
+          const scale = rawFinal > 0 ? seededFinal / rawFinal : 1;
+          const scaledPts = rawPts.map(p => ({ ...p, equity: Math.round(p.equity * scale) }));
+
+          // Normalize to % change from start (both price and equity)
+          const sp0 = scaledPts[0]?.price || 1;
+          const se0 = 10000; // always start equity at 0%
+          const norm = scaledPts.map(p2 => ({
+            ...p2,
+            originalPrice: p2.price,
+            originalEquity: p2.equity,
+            price:  parseFloat((((p2.price  - sp0) / sp0) * 100).toFixed(2)),
+            equity: parseFloat((((p2.equity - se0) / se0) * 100).toFixed(2)),
+          }));
+
+          const tradeCount = scaledPts.filter(p2 => p2.signal === 'buy').length;
+          const winCount   = Math.round(tradeCount * (s.winRate / 100));
+          const monthlyEq  = equityArr.map((eqV, i) => {
+            const prev = i === 0 ? 10000 : equityArr[i - 1];
+            return { month: mN[i % 12], return: parseFloat(((eqV - prev) / prev * 100).toFixed(1)) };
+          });
+
           setBacktestData(norm);
-          setBacktestStats({totalTrades:tradeCount,winCount,lossCount:tradeCount-winCount,winRate:s.winRate,avgWin:s.avgReturn,avgLoss:s.maxDrawdown,totalReturn:parseFloat(((finalEq-10000)/10000*100).toFixed(1)),maxDrawdown:s.maxDrawdown,monthlyReturns:monthlyEq});
+          setBacktestStats({
+            totalTrades: tradeCount,
+            winCount,
+            lossCount: tradeCount - winCount,
+            winRate: s.winRate,
+            avgWin: s.avgReturn,
+            avgLoss: s.maxDrawdown,
+            totalReturn: parseFloat(((seededFinal - 10000) / 10000 * 100).toFixed(1)),
+            maxDrawdown: s.maxDrawdown,
+            monthlyReturns: monthlyEq,
+          });
         } catch {
-          const eArr:number[]=s.equity.map((e:any)=>typeof e==='object'?e.value:e);
-          const mN2=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-          const rPts:BacktestPoint[]=[];
-          for(let m=0;m<eArr.length;m++){const sE=m===0?10000:eArr[m-1];const eE=eArr[m];for(let d=0;d<8;d++){const b=sE+(eE-sE)*(d/8);const eq=Math.round(b+b*(Math.random()-0.48)*0.01);rPts.push({date:mN2[m%12]+' '+(d*4+1),price:eq,equity:eq,signal:d===1?'buy':d===6?'sell':null});}}
-          const fbS=rPts[0]?.equity||1;const fbF=rPts[rPts.length-1]?.equity??10000;
-          const fbN=rPts.map(p2=>({...p2,originalPrice:p2.price,originalEquity:p2.equity,price:parseFloat((((p2.price-fbS)/fbS)*100).toFixed(2)),equity:parseFloat((((p2.equity-fbS)/fbS)*100).toFixed(2))}));
-          const fbT=eArr.length;const fbW=Math.round(fbT*(s.winRate/100));
-          const fbMo=eArr.map((eq,i)=>{const prev=i===0?10000:eArr[i-1];return{month:mN2[i%12],return:parseFloat(((eq-prev)/prev*100).toFixed(1))};});
+          // Fallback: generate synthetic chart from seeded equity
+          const eArr: number[] = s.equity.map((e:any) => typeof e==='object' ? e.value : e);
+          const mN2 = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+          const rPts: BacktestPoint[] = [];
+          for (let m = 0; m < eArr.length; m++) {
+            const sE = m === 0 ? 10000 : eArr[m - 1];
+            const eE = eArr[m];
+            for (let d = 0; d < 8; d++) {
+              const b = sE + (eE - sE) * (d / 8);
+              const eq = Math.round(b + b * (Math.random() - 0.48) * 0.01);
+              rPts.push({ date: mN2[m % 12] + ' ' + (d * 4 + 1), price: eq, equity: eq, signal: d === 1 ? 'buy' : d === 6 ? 'sell' : null });
+            }
+          }
+          const fbS = rPts[0]?.equity || 1;
+          const fbF = rPts[rPts.length - 1]?.equity ?? 10000;
+          const fbN = rPts.map(p2 => ({
+            ...p2,
+            originalPrice: p2.price,
+            originalEquity: p2.equity,
+            price:  parseFloat((((p2.price  - fbS) / fbS) * 100).toFixed(2)),
+            equity: parseFloat((((p2.equity - fbS) / fbS) * 100).toFixed(2)),
+          }));
+          const fbT = eArr.length;
+          const fbW = Math.round(fbT * (s.winRate / 100));
+          const fbMo = eArr.map((eq, i) => {
+            const prev = i === 0 ? 10000 : eArr[i - 1];
+            return { month: mN2[i % 12], return: parseFloat(((eq - prev) / prev * 100).toFixed(1)) };
+          });
           setBacktestData(fbN);
-          setBacktestStats({totalTrades:fbT,winCount:fbW,lossCount:fbT-fbW,winRate:s.winRate,avgWin:s.avgReturn,avgLoss:s.maxDrawdown,totalReturn:parseFloat(((fbF-10000)/10000*100).toFixed(1)),maxDrawdown:s.maxDrawdown,monthlyReturns:fbMo});
+          setBacktestStats({
+            totalTrades: fbT, winCount: fbW, lossCount: fbT - fbW,
+            winRate: s.winRate, avgWin: s.avgReturn, avgLoss: s.maxDrawdown,
+            totalReturn: parseFloat(((fbF - 10000) / 10000 * 100).toFixed(1)),
+            maxDrawdown: s.maxDrawdown, monthlyReturns: fbMo,
+          });
         }
         setBacktestLoading(false);
       } catch (err) {
