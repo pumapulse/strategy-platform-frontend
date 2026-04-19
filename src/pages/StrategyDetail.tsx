@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, TrendingUp, TrendingDown, Target, BarChart2, Download, RefreshCw, Lock } from "lucide-react";
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, Cell } from "recharts";
@@ -597,21 +597,24 @@ const StrategyDetail = () => {
       </div>
 
       <div className="container mx-auto px-6 py-10 space-y-8">
-        {/* Key Metrics */}
+        {/* Key Metrics — all from backtestStats when available */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {[
-            { icon: Target,      label: 'Win Rate',      value: `${strategy.winRate}%`,      color: 'text-emerald-400', border: 'border-emerald-400/20' },
-            { icon: TrendingUp,  label: 'Profit Factor', value: strategy.profitFactor ? String(strategy.profitFactor) : '�', color: 'text-blue-400', border: 'border-blue-400/20' },
-            { icon: TrendingDown,label: 'Max Drawdown',  value: `${strategy.maxDrawdown}%`,  color: 'text-red-400',     border: 'border-red-400/20'    },
-            { icon: BarChart2,   label: 'Avg Return',    value: `+${strategy.avgReturn}%`,   color: 'text-emerald-400', border: 'border-emerald-400/20' },
-          ].map(m => (
-            <div key={m.label} className={`rounded-2xl border ${m.border} bg-white/[0.03] p-6`}>
-              <div className="flex items-center gap-2 text-white/30 text-xs mb-3">
-                <m.icon className="w-4 h-4" />{m.label}
-              </div>
-              <p className={`text-3xl font-black ${m.color}`}>{m.value}</p>
-            </div>
-          ))}
+          <div className="rounded-2xl border border-emerald-400/20 bg-white/[0.03] p-6">
+            <div className="flex items-center gap-2 text-white/30 text-xs mb-3"><Target className="w-4 h-4" />Win Rate</div>
+            <p className="text-3xl font-black text-emerald-400">{backtestStats ? `${backtestStats.winRate}%` : `${strategy.winRate}%`}</p>
+          </div>
+          <div className="rounded-2xl border border-blue-400/20 bg-white/[0.03] p-6">
+            <div className="flex items-center gap-2 text-white/30 text-xs mb-3"><TrendingUp className="w-4 h-4" />Total Return</div>
+            <p className="text-3xl font-black text-blue-400">{backtestStats ? `+${backtestStats.totalReturn}%` : `+${strategy.avgReturn}%`}</p>
+          </div>
+          <div className="rounded-2xl border border-red-400/20 bg-white/[0.03] p-6">
+            <div className="flex items-center gap-2 text-white/30 text-xs mb-3"><TrendingDown className="w-4 h-4" />Max Drawdown</div>
+            <p className="text-3xl font-black text-red-400">{backtestStats ? `${backtestStats.maxDrawdown}%` : `${strategy.maxDrawdown}%`}</p>
+          </div>
+          <div className="rounded-2xl border border-emerald-400/20 bg-white/[0.03] p-6">
+            <div className="flex items-center gap-2 text-white/30 text-xs mb-3"><BarChart2 className="w-4 h-4" />Avg Win</div>
+            <p className="text-3xl font-black text-emerald-400">{backtestStats ? `+${backtestStats.avgWin}%` : `+${strategy.avgReturn}%`}</p>
+          </div>
         </div>
 
         {/* Description */}
