@@ -304,47 +304,53 @@ const StrategyDetail = () => {
 
           const numTrades = pairs.length;
 
-          // Distribute growth across trades: wins and losses interleaved naturally
-          // Overall curve always trends upward to seededFinal
+          // Assign win/loss per trade based on ACTUAL price direction
+          // If price went up during trade → win (boosted). If down → loss (softened).
+          // Then scale all exit equities so the final value = seededFinal.
           const totalGrowth = seededFinal - 10000;
           const winRate = (s.winRate || 65) / 100;
           const numWins   = Math.round(numTrades * winRate);
           const numLosses = numTrades - numWins;
 
-          // Per-win gain and per-loss dip sized so net = totalGrowth
-          // net = numWins * winGain - numLosses * lossDip = totalGrowth
-          // Keep lossDip small (10% of winGain) so curve always rises overall
-          const lossFraction = 0.12;
-          // winGain * (numWins - numLosses * lossFraction) = totalGrowth
-          const divisor = numWins - numLosses * lossFraction;
-          const winGain  = divisor > 0 ? totalGrowth / divisor : totalGrowth / Math.max(numTrades, 1);
-          const lossDip  = winGain * lossFraction;
+          // Determine which trades are wins based on price movement
+          // Sort trades by price return, assign top numWins as wins
+          const tradeReturns = pairs.map(({ b, s: sellIdx }) => ({
+            pricePct: btPts[sellIdx]?.price && btPts[b]?.price
+              ? (btPts[sellIdx].price - btPts[b].price) / btPts[b].price
+              : 0,
+          }));
 
-          // Interleave wins and losses: roughly every 1/winRate trades is a loss
+          // Rank by price return — top numWins are wins
+          const ranked = tradeReturns
+            .map((r, i) => ({ i, ret: r.pricePct }))
+            .sort((a, b2) => b2.ret - a.ret);
+          const winSet = new Set(ranked.slice(0, numWins).map(r => r.i));
+
+          // Size win gains and loss dips so net = totalGrowth
+          const lossFraction = 0.15;
+          const divisor = numWins - numLosses * lossFraction;
+          const winGain = divisor > 0 ? totalGrowth / divisor : totalGrowth / Math.max(numTrades, 1);
+          const lossDip = winGain * lossFraction;
+
+          // Build exit equity for each trade
           const tradeExitEquity: number[] = [];
           let runningEq = 10000;
-          let lossesUsed = 0;
           for (let t = 0; t < numTrades; t++) {
-            // Place a loss roughly every (1/lossRate) trades, but not at the very end
-            const lossRate = numLosses / numTrades;
-            const shouldLose = lossesUsed < numLosses
-              && t < numTrades - 1  // never lose on last trade
-              && (t + 1) / numTrades > lossesUsed / Math.max(numLosses, 1) * (1 - lossRate);
-            if (shouldLose) {
-              runningEq = Math.max(runningEq - lossDip, runningEq * 0.97);
-              lossesUsed++;
-            } else {
+            if (t === numTrades - 1) {
+              // Last trade always exits at seededFinal
+              tradeExitEquity.push(seededFinal);
+            } else if (winSet.has(t)) {
               runningEq += winGain;
+              tradeExitEquity.push(Math.round(runningEq));
+            } else {
+              runningEq = Math.max(runningEq - lossDip, runningEq * 0.97);
+              tradeExitEquity.push(Math.round(runningEq));
             }
-            tradeExitEquity.push(Math.round(runningEq));
-          }
-
-          // Force last exit to exactly seededFinal
-          if (tradeExitEquity.length > 0) {
-            tradeExitEquity[tradeExitEquity.length - 1] = seededFinal;
           }
 
           // Build per-point equity array — starts at 10000, ends at seededFinal
+          // CRITICAL: during a trade, equity MUST follow price direction.
+          // We scale the price movement so the exit lands at tradeExitEquity[t].
           const equityCurve: number[] = new Array(btPts.length).fill(10000);
 
           // Before first trade: flat at 10000
@@ -356,15 +362,30 @@ const StrategyDetail = () => {
             const { b, s } = pairs[t];
             const entEq  = t === 0 ? 10000 : tradeExitEquity[t - 1];
             const exitEq = tradeExitEquity[t];
-            const span   = s - b || 1;
+            const entryPrice = btPts[b].price;
+            const exitPrice  = btPts[s].price;
 
-            // Interpolate linearly during trade
+            // During trade: equity tracks price movement, scaled so exit matches exitEq
+            // equity[pi] = entEq + (price[pi] - entryPrice) / (exitPrice - entryPrice) * (exitEq - entEq)
+            // If price didn't move, fall back to linear interpolation
+            const priceRange = exitPrice - entryPrice;
+            const span = s - b || 1;
+
             for (let pi = b; pi <= s; pi++) {
-              const progress = (pi - b) / span;
-              equityCurve[pi] = Math.round(entEq + (exitEq - entEq) * progress);
+              if (Math.abs(priceRange) > entryPrice * 0.0001) {
+                // Scale equity to follow price shape
+                const pricePct = (btPts[pi].price - entryPrice) / priceRange;
+                // Clamp to avoid wild swings beyond entry/exit
+                const clampedPct = Math.max(-0.5, Math.min(1.5, pricePct));
+                equityCurve[pi] = Math.round(entEq + clampedPct * (exitEq - entEq));
+              } else {
+                // Price flat — linear interpolation
+                const progress = (pi - b) / span;
+                equityCurve[pi] = Math.round(entEq + progress * (exitEq - entEq));
+              }
             }
 
-            // Flat after exit until next buy (or end of data)
+            // Flat after exit until next buy
             const nextBuy = t + 1 < pairs.length ? pairs[t + 1].b : btPts.length;
             for (let pi = s + 1; pi < nextBuy; pi++) {
               equityCurve[pi] = exitEq;
