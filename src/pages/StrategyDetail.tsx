@@ -392,19 +392,37 @@ const StrategyDetail = () => {
           });
 
           // Normalize equity to % but keep price as raw USD
-          const sp0 = btPts[0]?.price || 1;
           const norm = btPts.map((pt, pi) => ({
             ...pt,
             originalPrice: pt.price,
             originalEquity: equityCurve[pi],
-            price:  pt.price,   // raw USD — shown on right Y-axis
+            price:  pt.price,
             equity: parseFloat(((equityCurve[pi] - 10000) / 10000 * 100).toFixed(2)),
           }));
 
-          const monthlyEq = equityArr.map((eqV, i) => {
-            const prev = i === 0 ? 10000 : equityArr[i - 1];
-            return { month: mN[i % 12], return: parseFloat(((eqV - prev) / prev * 100).toFixed(1)) };
+          // ── Compute monthly returns from the ACTUAL equity curve ───────────
+          // Group equity curve points by calendar month, compute month-over-month return
+          // This makes each strategy's monthly chart unique (driven by real price data)
+          const monthlyMap: Record<string, { start: number; end: number }> = {};
+          btPts.forEach((pt, pi) => {
+            // Extract month label from date string (e.g. "Apr 20" → "Apr")
+            const monthLabel = pt.date.split(' ')[0];
+            if (!monthlyMap[monthLabel]) {
+              monthlyMap[monthLabel] = { start: equityCurve[pi], end: equityCurve[pi] };
+            } else {
+              monthlyMap[monthLabel].end = equityCurve[pi];
+            }
           });
+
+          // Build ordered monthly returns (preserve calendar order)
+          const monthOrder = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+          const monthlyEq = monthOrder
+            .filter(m => monthlyMap[m])
+            .map(m => {
+              const { start, end } = monthlyMap[m];
+              const ret = start > 0 ? parseFloat(((end - start) / start * 100).toFixed(1)) : 0;
+              return { month: m, return: ret };
+            });
 
           setBacktestData(norm);
           // Use seeded winRate to compute winCount so all numbers are consistent:
