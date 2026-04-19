@@ -1,14 +1,20 @@
 /**
- * Backtesting engine — CoinGecko daily prices (365 days).
+ * Backtesting engine — CoinGecko daily prices (365 days) for crypto.
+ * Forex/Stocks strategies use synthetic realistic price simulation.
  * Each strategy has a unique cycle rhythm producing 15-30 trades/year.
- * Signals alternate strictly: buy → sell → buy → sell.
- * Portfolio is flat between SELL and next BUY.
  */
 
 const STRATEGY_TO_CG: Record<number, string> = {
-  1:  'bitcoin',  2:  'ethereum', 3:  'bitcoin',  4:  'bitcoin',
-  5:  'bitcoin',  6:  'solana',   7:  'ethereum', 8:  'chainlink',
-  9:  'ethereum', 10: 'ethereum', 11: 'bitcoin',  12: 'bitcoin',
+  1:  'bitcoin',  2:  'ethereum', 3:  null,       4:  null,
+  5:  'bitcoin',  6:  'solana',   7:  null,        8:  'chainlink',
+  9:  null,       10: 'ethereum', 11: null,         12: 'bitcoin',
+} as unknown as Record<number, string>;
+
+// Market type per strategy
+const STRATEGY_MARKET: Record<number, 'crypto' | 'forex' | 'stocks'> = {
+  1: 'crypto', 2: 'crypto', 3: 'stocks', 4:  'forex',
+  5: 'crypto', 6: 'crypto', 7: 'forex',  8:  'crypto',
+  9: 'forex',  10: 'crypto', 11: 'stocks', 12: 'crypto',
 };
 
 // ── Indicators ────────────────────────────────────────────────────────────────
@@ -144,30 +150,79 @@ function seededRand(seed: number): () => number {
   };
 }
 
+// ── Synthetic price generator for Forex / Stocks ──────────────────────────────
+// Produces 365 daily prices with realistic volatility and trend.
+function generateSyntheticPrices(
+  market: 'forex' | 'stocks',
+  strategyId: number
+): { prices: number[]; dates: string[] } {
+  const rand = seededRand(strategyId * 99991);
+
+  // Realistic starting prices and daily volatility
+  const cfg = market === 'forex'
+    ? { start: 1.08 + rand() * 0.04, vol: 0.0035, trend: 0.00008 }   // EUR/USD ~1.08-1.12
+    : { start: 420  + rand() * 80,   vol: 0.012,  trend: 0.0004  };  // SPY/NVDA ~420-500
+
+  const prices: number[] = [];
+  const dates:  string[] = [];
+  let price = cfg.start;
+
+  const now = new Date();
+  const start = new Date(now);
+  start.setDate(start.getDate() - 365);
+
+  for (let i = 0; i < 366; i++) {
+    const d = new Date(start);
+    d.setDate(start.getDate() + i);
+    // Skip weekends for stocks/forex realism
+    if (market === 'stocks' && (d.getDay() === 0 || d.getDay() === 6)) continue;
+
+    // GBM-like daily move
+    const shock = (rand() - 0.5) * 2;  // -1 to +1
+    const move  = cfg.trend + cfg.vol * shock;
+    price = Math.max(price * (1 + move), cfg.start * 0.7);
+
+    prices.push(parseFloat(price.toFixed(market === 'forex' ? 5 : 2)));
+    dates.push(`${d.toLocaleString('default', { month: 'short' })} ${d.getDate()}`);
+  }
+
+  return { prices, dates };
+}
+
 // ── Main ──────────────────────────────────────────────────────────────────────
 
 export async function runBacktest(
   strategyId: number,
   _market: string
 ): Promise<{ points: BacktestPoint[]; stats: BacktestStats }> {
-  const cgId = STRATEGY_TO_CG[strategyId] || 'bitcoin';
   const empty = { points: [], stats: { totalTrades: 0, winRate: 0, avgWin: 0, avgLoss: 0, totalReturn: 0, maxDrawdown: 0 } };
 
   let prices: number[] = [];
   let dates:  string[] = [];
 
-  try {
-    const res = await fetch(
-      `https://api.coingecko.com/api/v3/coins/${cgId}/market_chart?vs_currency=usd&days=365&interval=daily`
-    );
-    const data = await res.json();
-    const raw: [number, number][] = data.prices || [];
-    prices = raw.map(([, p]) => p);
-    dates  = raw.map(([t]) => {
-      const d = new Date(t);
-      return `${d.toLocaleString('default', { month: 'short' })} ${d.getDate()}`;
-    });
-  } catch { return empty; }
+  const marketType = STRATEGY_MARKET[strategyId] || 'crypto';
+
+  if (marketType === 'forex' || marketType === 'stocks') {
+    // Use synthetic realistic price data — CoinGecko has no forex/stocks
+    const synthetic = generateSyntheticPrices(marketType, strategyId);
+    prices = synthetic.prices;
+    dates  = synthetic.dates;
+  } else {
+    // Fetch real crypto prices from CoinGecko
+    const cgId = (STRATEGY_TO_CG as Record<number, string>)[strategyId] || 'bitcoin';
+    try {
+      const res = await fetch(
+        `https://api.coingecko.com/api/v3/coins/${cgId}/market_chart?vs_currency=usd&days=365&interval=daily`
+      );
+      const data = await res.json();
+      const raw: [number, number][] = data.prices || [];
+      prices = raw.map(([, p]) => p);
+      dates  = raw.map(([t]) => {
+        const d = new Date(t);
+        return `${d.toLocaleString('default', { month: 'short' })} ${d.getDate()}`;
+      });
+    } catch { return empty; }
+  }
 
   if (prices.length < 30) return empty;
 
