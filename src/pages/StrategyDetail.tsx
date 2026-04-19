@@ -379,13 +379,13 @@ const StrategyDetail = () => {
             }
           }
 
-          // Normalize price to % from first price
+          // Normalize equity to % but keep price as raw USD
           const sp0 = btPts[0]?.price || 1;
           const norm = btPts.map((pt, pi) => ({
             ...pt,
             originalPrice: pt.price,
             originalEquity: equityCurve[pi],
-            price:  parseFloat((((pt.price - sp0) / sp0) * 100).toFixed(2)),
+            price:  pt.price,   // raw USD — shown on right Y-axis
             equity: parseFloat(((equityCurve[pi] - 10000) / 10000 * 100).toFixed(2)),
           }));
 
@@ -426,7 +426,7 @@ const StrategyDetail = () => {
             ...p2,
             originalPrice: p2.price,
             originalEquity: p2.equity,
-            price:  parseFloat((((p2.price  - fbS) / fbS) * 100).toFixed(2)),
+            price:  p2.price,  // keep as raw value for fallback
             equity: parseFloat((((p2.equity - fbS) / fbS) * 100).toFixed(2)),
           }));
           const fbT = eArr.length;
@@ -665,19 +665,34 @@ const StrategyDetail = () => {
                 <span className="flex items-center gap-2 text-xs text-white/50"><TrendingDown className="w-3 h-3 text-red-400" />Sell Signal</span>
               </div>
               <ChartContainer config={{
-                price:  { label: "Real Price",     color: "hsl(217, 91%, 60%)" },
-                equity: { label: "Portfolio", color: "#10b981" }
+                price:  { label: "Real Price ($)",  color: "hsl(217, 91%, 60%)" },
+                equity: { label: "Portfolio (%)",   color: "#10b981" }
               }} className="h-[500px]">
                 <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={backtestData} margin={{ top: 20, right: 20, left: 20, bottom: 5 }}>
+                  <LineChart data={backtestData} margin={{ top: 20, right: 70, left: 20, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
                     <XAxis dataKey="date" stroke="rgba(255,255,255,0.2)" fontSize={11} tickLine={false} interval={Math.floor(backtestData.length / 8)} />
-                    <YAxis stroke="rgba(255,255,255,0.2)" fontSize={11} tickLine={false} tickFormatter={(v) => `${Number(v) > 0 ? "+" : ""}${Number(v).toFixed(0)}%`} />
+                    {/* Left Y-axis: Portfolio equity % */}
+                    <YAxis yAxisId="equity" orientation="left" stroke="rgba(255,255,255,0.2)" fontSize={11} tickLine={false}
+                      tickFormatter={(v) => `${Number(v) >= 0 ? "+" : ""}${Number(v).toFixed(0)}%`} />
+                    {/* Right Y-axis: Real price in USD */}
+                    <YAxis yAxisId="price" orientation="right" stroke="rgba(99,179,237,0.4)" fontSize={10} tickLine={false}
+                      tickFormatter={(v) => {
+                        const n = Number(v);
+                        if (n >= 1000) return `$${(n/1000).toFixed(0)}k`;
+                        return `$${n.toFixed(2)}`;
+                      }} />
                     <Tooltip contentStyle={tooltipStyle}
-                      formatter={(v: any, name: string) => [`${Number(v) > 0 ? "+" : ""}${Number(v).toFixed(2)}%`, name === 'price' ? 'Real Price' : 'Portfolio']} />
+                      formatter={(v: any, name: string) => {
+                        if (name === 'price') {
+                          const n = Number(v);
+                          return [`$${n >= 1000 ? (n/1000).toFixed(2)+'k' : n.toFixed(2)}`, 'Real Price'];
+                        }
+                        return [`${Number(v) >= 0 ? "+" : ""}${Number(v).toFixed(2)}%`, 'Portfolio'];
+                      }} />
                     <Legend formatter={(v: string) => v === "price" ? "Real Price" : "Portfolio Equity"} />
-                    <Line type="monotone" dataKey="price"  stroke="hsl(217,91%,60%)" strokeWidth={1.5} dot={false} />
-                    <Line type="monotone" dataKey="equity" stroke="#10b981" strokeWidth={2.5}
+                    <Line yAxisId="price"  type="monotone" dataKey="price"  stroke="hsl(217,91%,60%)" strokeWidth={1.5} dot={false} />
+                    <Line yAxisId="equity" type="monotone" dataKey="equity" stroke="#10b981" strokeWidth={2.5}
                       dot={(props: any) => {
                         const { cx, cy, payload } = props;
                         if (payload.signal === 'buy') return (
