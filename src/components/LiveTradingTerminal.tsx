@@ -201,18 +201,23 @@ export default function LiveTradingTerminal() {
         ? [...klineCloses, ...(price > 0 ? [price] : [])]
         : null;
 
-      const effectivePrice = price > 0
-        ? price
+      // Use last kline close as the canonical price (consistent with signal prices)
+      // Fall back to live price if klines unavailable
+      const canonicalPrice = klineCloses.length > 0
+        ? klineCloses[klineCloses.length - 1]
+        : price;
+
+      const effectivePrice = canonicalPrice > 0
+        ? canonicalPrice
         : priceHistory.current.length > 0
           ? priceHistory.current[priceHistory.current.length - 1]
           : 0;
 
       if (effectivePrice <= 0) return;
 
-      if (price > 0) {
-        setCurrentPrice(price);
-        setConnected(true);
-      }
+      // Show live price in header if available, otherwise kline close
+      setCurrentPrice(price > 0 ? price : canonicalPrice);
+      if (price > 0 || canonicalPrice > 0) setConnected(true);
 
       if (firstPrice.current === 0) firstPrice.current = effectivePrice;
       setPriceChange(((effectivePrice - firstPrice.current) / firstPrice.current) * 100);
