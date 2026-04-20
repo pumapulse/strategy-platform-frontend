@@ -428,7 +428,7 @@ const Dashboard = () => {
                     className="group inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/[0.06] hover:bg-white/[0.11] border border-white/[0.14] hover:border-white/[0.26] text-white/65 hover:text-white font-semibold text-sm transition-all"
                   >
                     Book a Demo
-                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                    <ArrowRight className="w-3.5 h-3.5 animate-bounce-x" />
                   </button>
                 </div>
                 {/* Screenshot — same bottom as left content */}
