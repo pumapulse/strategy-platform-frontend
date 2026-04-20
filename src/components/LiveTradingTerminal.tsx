@@ -120,7 +120,7 @@ export default function LiveTradingTerminal() {
   // Signal engine
   useEffect(() => {
     const STRATEGIES = ['EMA Cross', 'RSI Reversal', 'Momentum Breakout', 'ML Scanner'];
-    const MIN_GAP = 5; // min ticks between signals
+    const MIN_GAP = 3; // min ticks between signals
 
     const tick = async () => {
       const price = await fetchBTCPrice();
@@ -177,7 +177,7 @@ export default function LiveTradingTerminal() {
       }
 
       // Need enough history
-      if (hist.length < 20) return;
+      if (hist.length < 10) return;
       if (t - lastSignalTick.current < MIN_GAP) return;
       if (pendingSignals.current.length > 0) return;
 
@@ -216,7 +216,7 @@ export default function LiveTradingTerminal() {
     };
 
     tick();
-    const id = setInterval(tick, 3000);
+    const id = setInterval(tick, 1500);
     return () => clearInterval(id);
   }, []);
 
