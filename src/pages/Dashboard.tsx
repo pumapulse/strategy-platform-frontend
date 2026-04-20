@@ -1,5 +1,6 @@
 import Typewriter from '@/components/Typewriter';
 import RevealSection from '@/components/RevealSection';
+import LiveTradingTerminal from '@/components/LiveTradingTerminal';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
@@ -228,6 +229,13 @@ const Dashboard = () => {
               </div>
             ))}
           </div>
+          </RevealSection>
+
+          {/* Live Trading Terminal — full bleed width */}
+          <RevealSection variant="up">
+            <div className="-mx-6">
+              <LiveTradingTerminal />
+            </div>
           </RevealSection>
 
           {/* Strategy Performance Section */}
