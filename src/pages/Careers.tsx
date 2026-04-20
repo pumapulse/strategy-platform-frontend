@@ -7,7 +7,7 @@ import { Briefcase, MapPin, ArrowRight, Zap, Users, TrendingUp, Code, Globe, Hea
 const cultureValues = [
   { icon: Globe, title: 'Remote-First', body: 'Work from anywhere. We have team members across 4 countries and async is our default.', img: '/img/about/remote.jpg' },
   { icon: TrendingUp, title: 'Rapid Growth', body: 'We move fast, ship often, and learn from real users. Your work has direct impact from day one.', img: '/img/about/Annotation 2026-04-05 154912.jpg' },
-  { icon: Heart, title: 'Real Impact', body: 'Every feature you build reaches thousands of active traders. You'll see your work matter immediately.', img: '/img/about/data-center-engineering-team-doing-brainstorming-monitoring-system-performance.jpg' },
+  { icon: Heart, title: 'Real Impact', body: "Every feature you build reaches thousands of active traders. You'll see your work matter immediately.", img: '/img/about/data-center-engineering-team-doing-brainstorming-monitoring-system-performance.jpg' },
   { icon: Users, title: 'Diverse Team', body: 'We hire for curiosity and craft, not credentials. Our team spans quants, engineers, and traders.', img: '/img/about/young-employees-sitting-office-table-using-laptop-team-work-brainstorming-meeting-concept.jpg' },
 ];
 
@@ -17,7 +17,7 @@ const perks = [
   { icon: Globe, title: 'Fully Remote', body: 'Work from anywhere. We cover your home office setup and co-working memberships.', img: '/img/about/remote2.jpg' },
   { icon: Code, title: 'Learning Budget', body: '$2,000/year for courses, conferences, books, and trading tools. We invest in you.', img: '/img/about/programmer-colleague-office-training-machine-learning-algorithms.jpg' },
   { icon: Heart, title: 'Health Benefits', body: 'Comprehensive health, dental, and vision coverage for you and your family.', img: '/img/about/Annotation 2026-04-05 162245.jpg' },
-  { icon: Star, title: 'Flexible Hours', body: 'We care about output, not hours. Work when you\'re most productive.', img: '/img/about/Annotation 2026-04-05 001857.jpg' },
+  { icon: Star, title: 'Flexible Hours', body: "We care about output, not hours. Work when you're most productive.", img: '/img/about/Annotation 2026-04-05 001857.jpg' },
 ];
 
 const openings = [

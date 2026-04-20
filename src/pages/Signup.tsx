@@ -13,7 +13,6 @@ export default function Signup() {
   const [showPass, setShowPass] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [captchaToken, setCaptchaToken] = useState('');
   const [step, setStep] = useState<'form' | 'verify'>('form');
   const [pendingEmail, setPendingEmail] = useState('');
   const [code, setCode] = useState('');
@@ -309,7 +308,7 @@ export default function Signup() {
                   )}
                 </div>
 
-                <button type="submit" disabled={loading || !captchaToken}
+                <button type="submit" disabled={loading}
                   className="w-full py-3.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-bold text-sm tracking-wide transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
                   {loading ? 'Sending code...' : 'Create Account'}
                 </button>
