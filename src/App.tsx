@@ -19,6 +19,11 @@ import AdminLogin from "./pages/AdminLogin";
 import NotFound from "./pages/NotFound";
 import AuthCallback from "./pages/AuthCallback";
 import ForgotPassword from "./pages/ForgotPassword";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
+import Careers from "./pages/Careers";
+import Privacy from "./pages/Privacy";
+import Terms from "./pages/Terms";
 
 const queryClient = new QueryClient();
 
@@ -43,6 +48,11 @@ const App = () => (
           <Route path="/discussion/:id" element={<DiscussionDetail />} />
           <Route path="/admin-login" element={<AdminLogin />} />
           <Route path="/admin" element={<Admin />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/careers" element={<Careers />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/terms" element={<Terms />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

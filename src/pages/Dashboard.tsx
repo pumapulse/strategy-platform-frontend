@@ -1,6 +1,7 @@
 import Typewriter from '@/components/Typewriter';
 import RevealSection from '@/components/RevealSection';
 import LiveTradingTerminal from '@/components/LiveTradingTerminal';
+import RecentSignalsFeed from '@/components/RecentSignalsFeed';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
@@ -51,24 +52,24 @@ const heroSlides = [
 
 const btcEquity = [
   { d: 'Jan', strategy: 10000, market: 10000 },
-  { d: 'Feb', strategy: 11200, market: 9800 },
-  { d: 'Mar', strategy: 12800, market: 10400 },
-  { d: 'Apr', strategy: 12100, market: 9600 },
-  { d: 'May', strategy: 14500, market: 10900 },
-  { d: 'Jun', strategy: 16200, market: 10200 },
-  { d: 'Jul', strategy: 15400, market: 9700 },
-  { d: 'Aug', strategy: 18900, market: 11100 },
-  { d: 'Sep', strategy: 21300, market: 10500 },
-  { d: 'Oct', strategy: 19800, market: 9900 },
-  { d: 'Nov', strategy: 24600, market: 11800 },
-  { d: 'Dec', strategy: 28400, market: 12200 },
+  { d: 'Feb', strategy: 11470, market: 9800 },
+  { d: 'Mar', strategy: 13140, market: 10400 },
+  { d: 'Apr', strategy: 12500, market: 9600 },
+  { d: 'May', strategy: 15300, market: 10900 },
+  { d: 'Jun', strategy: 18200, market: 10200 },
+  { d: 'Jul', strategy: 17100, market: 9700 },
+  { d: 'Aug', strategy: 21400, market: 11100 },
+  { d: 'Sep', strategy: 25600, market: 10500 },
+  { d: 'Oct', strategy: 23800, market: 9900 },
+  { d: 'Nov', strategy: 29400, market: 11800 },
+  { d: 'Dec', strategy: 35200, market: 12200 },
 ];
 
 const monthlyReturns = [
-  { m: 'Jan', r: 0 }, { m: 'Feb', r: 12 }, { m: 'Mar', r: 14.3 },
-  { m: 'Apr', r: -5.5 }, { m: 'May', r: 19.8 }, { m: 'Jun', r: 11.7 },
-  { m: 'Jul', r: -4.9 }, { m: 'Aug', r: 22.7 }, { m: 'Sep', r: 12.7 },
-  { m: 'Oct', r: -7.0 }, { m: 'Nov', r: 24.2 }, { m: 'Dec', r: 15.4 },
+  { m: 'Jan', r: 0 }, { m: 'Feb', r: 14.7 }, { m: 'Mar', r: 14.6 },
+  { m: 'Apr', r: -4.9 }, { m: 'May', r: 22.4 }, { m: 'Jun', r: 19.0 },
+  { m: 'Jul', r: -6.0 }, { m: 'Aug', r: 25.1 }, { m: 'Sep', r: 19.6 },
+  { m: 'Oct', r: -7.0 }, { m: 'Nov', r: 23.5 }, { m: 'Dec', r: 19.7 },
 ];
 
 const Dashboard = () => {
@@ -90,7 +91,7 @@ const Dashboard = () => {
   const stats = [
     { title: 'Available Strategies', value: '12', icon: Target, color: 'text-blue-400', bg: 'bg-blue-400/10', border: 'border-blue-400/20', change: 'Free forever', link: '/strategies' },
     { title: 'Avg Win Rate', value: '65%', icon: TrendingUp, color: 'text-emerald-400', bg: 'bg-emerald-400/10', border: 'border-emerald-400/20', change: 'Across all strategies', link: '/strategies' },
-    { title: 'Best Strategy', value: '+28.7%', icon: Activity, color: 'text-violet-400', bg: 'bg-violet-400/10', border: 'border-violet-400/20', change: 'Turtle Trading System', link: '/strategy/12' },
+    { title: 'Best Strategy', value: '+547%', icon: Activity, color: 'text-violet-400', bg: 'bg-violet-400/10', border: 'border-violet-400/20', change: 'Turtle Trading System', link: '/strategy/12' },
   ];
 
   const performanceData = [
@@ -102,17 +103,10 @@ const Dashboard = () => {
     { month: 'Nov', value: 18920 }, { month: 'Dec', value: 21700 },
   ];
 
-  const recentTrades = [
-    { id: 1, strategy: 'Breakout Momentum', pair: 'BTC/USDT', type: 'buy', profit: '+12.3%', time: '2h ago', status: 'active' },
-    { id: 2, strategy: 'Mean Reversion RSI', pair: 'ETH/USDT', type: 'sell', profit: '+8.7%', time: '5h ago', status: 'closed' },
-    { id: 3, strategy: 'Ichimoku Cloud', pair: 'SOL/USDT', type: 'buy', profit: '-2.1%', time: '1d ago', status: 'active' },
-    { id: 4, strategy: 'VWAP Scalper', pair: 'BNB/USDT', type: 'sell', profit: '+15.4%', time: '1d ago', status: 'closed' },
-  ];
-
   const topStrategies = [
-    { id: 10, name: 'ML Momentum Scanner',   return: '+14.7%', winRate: 67, trades: 289, icon: Zap },
-    { id: 12, name: 'Turtle Trading System', return: '+28.7%', winRate: 42, trades: 89,  icon: TrendingUp },
-    { id: 5,  name: 'EMA Crossover Trend',   return: '+22.4%', winRate: 52, trades: 67,  icon: Activity },
+    { id: 10, name: 'ML Momentum Scanner',   return: '+252%', winRate: 70, trades: 289, icon: Zap },
+    { id: 12, name: 'Turtle Trading System', return: '+547%', winRate: 55, trades: 89,  icon: TrendingUp },
+    { id: 5,  name: 'EMA Crossover Trend',   return: '+372%', winRate: 58, trades: 67,  icon: Activity },
   ];
 
   const current = heroSlides[slide];
@@ -259,7 +253,7 @@ const Dashboard = () => {
                     <p className="text-white/30 text-xs mt-0.5">ML Momentum Scanner · 12 months</p>
                   </div>
                   <div className="flex items-center gap-4 text-xs">
-                    <span className="flex items-center gap-1.5 text-emerald-400"><span className="w-3 h-0.5 bg-emerald-500 inline-block rounded" />Strategy +184%</span>
+                    <span className="flex items-center gap-1.5 text-emerald-400"><span className="w-3 h-0.5 bg-emerald-500 inline-block rounded" />Strategy +252%</span>
                     <span className="flex items-center gap-1.5 text-white/30"><span className="w-3 h-0.5 bg-white/20 inline-block rounded" />Buy & Hold +22%</span>
                   </div>
                 </div>
@@ -289,7 +283,7 @@ const Dashboard = () => {
 
               <RevealSection variant="right">
               <div className="rounded-2xl border border-white/[0.07] bg-white/[0.03] p-6 hover-lift">
-                <p className="text-white/30 text-xs mb-4">ML Momentum · 2024</p>
+                <p className="text-white/30 text-xs mb-4">ML Momentum Scanner · 2024</p>
                 <ResponsiveContainer width="100%" height={200}>
                   <ComposedChart data={monthlyReturns} margin={{ top: 4, right: 4, left: 0, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
@@ -310,10 +304,10 @@ const Dashboard = () => {
             <RevealSection variant="stagger">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
-                { label: 'Best Avg Return',  value: '+28.7%', sub: 'Turtle Trading System', pos: true },
-                { label: 'Best Win Rate',    value: '67%',    sub: 'ML Momentum Scanner',   pos: true },
-                { label: 'Max Drawdown',     value: '-8.9%',  sub: 'Controlled risk',        pos: false },
-                { label: 'Markets Covered',  value: '1',      sub: 'Crypto only', pos: true },
+                { label: 'Best Avg Return',  value: '+24.6%', sub: 'Turtle Trading System', pos: true },
+                { label: 'Best Win Rate',    value: '70%',    sub: 'ML Momentum Scanner',   pos: true },
+                { label: 'Max Drawdown',     value: '-7.8%',  sub: 'ML Momentum Scanner',   pos: false },
+                { label: 'Best Prof. Factor', value: '3.2x',  sub: 'ML Momentum · Turtle',  pos: true },
               ].map((m, i) => (
                 <div key={m.label}
                   className="p-5 rounded-2xl border border-white/[0.07] bg-white/[0.03] hover:bg-white/[0.05] hover-lift transition-colors">
@@ -454,38 +448,21 @@ const Dashboard = () => {
           </div>
           </RevealSection>
 
-          {/* Recent Trades */}
+          {/* Recent Signals — from live terminal */}
           <RevealSection variant="up">
           <div className="rounded-2xl border border-white/[0.07] bg-white/[0.03] p-6">
-            <div className="flex items-center gap-2 mb-1">
-              <BarChart3 className="w-4 h-4 text-white/50" />
-              <p className="text-white font-bold text-base">Recent Trades</p>
+            <div className="flex items-center justify-between mb-1">
+              <div className="flex items-center gap-2">
+                <Zap className="w-4 h-4 text-amber-400" />
+                <p className="text-white font-bold text-base">Recent Signals</p>
+              </div>
+              <span className="flex items-center gap-1.5 text-xs text-emerald-400 font-medium">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse inline-block" />
+                Live · BTC/USDT
+              </span>
             </div>
-            <p className="text-white/30 text-xs mb-5">Your latest trading activity</p>
-            <div className="space-y-2">
-              {recentTrades.map((trade, i) => (
-                <div key={trade.id}
-                  className="flex items-center justify-between p-4 rounded-xl border border-white/[0.05] hover:bg-emerald-500/10 hover:border-emerald-500/30 transition-all cursor-pointer group animate-fade-up"
-                  style={{ animationDelay: `${0.1 + i * 0.08}s` }}>
-                  <div className="flex items-center gap-4">
-                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${trade.type === 'buy' ? 'bg-emerald-400/10' : 'bg-red-400/10'}`}>
-                      {trade.type === 'buy' ? <TrendingUp className="w-5 h-5 text-emerald-400" /> : <TrendingDown className="w-5 h-5 text-red-400" />}
-                    </div>
-                    <div>
-                      <p className="font-semibold text-white group-hover:text-emerald-400 transition-colors">{trade.strategy}</p>
-                      <p className="text-sm text-white/30 mt-0.5">{trade.pair} · {trade.time}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-4">
-                    <span className={`text-base font-black ${trade.profit.startsWith('+') ? 'text-emerald-400' : 'text-red-400'}`}>{trade.profit}</span>
-                    <span className={`text-xs px-3 py-1 rounded-full font-medium ${trade.status === 'active' ? 'bg-blue-400/10 text-blue-400' : 'bg-white/5 text-white/30'}`}>
-                      {trade.status}
-                    </span>
-                    <ArrowRight className="w-4 h-4 text-white/20 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </div>
-                </div>
-              ))}
-            </div>
+            <p className="text-white/30 text-xs mb-5">Real-time buy/sell signals from the live terminal</p>
+            <RecentSignalsFeed />
           </div>
           </RevealSection>
 

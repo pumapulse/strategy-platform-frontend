@@ -26,16 +26,14 @@ const Footer = () => {
             <p className="text-xs font-black uppercase tracking-[0.2em] text-white/30 mb-5">Company</p>
             <ul className="space-y-3">
               {[
-                { label: 'About Us',         href: 'https://crowdpnl.com/about/' },
-                { label: 'Contact Us',       href: 'https://crowdpnl.com/contact/' },
-                { label: 'Careers',          href: 'https://crowdpnl.com/careers/' },
-                { label: 'Blog',             href: 'https://crowdpnl.com/blog/' },
-                { label: 'Privacy Policy',   href: 'https://crowdpnl.com/privacy/' },
-                { label: 'Terms of Service', href: 'https://crowdpnl.com/terms/' },
+                { label: 'About Us',         href: '/about' },
+                { label: 'Contact Us',       href: '/contact' },
+                { label: 'Careers',          href: '/careers' },
+                { label: 'Privacy Policy',   href: '/privacy' },
+                { label: 'Terms of Service', href: '/terms' },
               ].map(({ label, href }) => (
                 <li key={label}>
-                  <a href={href} target={href.startsWith('http') ? '_blank' : undefined}
-                    rel="noopener noreferrer"
+                  <a href={href}
                     className="text-sm text-white/40 hover:text-white transition-colors">
                     {label}
                   </a>

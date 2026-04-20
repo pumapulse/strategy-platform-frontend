@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Activity, Zap, Circle, TrendingUp, TrendingDown, ExternalLink } from 'lucide-react';
+import { signalStore } from '@/lib/signalStore';
 
 interface Signal {
   type: 'buy' | 'sell';
@@ -160,17 +161,19 @@ export default function LiveTradingTerminal() {
 
       for (const pending of toFire) {
         const prevP = lastSignalPrice.current;
+        const prevType = lastSignalType.current;
         let pnl: string | undefined;
-        if (prevP > 0) {
-          const diff = pending.signal.type === 'sell'
-            ? ((effectivePrice - prevP) / prevP) * 100
-            : ((prevP - effectivePrice) / prevP) * 100;
+        // P&L only shows on SELL signal (closes the BUY trade)
+        if (prevP > 0 && prevType === 'buy' && pending.signal.type === 'sell') {
+          const diff = ((effectivePrice - prevP) / prevP) * 100;
           if (Math.abs(diff) > 0.003) pnl = `${diff >= 0 ? '+' : ''}${diff.toFixed(2)}%`;
         }
         lastSignalType.current = pending.signal.type;
         lastSignalPrice.current = effectivePrice;
         lastSignalTick.current = t;
-        setSignals(prev => [{ ...pending.signal, price: effectivePrice, time: nowTime(), pnl }, ...prev].slice(0, 15));
+        const fired = { ...pending.signal, price: effectivePrice, time: nowTime(), pnl };
+        signalStore.push(fired);
+        setSignals(prev => [fired, ...prev].slice(0, 15));
       }
 
       // Need enough history
