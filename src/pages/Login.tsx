@@ -65,7 +65,7 @@ export default function Login() {
             <div className="flex gap-10 mt-10">
               {[
                 { icon: TrendingUp, label: 'Free Strategies', value: '12' },
-                { icon: Zap,        label: 'Best Win Rate',   value: '63%' },
+                { icon: Zap,        label: 'Best Win Rate',   value: '67%' },
                 { icon: ShieldCheck,label: 'Backtested',      value: '100%' },
               ].map(({ icon: Icon, label, value }) => (
                 <div key={label}>

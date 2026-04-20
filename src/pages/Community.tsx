@@ -52,6 +52,14 @@ const Community = () => {
 
   const token = localStorage.getItem('token') || '';
 
+  const requireAuth = (action: () => void) => {
+    if (!token) {
+      navigate('/login?redirect=/community');
+      return;
+    }
+    action();
+  };
+
   const fetchDiscussions = useCallback(async () => {
     try {
       setLoading(true);
@@ -140,9 +148,10 @@ const Community = () => {
               className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/[0.05] border border-white/[0.08] text-white placeholder:text-white/30 text-sm focus:outline-none focus:border-emerald-500/50 transition-colors"
             />
           </div>
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <Dialog open={isDialogOpen} onOpenChange={(open) => { if (open) requireAuth(() => setIsDialogOpen(true)); else setIsDialogOpen(false); }}>
             <DialogTrigger asChild>
-              <button className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white font-semibold text-sm transition-all">
+              <button className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white font-semibold text-sm transition-all"
+                onClick={(e) => { if (!token) { e.preventDefault(); navigate('/login?redirect=/community'); } }}>
                 <Plus className="w-4 h-4" />New Discussion
               </button>
             </DialogTrigger>
@@ -239,7 +248,7 @@ const Community = () => {
                           <span className="px-2 py-0.5 rounded-full bg-red-500/20 border border-red-500/30 text-red-400 text-[10px] font-bold">HOT</span>
                         )}
                       </div>
-                      <p className="text-sm text-white/40 mb-3 line-clamp-2">{d.content}</p>
+                      <p className="text-sm text-white/40 mb-3 line-clamp-2">{d.content.replace(/\*+/g, '')}</p>
                       <div className="flex flex-wrap items-center gap-4 text-xs text-white/40">
                         <span className="font-medium text-white/70">{d.user?.name}</span>
                         <span className="px-2 py-0.5 rounded-full bg-white/[0.06] border border-white/[0.08] text-white/50">{d.category}</span>

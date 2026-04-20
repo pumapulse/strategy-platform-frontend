@@ -21,27 +21,27 @@ import { checkSubscription } from '@/lib/metamask';
 const heroSlides = [
   {
     src: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=1920&q=90',
-    eyebrow: 'PROVEN STRATEGIES',
-    headline: ['12 professional', 'strategies.'],
-    sub: 'Access 12 fully backtested trading strategies with real performance data — free forever.',
+    eyebrow: 'INSTITUTIONAL-GRADE STRATEGIES',
+    headline: ['Built for traders', 'who mean business.'],
+    sub: 'Twelve fully backtested crypto strategies — each one stress-tested across market cycles and available to you at no cost.',
     accent: 'from-emerald-400 to-teal-400',
     btnBg: 'bg-white text-slate-900 hover:bg-white/90',
     btnOutline: 'border-white/40 text-white hover:bg-white/10',
   },
   {
     src: 'https://images.unsplash.com/photo-1620321023374-d1a68fbc720d?auto=format&fit=crop&w=1920&q=90',
-    eyebrow: 'PREMIUM EDGE',
-    headline: ['New strategies', 'every day.'],
-    sub: 'Premium members get +1 new strategy description daily. Elite members get +2. Stay ahead of the market.',
+    eyebrow: 'CONTINUOUS ALPHA',
+    headline: ['Your edge, updated', 'daily.'],
+    sub: 'Premium and Elite members receive new strategy releases every day — so your playbook evolves as fast as the market does.',
     accent: 'from-violet-400 to-indigo-400',
     btnBg: 'bg-violet-500 text-white hover:bg-violet-600',
     btnOutline: 'border-white/40 text-white hover:bg-white/10',
   },
   {
     src: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1920&q=90',
-    eyebrow: 'SCRIPT DOWNLOADS',
-    headline: ['Download & automate', 'your trades.'],
-    sub: 'Premium: 2 script downloads/month. Elite: 4 downloads/month. Run strategies on any exchange.',
+    eyebrow: 'AUTOMATED EXECUTION',
+    headline: ['From strategy', 'to execution.'],
+    sub: 'Deploy production-ready scripts directly to your exchange. No manual entry, no missed signals — just consistent execution.',
     accent: 'from-amber-400 to-orange-400',
     btnBg: 'bg-amber-400 text-slate-900 hover:bg-amber-300',
     btnOutline: 'border-white/40 text-white hover:bg-white/10',
@@ -88,9 +88,8 @@ const Dashboard = () => {
 
   const stats = [
     { title: 'Available Strategies', value: '12', icon: Target, color: 'text-blue-400', bg: 'bg-blue-400/10', border: 'border-blue-400/20', change: 'Free forever', link: '/strategies' },
-    { title: 'Avg Win Rate', value: '62%', icon: TrendingUp, color: 'text-emerald-400', bg: 'bg-emerald-400/10', border: 'border-emerald-400/20', change: 'Across all strategies', link: '/strategies' },
+    { title: 'Avg Win Rate', value: '65%', icon: TrendingUp, color: 'text-emerald-400', bg: 'bg-emerald-400/10', border: 'border-emerald-400/20', change: 'Across all strategies', link: '/strategies' },
     { title: 'Best Strategy', value: '+28.7%', icon: Activity, color: 'text-violet-400', bg: 'bg-violet-400/10', border: 'border-violet-400/20', change: 'Turtle Trading System', link: '/strategy/12' },
-    { title: 'Markets Covered', value: '3', icon: BarChart3, color: 'text-amber-400', bg: 'bg-amber-400/10', border: 'border-amber-400/20', change: 'Crypto · Forex · Stocks', link: '/strategies' },
   ];
 
   const performanceData = [
@@ -106,11 +105,11 @@ const Dashboard = () => {
     { id: 1, strategy: 'Breakout Momentum', pair: 'BTC/USDT', type: 'buy', profit: '+12.3%', time: '2h ago', status: 'active' },
     { id: 2, strategy: 'Mean Reversion RSI', pair: 'ETH/USDT', type: 'sell', profit: '+8.7%', time: '5h ago', status: 'closed' },
     { id: 3, strategy: 'Ichimoku Cloud', pair: 'SOL/USDT', type: 'buy', profit: '-2.1%', time: '1d ago', status: 'active' },
-    { id: 4, strategy: 'VWAP Scalper', pair: 'AAPL', type: 'sell', profit: '+15.4%', time: '1d ago', status: 'closed' },
+    { id: 4, strategy: 'VWAP Scalper', pair: 'BNB/USDT', type: 'sell', profit: '+15.4%', time: '1d ago', status: 'closed' },
   ];
 
   const topStrategies = [
-    { id: 10, name: 'ML Momentum Scanner',   return: '+14.7%', winRate: 71, trades: 289, icon: Zap },
+    { id: 10, name: 'ML Momentum Scanner',   return: '+14.7%', winRate: 67, trades: 289, icon: Zap },
     { id: 12, name: 'Turtle Trading System', return: '+28.7%', winRate: 42, trades: 89,  icon: TrendingUp },
     { id: 5,  name: 'EMA Crossover Trend',   return: '+22.4%', winRate: 52, trades: 67,  icon: Activity },
   ];
@@ -214,7 +213,7 @@ const Dashboard = () => {
 
           {/* Stat cards */}
           <RevealSection variant="stagger">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {stats.map((stat, i) => (
               <div key={stat.title} onClick={() => navigate(stat.link)}
                 className={`cursor-pointer rounded-2xl border ${stat.border} bg-white/[0.03] hover:bg-white/[0.06] p-6 transition-all hover-lift`}>
@@ -304,9 +303,9 @@ const Dashboard = () => {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
                 { label: 'Best Avg Return',  value: '+28.7%', sub: 'Turtle Trading System', pos: true },
-                { label: 'Best Win Rate',    value: '71%',    sub: 'ML Momentum Scanner',   pos: true },
+                { label: 'Best Win Rate',    value: '67%',    sub: 'ML Momentum Scanner',   pos: true },
                 { label: 'Max Drawdown',     value: '-8.9%',  sub: 'Controlled risk',        pos: false },
-                { label: 'Markets Covered',  value: '3',      sub: 'Crypto · Forex · Stocks', pos: true },
+                { label: 'Markets Covered',  value: '1',      sub: 'Crypto only', pos: true },
               ].map((m, i) => (
                 <div key={m.label}
                   className="p-5 rounded-2xl border border-white/[0.07] bg-white/[0.03] hover:bg-white/[0.05] hover-lift transition-colors">
@@ -377,98 +376,72 @@ const Dashboard = () => {
 
           {/* Desktop App Section */}
           <RevealSection variant="scale">
-          <div className="relative rounded-3xl overflow-hidden border border-white/[0.07]">
+          <div className="relative rounded-3xl overflow-hidden border border-white/[0.08]">
             <div className="absolute inset-0 bg-gradient-to-br from-violet-900/30 via-[#0a0e1a] to-emerald-900/20" />
             <div className="absolute -top-32 -right-32 w-96 h-96 bg-violet-600/10 rounded-full blur-3xl pointer-events-none" />
             <div className="absolute -bottom-24 -left-24 w-72 h-72 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
 
-            <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-0">
-              <div className="p-10 lg:p-14 flex flex-col justify-center">
-                <div className="flex items-center gap-2 mb-5">
+            <div className="relative z-10 flex flex-col lg:flex-row">
+
+              {/* Left: content */}
+              <div className="lg:w-2/5 flex flex-col justify-center p-10 lg:p-14 space-y-7">
+                <div className="flex items-center gap-2">
                   <div className="h-px w-6 bg-violet-500" />
                   <span className="text-xs font-bold tracking-[0.25em] text-violet-400 uppercase">Desktop App</span>
                 </div>
-                <h2 className="text-4xl lg:text-5xl font-black tracking-tight text-white leading-[1.05] mb-5">
-                  <Typewriter text="Trade like a pro." as="span" speed={40} cursor={false} />
-                  <br />
-                  <Typewriter text="Right on your desktop." as="span" speed={40} delay={700} charClassName="text-violet-400" />
-                </h2>
-                <Typewriter
-                  text="Our native desktop app brings the full power of a professional trading terminal — think MetaTrader, but built around our strategy ecosystem. Live charts, one-click execution, real-time alerts, and your full strategy library, all in one window."
-                  as="p"
-                  speed={12}
-                  delay={1600}
-                  cursor={false}
-                  className="text-white/50 text-base leading-relaxed mb-8 max-w-md"
-                />
-                <div className="grid grid-cols-2 gap-3 mb-10">
+                <div>
+                  <h2 className="text-4xl lg:text-5xl font-black tracking-tight text-white leading-[1.05] mb-3">
+                    Trade like a pro.
+                  </h2>
+                  <h3 className="text-4xl lg:text-5xl font-black tracking-tight leading-[1.05] text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-purple-400">
+                    Right on your desktop.
+                  </h3>
+                </div>
+                <p className="text-white/50 text-sm leading-relaxed max-w-sm">
+                  Professional trading terminal built around our strategy ecosystem. Live charts, one-click execution, real-time alerts, and your full strategy library in one powerful window.
+                </p>
+                <div className="grid grid-cols-2 gap-2.5">
                   {[
-                    { icon: LineChart, label: 'Live candlestick charts', color: 'text-emerald-400', bg: 'bg-emerald-400/10' },
-                    { icon: Cpu, label: 'Strategy auto-execution', color: 'text-violet-400', bg: 'bg-violet-400/10' },
-                    { icon: Bell, label: 'Real-time signal alerts', color: 'text-amber-400', bg: 'bg-amber-400/10' },
-                    { icon: LayoutDashboard, label: 'Multi-panel workspace', color: 'text-blue-400', bg: 'bg-blue-400/10' },
-                    { icon: RefreshCw, label: 'Auto strategy sync', color: 'text-teal-400', bg: 'bg-teal-400/10' },
-                    { icon: Lock, label: 'Encrypted local data', color: 'text-pink-400', bg: 'bg-pink-400/10' },
+                    { icon: LineChart,       label: 'Live Charts',  color: 'text-emerald-400', bg: 'bg-emerald-400/10' },
+                    { icon: Cpu,             label: 'Auto Execute', color: 'text-violet-400',  bg: 'bg-violet-400/10'  },
+                    { icon: Bell,            label: 'Alerts',       color: 'text-amber-400',   bg: 'bg-amber-400/10'   },
+                    { icon: LayoutDashboard, label: 'Multi-Panel',  color: 'text-blue-400',    bg: 'bg-blue-400/10'    },
+                    { icon: RefreshCw,       label: 'Auto Sync',    color: 'text-teal-400',    bg: 'bg-teal-400/10'    },
+                    { icon: Lock,            label: 'Encrypted',    color: 'text-pink-400',    bg: 'bg-pink-400/10'    },
                   ].map(({ icon: Icon, label, color, bg }) => (
-                    <div key={label} className="flex items-center gap-2.5 p-3 rounded-xl border border-white/[0.06] bg-white/[0.03]">
-                      <div className={`w-7 h-7 rounded-lg ${bg} flex items-center justify-center shrink-0`}>
-                        <Icon className={`w-3.5 h-3.5 ${color}`} />
+                    <div key={label} className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl border border-white/[0.06] bg-white/[0.03] hover:bg-white/[0.06] transition-colors">
+                      <div className={`w-6 h-6 rounded-lg ${bg} flex items-center justify-center shrink-0`}>
+                        <Icon className={`w-3 h-3 ${color}`} />
                       </div>
-                      <span className="text-xs font-medium text-white/70">{label}</span>
+                      <span className="text-xs font-medium text-white/55">{label}</span>
                     </div>
                   ))}
                 </div>
-                <div className="space-y-4">
-                  <p className="text-xs font-semibold uppercase tracking-widest text-white/50">Download for your platform</p>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <a href="https://www.dropbox.com/scl/fi/7ljdblj8eslqbsshi4dgg/Tradex.exe?rlkey=7a1svh0j0n5n5yztxi0v1dpw0&st=j968znuc&dl=1" download="Tradex.exe"
-                      className="group flex items-center gap-3 px-5 py-4 rounded-2xl bg-violet-600 border border-violet-500 hover:bg-violet-500 transition-all shadow-lg shadow-violet-900/40">
-                      <svg className="w-8 h-8 shrink-0" viewBox="0 0 24 24" fill="none">
-                        <path d="M3 5.5L10.5 4.5V11.5H3V5.5Z" fill="white"/>
-                        <path d="M11.5 4.35L21 3V11.5H11.5V4.35Z" fill="white"/>
-                        <path d="M3 12.5H10.5V19.5L3 18.5V12.5Z" fill="white"/>
-                        <path d="M11.5 12.5H21V21L11.5 19.65V12.5Z" fill="white"/>
-                      </svg>
-                      <div className="text-left">
-                        <div className="text-[11px] text-white/70 leading-none mb-0.5">Download for</div>
-                        <div className="text-base font-black text-white">Windows</div>
-                        <div className="text-[10px] text-white/60">v2.4.1 · .exe · 64-bit</div>
-                      </div>
-                      <Download className="w-4 h-4 text-white/60 group-hover:text-white ml-auto transition-colors" />
-                    </a>
-                    <button className="group flex items-center gap-3 px-5 py-4 rounded-2xl bg-white/[0.07] border border-white/20 hover:bg-white/[0.12] hover:border-white/30 transition-all">
-                      <Monitor className="w-8 h-8 shrink-0 text-white/80" />
-                      <div className="text-left">
-                        <div className="text-[11px] text-white/50 leading-none mb-0.5">Download for</div>
-                        <div className="text-base font-black text-white">macOS</div>
-                        <div className="text-[10px] text-white/40">v2.4.1 · .dmg · M1/Intel</div>
-                      </div>
-                      <Download className="w-4 h-4 text-white/30 group-hover:text-white ml-auto transition-colors" />
-                    </button>
-                    <button className="group flex items-center gap-3 px-5 py-4 rounded-2xl bg-white/[0.07] border border-white/20 hover:bg-white/[0.12] hover:border-white/30 transition-all">
-                      <Monitor className="w-8 h-8 shrink-0 text-white/80" />
-                      <div className="text-left">
-                        <div className="text-[11px] text-white/50 leading-none mb-0.5">Download for</div>
-                        <div className="text-base font-black text-white">Linux</div>
-                        <div className="text-[10px] text-white/40">v2.4.1 · .AppImage</div>
-                      </div>
-                      <Download className="w-4 h-4 text-white/30 group-hover:text-white ml-auto transition-colors" />
-                    </button>
-                  </div>
-                  <p className="text-[11px] text-white/20">Free forever · No credit card · Auto-updates</p>
-                </div>
               </div>
 
-              <div className="relative flex items-center justify-center lg:justify-end overflow-hidden p-6 lg:p-10 lg:pl-0">
-                <div className="relative w-full max-w-[760px] mselect-none">
+              {/* Right: button + screenshot */}
+              <div className="lg:w-3/5 flex flex-col lg:pt-14 lg:pr-10 lg:pb-14 lg:pl-6 p-8">
+                {/* Button — same top as "DESKTOP APP" eyebrow on the left */}
+                <div className="flex justify-end mb-6">
+                  <button
+                    onClick={() => window.open('https://calendly.com', '_blank')}
+                    className="group inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/[0.06] hover:bg-white/[0.11] border border-white/[0.14] hover:border-white/[0.26] text-white/65 hover:text-white font-semibold text-sm transition-all"
+                  >
+                    Book a Demo
+                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                  </button>
+                </div>
+                {/* Screenshot — same bottom as left content */}
+                <div className="flex-1 rounded-2xl overflow-hidden border border-white/[0.1]"
+                  style={{ boxShadow: '0 -8px 40px rgba(109,40,217,0.15), 0 8px 30px rgba(0,0,0,0.5)' }}>
                   <img
                     src="/desktop.png"
-                    alt="CrowdPnL Desktop App"
-                    className="w-full rounded-xl"
-                    style={{ boxShadow: '0 0 0 1px rgba(255,255,255,0.08), 0 24px 60px rgba(0,0,0,0.7)' }}
+                    alt="CrowdPnL Desktop Trading Terminal"
+                    className="w-full h-full object-cover object-top block rounded-2xl"
                   />
                 </div>
               </div>
+
             </div>
           </div>
           </RevealSection>

@@ -21,7 +21,6 @@ interface FilterProps {
   onClearAll: () => void;
 }
 
-const markets = ["All", "Crypto", "Forex", "Stocks"];
 const timeframes = ["All", "1H", "4H", "Daily", "Weekly"];
 const indicators = ["EMA", "RSI", "MACD", "Bollinger Bands", "Stochastic", "Fibonacci", "Ichimoku", "ADX", "Volume", "Price Action"];
 
@@ -80,16 +79,6 @@ const StrategyFilters = ({
                 <X className="w-4 h-4" />
               </button>
             )}
-          </div>
-        </div>
-
-        {/* Market */}
-        <div>
-          <label className="text-xs text-white/40 mb-2 block uppercase tracking-widest font-semibold">Market</label>
-          <div className="flex flex-wrap gap-2">
-            {markets.map(m => (
-              <button key={m} onClick={() => setSelectedMarket(m)} className={`${chipBase} ${selectedMarket === m ? chipActive : chipInactive}`}>{m}</button>
-            ))}
           </div>
         </div>
 

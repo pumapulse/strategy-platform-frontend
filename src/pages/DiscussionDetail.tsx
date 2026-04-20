@@ -67,6 +67,14 @@ const DiscussionDetail = () => {
   const token = localStorage.getItem('token') || '';
   const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
 
+  const requireAuth = (action: () => void) => {
+    if (!token) {
+      navigate(`/login?redirect=/discussion/${id}`);
+      return;
+    }
+    action();
+  };
+
   const fetchDiscussion = useCallback(async () => {
     if (!id) return;
     try {
@@ -91,6 +99,7 @@ const DiscussionDetail = () => {
   }, [discussion?.user?.id]);
 
   const handleLike = async () => {
+    if (!token) { navigate(`/login?redirect=/discussion/${id}`); return; }
     if (!id || likePending) return;
     try {
       setLikePending(true);
@@ -108,6 +117,7 @@ const DiscussionDetail = () => {
   };
 
   const handleFollow = async () => {
+    if (!token) { navigate(`/login?redirect=/discussion/${id}`); return; }
     if (!discussion?.user?.id || followPending) return;
     try {
       setFollowPending(true);
@@ -131,6 +141,7 @@ const DiscussionDetail = () => {
   };
 
   const handleReply = async () => {
+    if (!token) { navigate(`/login?redirect=/discussion/${id}`); return; }
     if (!replyContent.trim() || !id) {
       toast({ title: 'Error', description: 'Please write a reply', variant: 'destructive' });
       return;
@@ -232,7 +243,7 @@ const DiscussionDetail = () => {
             </div>
           </CardHeader>
           <CardContent>
-            <p className="text-base leading-relaxed mb-4 whitespace-pre-wrap">{discussion.content}</p>
+            <p className="text-base leading-relaxed mb-4 whitespace-pre-wrap">{discussion.content.replace(/\*+/g, '')}</p>
             <Button variant={liked ? 'default' : 'outline'} size="sm" className="gap-2"
               onClick={handleLike} disabled={likePending}>
               {likePending ? <Loader2 className="w-4 h-4 animate-spin" /> : <ThumbsUp className="w-4 h-4" />}
@@ -261,7 +272,7 @@ const DiscussionDetail = () => {
                           <span className="font-semibold">{reply.user?.name}</span>
                           <span className="text-xs text-muted-foreground">{timeAgo(reply.created_at)}</span>
                         </div>
-                        <p className="text-sm leading-relaxed whitespace-pre-wrap">{reply.content}</p>
+                        <p className="text-sm leading-relaxed whitespace-pre-wrap">{reply.content.replace(/\*+/g, '')}</p>
                       </div>
                       <div className="flex items-center gap-2 mt-2 ml-4">
                         <Button variant="ghost" size="sm" className="h-8 gap-1 text-xs">

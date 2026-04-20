@@ -99,15 +99,15 @@ const StrategyDetail = () => {
         const algoData: Record<number, any> = {
           1: {
             name: 'Breakout Momentum Algorithm', type: 'Price Action + Volume Analysis',
-            description: 'Scans for price consolidation zones where ATR compresses below 0.8%. On the first candle closing above the range high with volume exceeding 1.5� the 20-period average, a long position is opened. The algorithm uses a 2-ATR trailing stop and takes partial profits at 2R to lock in gains while letting winners run.',
+            description: 'Scans for price consolidation zones where ATR compresses below 0.8%. On the first candle closing above the range high with volume exceeding 1.5x the 20-period average, a long position is opened. The algorithm uses a 2-ATR trailing stop and takes partial profits at 2R to lock in gains while letting winners run.',
             technicalDetails: [
               { title: 'Consolidation Detection', content: 'ATR(14) is compared against a 20-period rolling average. When ATR drops below 80% of its average, the algorithm flags a potential squeeze setup and begins monitoring for breakout conditions.' },
-              { title: 'Volume Confirmation', content: 'Breakout candles must show volume = 1.5� the 20-period volume SMA. This filters false breakouts caused by low-liquidity moves and ensures institutional participation.' },
+              { title: 'Volume Confirmation', content: 'Breakout candles must show volume >= 1.5x the 20-period volume SMA. This filters false breakouts caused by low-liquidity moves and ensures institutional participation.' },
               { title: 'Dynamic Stop-Loss', content: 'Initial stop is placed 1 ATR below the breakout candle low. After 50% of position is closed at 2R, the stop moves to breakeven, eliminating downside risk on the remaining position.' },
               { title: 'Trailing Exit', content: 'The remaining 50% trails with a 2-ATR trailing stop, automatically adjusting as price moves in favor. This captures extended trend moves without manual intervention.' },
             ],
             workflow: ['Scan all pairs for ATR compression (ATR < 80% of 20-period average)', 'Monitor flagged pairs for volume-confirmed breakout candle', 'Calculate position size based on 2% account risk and ATR stop distance', 'Enter long on candle close above range high', 'Set initial stop 1 ATR below entry candle low', 'Close 50% at 2R target, move stop to breakeven', 'Trail remaining position with 2-ATR trailing stop', 'Exit on trailing stop hit or opposing breakout signal'],
-            complexity: 'Intermediate', computationalLoad: 'Low � runs on 4H candle close', backtestPeriod: '12 months on BTC/USDT, ETH/USDT',
+            complexity: 'Intermediate', computationalLoad: 'Low - runs on 4H candle close', backtestPeriod: '12 months on BTC/USDT, ETH/USDT',
           },
           2: {
             name: 'RSI Mean Reversion Algorithm', type: 'Oscillator + Divergence Analysis',
@@ -119,7 +119,7 @@ const StrategyDetail = () => {
               { title: 'Risk Parameters', content: 'Stop-loss is placed beyond the divergence swing point. Target is the previous swing high/low, giving a minimum 1.5:1 reward-to-risk ratio on every trade.' },
             ],
             workflow: ['Calculate RSI(14) on each candle close', 'Identify RSI pivot highs and lows over 14-period lookback', 'Compare RSI pivots against price pivots for divergence', 'Check price proximity to key S/R levels (within 0.5%)', 'Apply volume filter: exhaustion candle + momentum confirmation', 'Enter on confirmation candle close', 'Set stop beyond divergence swing, target previous swing', 'Exit at target or if RSI crosses back through 50'],
-            complexity: 'Intermediate', computationalLoad: 'Low � 1H candle analysis', backtestPeriod: '12 months on ETH/USDT',
+            complexity: 'Intermediate', computationalLoad: 'Low - 1H candle analysis', backtestPeriod: '12 months on ETH/USDT',
           },
           3: {
             name: 'On-Chain Volume Surge Algorithm', type: 'Volume Analysis + Price Action',
@@ -131,7 +131,7 @@ const StrategyDetail = () => {
               { title: 'Risk Management', content: 'Stop-loss placed 1.5% below the entry candle low. Target is 3% minimum for a 2:1 reward-to-risk ratio. Position sized at 2% account risk per trade.' },
             ],
             workflow: ['Monitor 1H volume on BTC/USDT and ETH/USDT', 'Detect volume spike: current > 2x 20-period average', 'Check price closes above previous 4H high', 'Verify RSI is between 50-70', 'Calculate position size (2% account risk)', 'Enter long at candle close', 'Set stop 1.5% below entry low', 'Target 3% minimum or trail with 1H EMA'],
-            complexity: 'Beginner to Intermediate', computationalLoad: 'Low — 1H candle analysis', backtestPeriod: '12 months on BTC/USDT, ETH/USDT',
+            complexity: 'Beginner to Intermediate', computationalLoad: 'Low - 1H candle analysis', backtestPeriod: '12 months on BTC/USDT, ETH/USDT',
           },
           4: {
             name: 'Funding Rate Arbitrage Algorithm', type: 'Derivatives Market Analysis',
@@ -155,7 +155,7 @@ const StrategyDetail = () => {
               { title: 'Exit Logic', content: 'Primary exit is the death cross (EMA 20 crossing below EMA 50). Secondary exit is a 15% trailing stop from the highest close since entry, protecting against sharp reversals.' },
             ],
             workflow: ['Calculate EMA 20, 50, 200 on daily close', 'Check for golden cross (EMA 20 crosses above EMA 50)', 'Verify price above EMA 200 (macro uptrend filter)', 'Confirm crossover day volume > 30-day average', 'Enter long at next day open with stop at EMA 50', 'Trail stop to EMA 50 as it rises', 'Apply 15% trailing stop from highest close', 'Exit on death cross or trailing stop hit'],
-            complexity: 'Beginner', computationalLoad: 'Very Low � daily candle only', backtestPeriod: '12 months on BTC/USDT',
+            complexity: 'Beginner', computationalLoad: 'Very Low - daily candle only', backtestPeriod: '12 months on BTC/USDT',
           },
           6: {
             name: 'Bollinger Band Squeeze Algorithm', type: 'Volatility Breakout System',
@@ -166,8 +166,8 @@ const StrategyDetail = () => {
               { title: 'Band Width Target', content: 'The profit target is calculated as the entry price plus/minus the band width at the time of entry. This projects the expected move based on the energy stored during the squeeze period.' },
               { title: 'Middle Band Stop', content: 'Stop-loss is placed at the middle band (20-period SMA). If price returns to the middle band after a breakout, the squeeze has failed and the position is closed immediately.' },
             ],
-            workflow: ['Calculate Bollinger Bands (20, 2) on each 4H candle', 'Measure band width and compare to 126-period minimum', 'Flag squeeze when width equals 6-month low', 'Monitor for first expansion candle after squeeze', 'Enter long/short on candle closing outside bands', 'Set stop at middle band (20 SMA)', 'Target: entry � band width at time of entry', 'Exit at target or middle band stop'],
-            complexity: 'Intermediate', computationalLoad: 'Low � 4H candle analysis', backtestPeriod: '12 months on SOL/USDT',
+            workflow: ['Calculate Bollinger Bands (20, 2) on each 4H candle', 'Measure band width and compare to 126-period minimum', 'Flag squeeze when width equals 6-month low', 'Monitor for first expansion candle after squeeze', 'Enter long/short on candle closing outside bands', 'Set stop at middle band (20 SMA)', 'Target: entry +/- band width at time of entry', 'Exit at target or middle band stop'],
+            complexity: 'Intermediate', computationalLoad: 'Low - 4H candle analysis', backtestPeriod: '12 months on SOL/USDT',
           },
           7: {
             name: 'Altcoin Season Rotator Algorithm', type: 'BTC Dominance + Relative Strength',
@@ -191,7 +191,7 @@ const StrategyDetail = () => {
               { title: 'Volume Validation', content: 'For crypto markets, the divergence candle must show below-average volume (exhaustion) while the histogram flip candle shows above-average volume (new momentum). This two-candle confirmation reduces false signals.' },
             ],
             workflow: ['Calculate MACD(12,26,9) on each 4H candle', 'Identify MACD pivot highs/lows over 14-period lookback', 'Compare MACD pivots against price pivots for divergence type', 'Check price proximity to key S/R or Fibonacci levels', 'Wait for MACD histogram to flip direction', 'Apply volume filter: exhaustion + momentum confirmation', 'Enter on histogram flip candle close', 'Stop beyond divergence swing, target previous swing'],
-            complexity: 'Intermediate to Advanced', computationalLoad: 'Low � MACD calculation only', backtestPeriod: '12 months on LINK/USDT',
+            complexity: 'Intermediate to Advanced', computationalLoad: 'Low - MACD calculation only', backtestPeriod: '12 months on LINK/USDT',
           },
           9: {
             name: 'Whale Wallet Tracker Algorithm', type: 'On-Chain Analytics + Trend Following',
@@ -214,8 +214,8 @@ const StrategyDetail = () => {
               { title: 'Signal Scoring', content: 'The model outputs a probability score (0-1) for the next candle being bullish. Scores > 0.75 trigger long entries (high confidence bullish). Scores < 0.25 trigger short entries. Scores between 0.25-0.75 result in no trade (uncertainty zone).' },
               { title: 'Dynamic Position Sizing', content: 'Position size scales with model confidence: 0.75-0.85 score = 1% risk, 0.85-0.95 score = 1.5% risk, >0.95 score = 2% risk. This concentrates capital in the highest-conviction trades.' },
             ],
-            workflow: ['Calculate all 12 features on 4H candle close', 'Feed features into XGBoost model for probability score', 'Filter: score > 0.75 (long) or < 0.25 (short)', 'Calculate position size based on confidence level', 'Enter at next candle open with ATR-based stop', 'Monitor model score on each subsequent candle', 'Exit if score crosses 0.5 (conviction lost)', 'Hard stop at 1.5� ATR from entry'],
-            complexity: 'Advanced', computationalLoad: 'High � ML inference on each candle', backtestPeriod: '12 months on ETH/USDT',
+            workflow: ['Calculate all 12 features on 4H candle close', 'Feed features into XGBoost model for probability score', 'Filter: score > 0.75 (long) or < 0.25 (short)', 'Calculate position size based on confidence level', 'Enter at next candle open with ATR-based stop', 'Monitor model score on each subsequent candle', 'Exit if score crosses 0.5 (conviction lost)', 'Hard stop at 1.5x ATR from entry'],
+            complexity: 'Advanced', computationalLoad: 'High - ML inference on each candle', backtestPeriod: '12 months on ETH/USDT',
           },
           11: {
             name: 'DeFi Liquidity Pool Signal Algorithm', type: 'DeFi On-Chain + Price Action',
@@ -234,12 +234,12 @@ const StrategyDetail = () => {
             description: 'The legendary Turtle Trading system developed by Richard Dennis in 1983, adapted for crypto markets. System 1 buys 20-day highs and sells 20-day lows. System 2 uses 55-day breakouts for larger trend moves. ATR-based position sizing and pyramiding up to 4 units. Designed to catch massive trends while cutting losses quickly.',
             technicalDetails: [
               { title: 'Dual System Approach', content: 'System 1 (short-term): Enter on 20-day high/low breakout, exit on 10-day low/high. System 2 (long-term): Enter on 55-day high/low breakout, exit on 20-day low/high. System 1 catches more trades; System 2 catches larger moves.' },
-              { title: 'ATR Position Sizing', content: 'Position size = (Account � 1%) / (ATR � Dollar Value per Point). This ensures each trade risks exactly 1% of account regardless of market volatility. As ATR increases, position size decreases automatically.' },
+              { title: 'ATR Position Sizing', content: 'Position size = (Account x 1%) / (ATR x Dollar Value per Point). This ensures each trade risks exactly 1% of account regardless of market volatility. As ATR increases, position size decreases automatically.' },
               { title: 'Pyramiding Rules', content: 'Add 1 unit every 0.5 ATR move in your favor, up to a maximum of 4 units. Each add-on uses the same ATR-based sizing. Total risk across all 4 units never exceeds 4% of account. Stop for all units moves to 2 ATR from the last entry.' },
               { title: 'Correlation Management', content: 'Maximum 4 units in correlated markets (e.g., BTC and ETH), 8 units in loosely correlated markets, 12 units total across all positions. This prevents over-concentration in a single market direction.' },
             ],
             workflow: ['Calculate 20-day and 55-day highs/lows on daily close', 'Check for new 20-day high (System 1 long) or 55-day high (System 2 long)', 'Calculate position size using ATR and 1% risk rule', 'Enter on breakout with stop 2 ATR below entry', 'Add units every 0.5 ATR move (max 4 units)', 'Move stop to 2 ATR from last entry on each add', 'Exit System 1 on 10-day low; System 2 on 20-day low', 'Never re-enter a market that stopped you out until new breakout'],
-            complexity: 'Advanced', computationalLoad: 'Low � daily candle only', backtestPeriod: '12 months on BTC/USDT',
+            complexity: 'Advanced', computationalLoad: 'Low - daily candle only', backtestPeriod: '12 months on BTC/USDT',
           },
         };
 
@@ -682,9 +682,9 @@ const StrategyDetail = () => {
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <BarChart2 className="w-4 h-4 text-emerald-400" />
-                <p className="text-white font-bold text-base">Backtesting Results � 12 Month Performance</p>
+                <p className="text-white font-bold text-base">Backtesting Results — 12 Month Performance</p>
               </div>
-              <p className="text-white/30 text-xs">Historical strategy performance � {backtestStats ? `${backtestStats.totalTrades} trades � ${backtestStats.winRate}% win rate` : 'Loading...'}</p>
+              <p className="text-white/30 text-xs">Historical strategy performance · {backtestStats ? `${backtestStats.totalTrades} trades · ${backtestStats.winRate}% win rate` : 'Loading...'}</p>
             </div>
             {backtestData.length > 0 && backtestStats && (
               <div className="flex gap-6">
@@ -881,7 +881,7 @@ const StrategyDetail = () => {
                 <ul className="space-y-2">
                   {strategy.pros.map((pro: string, index: number) => (
                     <li key={index} className="flex items-start gap-2 text-sm text-white/50">
-                      <span className="text-emerald-400 shrink-0">?</span>{pro}
+                      <span className="text-emerald-400 shrink-0 mt-0.5">✓</span>{pro}
                     </li>
                   ))}
                 </ul>
@@ -891,7 +891,7 @@ const StrategyDetail = () => {
                 <ul className="space-y-2">
                   {strategy.cons.map((con: string, index: number) => (
                     <li key={index} className="flex items-start gap-2 text-sm text-white/50">
-                      <span className="text-red-400 shrink-0">?</span>{con}
+                      <span className="text-red-400 shrink-0 mt-0.5">✕</span>{con}
                     </li>
                   ))}
                 </ul>
@@ -906,3 +906,6 @@ const StrategyDetail = () => {
 };
 
 export default StrategyDetail;
+
+
+
