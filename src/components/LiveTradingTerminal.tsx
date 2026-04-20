@@ -102,6 +102,7 @@ export default function LiveTradingTerminal() {
   const lastSignalTick = useRef(-20);
   const lastSignalType = useRef<'buy' | 'sell' | null>(null);
   const lastSignalPrice = useRef(0);
+  const lastBuyPrice = useRef(0); // tracks last BUY price for P&L on SELL
   const firstPrice = useRef(0);
 
   // TradingView widget
@@ -259,6 +260,9 @@ export default function LiveTradingTerminal() {
           lastSignalType.current = toShow[0].type;
           lastSignalPrice.current = toShow[0].price;
           lastSignalTick.current = t;
+          // Track last BUY price so next live SELL can calculate P&L
+          const lastBuy = toShow.find(s => s.type === 'buy');
+          if (lastBuy) lastBuyPrice.current = lastBuy.price;
         }
         return;
       }
@@ -272,12 +276,15 @@ export default function LiveTradingTerminal() {
         const prevType = lastSignalType.current;
         let pnl: string | undefined;
         // P&L only on SELL (closes the BUY trade) — never on BUY
-        if (pending.signal.type === 'sell' && prevP > 0 && prevType === 'buy') {
-          const diff = ((effectivePrice - prevP) / prevP) * 100;
-          // Only show P&L if meaningful (>= 0.01%)
+        if (pending.signal.type === 'sell' && lastBuyPrice.current > 0) {
+          const diff = ((effectivePrice - lastBuyPrice.current) / lastBuyPrice.current) * 100;
           if (Math.abs(diff) >= 0.01) {
             pnl = `${diff >= 0 ? '+' : ''}${diff.toFixed(2)}%`;
           }
+        }
+        // Track last BUY price
+        if (pending.signal.type === 'buy') {
+          lastBuyPrice.current = effectivePrice;
         }
         lastSignalType.current = pending.signal.type;
         lastSignalPrice.current = effectivePrice;
