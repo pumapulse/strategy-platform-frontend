@@ -69,6 +69,26 @@ async function fetchBTCPrice(): Promise<number> {
   return 0;
 }
 
+// Fetch last N closed 1-minute candles — same data for ALL users (deterministic)
+async function fetchKlineCloses(limit = 30): Promise<number[]> {
+  try {
+    const r = await fetch(`https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1m&limit=${limit}`);
+    if (!r.ok) throw new Error();
+    const data = await r.json();
+    // Use close prices of closed candles only (exclude last open candle)
+    return data.slice(0, -1).map((k: any[]) => parseFloat(k[4]));
+  } catch {}
+  try {
+    // Kraken fallback — 1m OHLC
+    const r = await fetch('https://api.kraken.com/0/public/OHLC?pair=XBTUSD&interval=1');
+    if (!r.ok) throw new Error();
+    const data = await r.json();
+    const candles = data.result.XXBTZUSD || data.result.XBTUSD || [];
+    return candles.slice(-limit - 1, -1).map((k: any[]) => parseFloat(k[4]));
+  } catch {}
+  return [];
+}
+
 export default function LiveTradingTerminal() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [currentPrice, setCurrentPrice] = useState<number>(0);
@@ -117,25 +137,68 @@ export default function LiveTradingTerminal() {
     containerRef.current.appendChild(script);
   }, []);
 
-  // Signal engine
+  // Signal engine — uses shared kline history so all users see same signals
   useEffect(() => {
-    const STRATEGIES = ['EMA Cross', 'RSI Reversal', 'Momentum Breakout', 'ML Scanner'];
-    const MIN_GAP = 3; // min ticks between signals
+    const MIN_GAP = 3;
+
+    // Analyze history and return all signals found — runs on load immediately
+    const analyzeHistory = (hist: number[], currentPrice: number) => {
+      const results: Array<Omit<Signal, 'pnl'>> = [];
+      if (hist.length < 10) return results;
+
+      // Scan through history finding signal points
+      for (let i = 10; i < hist.length; i++) {
+        const slice = hist.slice(0, i + 1);
+        const ema9  = calcEMA(slice, 9);
+        const ema21 = calcEMA(slice, 21);
+        const ema9p = calcEMA(slice.slice(0, -1), 9);
+        const ema21p = calcEMA(slice.slice(0, -1), 21);
+        const rsi   = calcRSI(slice, 14);
+        const mom5  = slice.length >= 6
+          ? (slice[slice.length - 1] - slice[slice.length - 6]) / slice[slice.length - 6] * 100
+          : 0;
+
+        const crossUp   = ema9p <= ema21p && ema9 > ema21;
+        const crossDown = ema9p >= ema21p && ema9 < ema21;
+        const lastType  = results.length > 0 ? results[results.length - 1].type : null;
+
+        let sig: Omit<Signal, 'pnl'> | null = null;
+
+        if (crossUp && lastType !== 'buy') {
+          sig = { type: 'buy', price: hist[i], time: '', strategy: 'EMA Crossover Trend', strength: rsi < 45 ? 'strong' : 'moderate', reason: `EMA9 crossed EMA21 ↑ · RSI ${rsi.toFixed(0)}` };
+        } else if (crossDown && lastType !== 'sell') {
+          sig = { type: 'sell', price: hist[i], time: '', strategy: 'EMA Crossover Trend', strength: rsi > 55 ? 'strong' : 'moderate', reason: `EMA9 crossed EMA21 ↓ · RSI ${rsi.toFixed(0)}` };
+        } else if (rsi < 32 && lastType !== 'buy') {
+          sig = { type: 'buy', price: hist[i], time: '', strategy: 'Mean Reversion RSI', strength: 'strong', reason: `RSI ${rsi.toFixed(0)} — oversold reversal` };
+        } else if (rsi > 68 && lastType !== 'sell') {
+          sig = { type: 'sell', price: hist[i], time: '', strategy: 'Mean Reversion RSI', strength: 'strong', reason: `RSI ${rsi.toFixed(0)} — overbought reversal` };
+        } else if (mom5 > 0.05 && lastType !== 'buy') {
+          sig = { type: 'buy', price: hist[i], time: '', strategy: 'Breakout Momentum', strength: 'moderate', reason: `+${mom5.toFixed(3)}% momentum surge` };
+        } else if (mom5 < -0.05 && lastType !== 'sell') {
+          sig = { type: 'sell', price: hist[i], time: '', strategy: 'Breakout Momentum', strength: 'moderate', reason: `${mom5.toFixed(3)}% momentum drop` };
+        }
+
+        if (sig) results.push(sig);
+      }
+      return results;
+    };
 
     const tick = async () => {
+      // Fetch current price for display
       const price = await fetchBTCPrice();
 
-      // If all APIs fail — simulate price movement so signals still work
+      // Fetch shared kline closes — same for ALL users at same time
+      const klineCloses = await fetchKlineCloses(60);
+
+      // Use klines as base history if available, append live price as latest point
+      const sharedHistory = klineCloses.length >= 10
+        ? [...klineCloses, ...(price > 0 ? [price] : [])]
+        : null;
+
       const effectivePrice = price > 0
         ? price
         : priceHistory.current.length > 0
-          ? (() => {
-              const last = priceHistory.current[priceHistory.current.length - 1];
-              // Realistic BTC micro-movement: ±0.05% with occasional ±0.15% spike
-              const spike = Math.random() < 0.15;
-              const move = (Math.random() - 0.5) * (spike ? 0.003 : 0.0008);
-              return Math.round(last * (1 + move) * 100) / 100;
-            })()
+          ? priceHistory.current[priceHistory.current.length - 1]
           : 0;
 
       if (effectivePrice <= 0) return;
@@ -148,12 +211,49 @@ export default function LiveTradingTerminal() {
       if (firstPrice.current === 0) firstPrice.current = effectivePrice;
       setPriceChange(((effectivePrice - firstPrice.current) / firstPrice.current) * 100);
 
-      priceHistory.current.push(effectivePrice);
-      if (priceHistory.current.length > 80) priceHistory.current.shift();
+      if (sharedHistory) {
+        priceHistory.current = sharedHistory;
+      } else {
+        priceHistory.current.push(effectivePrice);
+        if (priceHistory.current.length > 80) priceHistory.current.shift();
+      }
       tickCount.current++;
 
       const hist = priceHistory.current;
       const t = tickCount.current;
+
+      // On first load (t === 1) — immediately analyze full history and show all signals
+      if (t === 1 && hist.length >= 10) {
+        const historical = analyzeHistory(hist, effectivePrice);
+        // Show last 8 historical signals immediately, newest first
+        const toShow = historical.slice(-8).reverse().map((s) => ({
+          ...s,
+          time: nowTime(),
+          pnl: undefined as string | undefined,
+        }));
+        // Add P&L only to SELL signals — find the preceding BUY price
+        // toShow is newest-first, so for a SELL at index i, the BUY is at index i+1
+        for (let i = 0; i < toShow.length; i++) {
+          if (toShow[i].type === 'sell') {
+            // Find the most recent BUY before this SELL
+            const prevBuy = toShow.slice(i + 1).find(s => s.type === 'buy');
+            if (prevBuy) {
+              const diff = ((toShow[i].price - prevBuy.price) / prevBuy.price) * 100;
+              toShow[i].pnl = `${diff >= 0 ? '+' : ''}${diff.toFixed(2)}%`;
+            }
+          }
+          // Explicitly ensure BUY signals never have P&L
+          if (toShow[i].type === 'buy') toShow[i].pnl = undefined;
+        }
+        toShow.forEach(s => signalStore.push(s));
+        setSignals(toShow.slice(0, 15));
+        if (toShow.length > 0) {
+          lastSignalType.current = toShow[0].type;
+          lastSignalPrice.current = toShow[0].price;
+          lastSignalTick.current = t;
+        }
+        return;
+      }
 
       // Fire pending signals
       const toFire = pendingSignals.current.filter(p => t >= p.fireAt);
@@ -163,10 +263,10 @@ export default function LiveTradingTerminal() {
         const prevP = lastSignalPrice.current;
         const prevType = lastSignalType.current;
         let pnl: string | undefined;
-        // P&L only shows on SELL signal (closes the BUY trade)
-        if (prevP > 0 && prevType === 'buy' && pending.signal.type === 'sell') {
+        // P&L only on SELL (closes the BUY trade) — never on BUY
+        if (pending.signal.type === 'sell' && prevP > 0 && prevType === 'buy') {
           const diff = ((effectivePrice - prevP) / prevP) * 100;
-          if (Math.abs(diff) > 0.003) pnl = `${diff >= 0 ? '+' : ''}${diff.toFixed(2)}%`;
+          pnl = `${diff >= 0 ? '+' : ''}${diff.toFixed(2)}%`;
         }
         lastSignalType.current = pending.signal.type;
         lastSignalPrice.current = effectivePrice;
@@ -176,7 +276,7 @@ export default function LiveTradingTerminal() {
         setSignals(prev => [fired, ...prev].slice(0, 15));
       }
 
-      // Need enough history
+      // Need enough history (klines give 30 points immediately)
       if (hist.length < 10) return;
       if (t - lastSignalTick.current < MIN_GAP) return;
       if (pendingSignals.current.length > 0) return;
