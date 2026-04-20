@@ -34,7 +34,7 @@ export default function Contact() {
       <div className="relative overflow-hidden">
         <div className="absolute inset-0">
           <img
-            src="https://images.unsplash.com/photo-1423666639041-f56000c27a9a?auto=format&fit=crop&w=1920&q=80"
+            src="/img/about/contact.jpg"
             alt="Contact"
             className="w-full h-full object-cover opacity-8"
           />

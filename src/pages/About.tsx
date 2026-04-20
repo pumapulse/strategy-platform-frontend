@@ -9,28 +9,28 @@ const team = [
     name: 'Alex Rivera',
     role: 'Co-Founder & Head of Quant',
     bio: '8 years in algorithmic trading. Former prop desk at a Toronto hedge fund. Specializes in momentum and mean-reversion strategies.',
-    img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80',
+    img: '/img/about/serious-colleagues-office-talking-with-each-other.jpg',
     initials: 'AR',
   },
   {
     name: 'Mia Chen',
     role: 'Co-Founder & CTO',
     bio: 'Full-stack engineer with a background in fintech and distributed systems. Built trading infrastructure at two crypto startups.',
-    img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&q=80',
+    img: '/img/about/women.jpg',
     initials: 'MC',
   },
   {
     name: 'Liam Park',
     role: 'Head of Research',
     bio: 'PhD in financial mathematics. Specializes in crypto market microstructure and on-chain analytics.',
-    img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80',
+    img: '/img/about/programmer-colleague-office-training-machine-learning-algorithms.jpg',
     initials: 'LP',
   },
   {
     name: 'Sofia Müller',
     role: 'Community Lead',
     bio: 'Former FX trader turned community builder. Manages our 1,200+ trader community and educational content.',
-    img: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=400&q=80',
+    img: '/img/about/remote.jpg',
     initials: 'SM',
   },
 ];
@@ -60,7 +60,7 @@ export default function About() {
       <div className="relative overflow-hidden">
         <div className="absolute inset-0">
           <img
-            src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1920&q=80"
+            src="/img/algo trading/Annotation 2026-04-04 214747.jpg"
             alt="Trading"
             className="w-full h-full object-cover opacity-10"
           />
@@ -122,7 +122,7 @@ export default function About() {
             </div>
             <div className="relative rounded-2xl overflow-hidden border border-white/[0.07]">
               <img
-                src="https://images.unsplash.com/photo-1642790106117-e829e14a795f?auto=format&fit=crop&w=800&q=80"
+                src="/img/about/data-center-engineering-team-doing-brainstorming-monitoring-system-performance.jpg"
                 alt="Trading charts"
                 className="w-full h-72 object-cover"
               />
@@ -186,7 +186,7 @@ export default function About() {
         <RevealSection variant="scale">
           <div className="relative rounded-3xl overflow-hidden border border-white/[0.07]">
             <img
-              src="https://images.unsplash.com/photo-1518186285589-2f7649de83e0?auto=format&fit=crop&w=1920&q=80"
+              src="/img/about/young-employees-sitting-office-table-using-laptop-team-work-brainstorming-meeting-concept.jpg"
               alt="bg"
               className="absolute inset-0 w-full h-full object-cover opacity-10"
             />

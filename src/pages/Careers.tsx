@@ -55,7 +55,7 @@ export default function Careers() {
       <div className="relative overflow-hidden">
         <div className="absolute inset-0">
           <img
-            src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1920&q=80"
+            src="/img/about/workers-it-company-working-computer.jpg"
             alt="Team"
             className="w-full h-full object-cover opacity-10"
           />
