@@ -139,15 +139,17 @@ export default function LiveTradingTerminal() {
 
   // Signal engine — uses shared kline history so all users see same signals
   useEffect(() => {
-    const MIN_GAP = 3;
+    const MIN_GAP = 10; // min 10 ticks (~15s) between signals — ensures price moves enough for meaningful P&L
 
     // Analyze history and return all signals found — runs on load immediately
     const analyzeHistory = (hist: number[], currentPrice: number) => {
       const results: Array<Omit<Signal, 'pnl'>> = [];
       if (hist.length < 10) return results;
 
-      // Scan through history finding signal points
+      // Scan through history finding signal points — enforce min 5 candle gap
+      let lastSignalIdx = -5;
       for (let i = 10; i < hist.length; i++) {
+        if (i - lastSignalIdx < 5) continue; // min 5 candles between signals
         const slice = hist.slice(0, i + 1);
         const ema9  = calcEMA(slice, 9);
         const ema21 = calcEMA(slice, 21);
@@ -178,7 +180,10 @@ export default function LiveTradingTerminal() {
           sig = { type: 'sell', price: hist[i], time: '', strategy: 'Breakout Momentum', strength: 'moderate', reason: `${mom5.toFixed(3)}% momentum drop` };
         }
 
-        if (sig) results.push(sig);
+        if (sig) {
+          results.push(sig);
+          lastSignalIdx = i;
+        }
       }
       return results;
     };
@@ -239,7 +244,10 @@ export default function LiveTradingTerminal() {
             const prevBuy = toShow.slice(i + 1).find(s => s.type === 'buy');
             if (prevBuy) {
               const diff = ((toShow[i].price - prevBuy.price) / prevBuy.price) * 100;
-              toShow[i].pnl = `${diff >= 0 ? '+' : ''}${diff.toFixed(2)}%`;
+              // Only show P&L if meaningful (>= 0.01%)
+              if (Math.abs(diff) >= 0.01) {
+                toShow[i].pnl = `${diff >= 0 ? '+' : ''}${diff.toFixed(2)}%`;
+              }
             }
           }
           // Explicitly ensure BUY signals never have P&L
@@ -266,7 +274,10 @@ export default function LiveTradingTerminal() {
         // P&L only on SELL (closes the BUY trade) — never on BUY
         if (pending.signal.type === 'sell' && prevP > 0 && prevType === 'buy') {
           const diff = ((effectivePrice - prevP) / prevP) * 100;
-          pnl = `${diff >= 0 ? '+' : ''}${diff.toFixed(2)}%`;
+          // Only show P&L if meaningful (>= 0.01%)
+          if (Math.abs(diff) >= 0.01) {
+            pnl = `${diff >= 0 ? '+' : ''}${diff.toFixed(2)}%`;
+          }
         }
         lastSignalType.current = pending.signal.type;
         lastSignalPrice.current = effectivePrice;
