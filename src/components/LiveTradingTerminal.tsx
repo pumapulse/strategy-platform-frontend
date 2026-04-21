@@ -215,9 +215,9 @@ export default function LiveTradingTerminal() {
 
       if (effectivePrice <= 0) return;
 
-      // Show live price in header if available, otherwise kline close
-      setCurrentPrice(price > 0 ? price : canonicalPrice);
-      if (price > 0 || canonicalPrice > 0) setConnected(true);
+      // Show last kline close in header — matches what TradingView chart shows
+      setCurrentPrice(canonicalPrice > 0 ? canonicalPrice : price);
+      if (canonicalPrice > 0 || price > 0) setConnected(true);
 
       if (firstPrice.current === 0) firstPrice.current = effectivePrice;
       setPriceChange(((effectivePrice - firstPrice.current) / firstPrice.current) * 100);
