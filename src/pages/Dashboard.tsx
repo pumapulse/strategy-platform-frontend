@@ -91,7 +91,7 @@ const Dashboard = () => {
   const stats = [
     { title: 'Available Strategies', value: '12', icon: Target, color: 'text-blue-400', bg: 'bg-blue-400/10', border: 'border-blue-400/20', change: 'Free forever', link: '/strategies' },
     { title: 'Avg Win Rate', value: '65%', icon: TrendingUp, color: 'text-emerald-400', bg: 'bg-emerald-400/10', border: 'border-emerald-400/20', change: 'Across all strategies', link: '/strategies' },
-    { title: 'Best Strategy', value: '+547%', icon: Activity, color: 'text-violet-400', bg: 'bg-violet-400/10', border: 'border-violet-400/20', change: 'Turtle Trading System', link: '/strategy/12' },
+    { title: 'Best Strategy', value: '+128%', icon: Activity, color: 'text-violet-400', bg: 'bg-violet-400/10', border: 'border-violet-400/20', change: 'Turtle Trading System', link: '/strategy/12' },
   ];
 
   const performanceData = [
@@ -105,7 +105,7 @@ const Dashboard = () => {
 
   const topStrategies = [
     { id: 10, name: 'ML Momentum Scanner',   return: '+252%', winRate: 70, trades: 289, icon: Zap },
-    { id: 12, name: 'Turtle Trading System', return: '+547%', winRate: 55, trades: 89,  icon: TrendingUp },
+    { id: 12, name: 'Turtle Trading System', return: '+128%', winRate: 42, trades: 89,  icon: TrendingUp },
     { id: 5,  name: 'EMA Crossover Trend',   return: '+372%', winRate: 58, trades: 67,  icon: Activity },
   ];
 
@@ -304,7 +304,7 @@ const Dashboard = () => {
             <RevealSection variant="stagger">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
-                { label: 'Best Avg Return',  value: '+24.6%', sub: 'Turtle Trading System', pos: true },
+                { label: 'Best Avg Return',  value: '+24.6%', sub: 'ML Momentum Scanner', pos: true },
                 { label: 'Best Win Rate',    value: '70%',    sub: 'ML Momentum Scanner',   pos: true },
                 { label: 'Max Drawdown',     value: '-7.8%',  sub: 'ML Momentum Scanner',   pos: false },
                 { label: 'Best Prof. Factor', value: '3.2x',  sub: 'ML Momentum · Turtle',  pos: true },

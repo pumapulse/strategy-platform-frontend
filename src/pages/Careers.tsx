@@ -5,25 +5,25 @@ import RevealSection from '@/components/RevealSection';
 import { Briefcase, MapPin, ArrowRight, Zap, Users, TrendingUp, Code, Globe, Heart, Star, Send, Loader2, CheckCircle } from 'lucide-react';
 
 const cultureValues = [
-  { icon: Globe, title: 'Remote-First', body: 'Work from anywhere. We have team members across 4 countries and async is our default.', img: '/img/about/remote.jpg' },
-  { icon: TrendingUp, title: 'Rapid Growth', body: 'We move fast, ship often, and learn from real users. Your work has direct impact from day one.', img: '/img/about/Annotation 2026-04-05 154912.jpg' },
-  { icon: Heart, title: 'Real Impact', body: "Every feature you build reaches thousands of active traders. You'll see your work matter immediately.", img: '/img/about/data-center-engineering-team-doing-brainstorming-monitoring-system-performance.jpg' },
-  { icon: Users, title: 'Diverse Team', body: 'We hire for curiosity and craft, not credentials. Our team spans quants, engineers, and traders.', img: '/img/about/young-employees-sitting-office-table-using-laptop-team-work-brainstorming-meeting-concept.jpg' },
+  { icon: Globe, title: 'Remote-First', body: 'Work from anywhere. We have team members across 4 countries and async is our default.', img: 'https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=600&q=80' },
+  { icon: TrendingUp, title: 'Rapid Growth', body: 'We move fast, ship often, and learn from real users. Your work has direct impact from day one.', img: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&q=80' },
+  { icon: Heart, title: 'Real Impact', body: 'Every feature you build reaches thousands of active traders. You will see your work matter immediately.', img: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=600&q=80' },
+  { icon: Users, title: 'Diverse Team', body: 'We hire for curiosity and craft, not credentials. Our team spans quants, engineers, and traders.', img: 'https://images.unsplash.com/photo-1556761175-4b46a572b786?w=600&q=80' },
 ];
 
 const perks = [
-  { icon: Zap, title: 'Competitive Salary', body: 'Market-rate compensation benchmarked against top fintech companies.', img: '/img/about/Annotation 2026-04-05 003447.jpg' },
-  { icon: TrendingUp, title: 'Equity', body: 'Everyone on the team has skin in the game. We share in the upside together.', img: '/img/crypto/Annotation 2026-04-04 232105.jpg' },
-  { icon: Globe, title: 'Fully Remote', body: 'Work from anywhere. We cover your home office setup and co-working memberships.', img: '/img/about/remote2.jpg' },
-  { icon: Code, title: 'Learning Budget', body: '$2,000/year for courses, conferences, books, and trading tools. We invest in you.', img: '/img/about/programmer-colleague-office-training-machine-learning-algorithms.jpg' },
-  { icon: Heart, title: 'Health Benefits', body: 'Comprehensive health, dental, and vision coverage for you and your family.', img: '/img/about/Annotation 2026-04-05 162245.jpg' },
-  { icon: Star, title: 'Flexible Hours', body: "We care about output, not hours. Work when you're most productive.", img: '/img/about/Annotation 2026-04-05 001857.jpg' },
+  { icon: Zap, title: 'Competitive Salary', body: 'Market-rate compensation benchmarked against top fintech companies.', img: 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=600&q=80' },
+  { icon: TrendingUp, title: 'Equity', body: 'Everyone on the team has skin in the game. We share in the upside together.', img: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=600&q=80' },
+  { icon: Globe, title: 'Fully Remote', body: 'Work from anywhere. We cover your home office setup and co-working memberships.', img: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=80' },
+  { icon: Code, title: 'Learning Budget', body: '$2,000/year for courses, conferences, books, and trading tools. We invest in you.', img: 'https://images.unsplash.com/photo-1434030216411-0b793f4b6f74?w=600&q=80' },
+  { icon: Heart, title: 'Health Benefits', body: 'Comprehensive health, dental, and vision coverage for you and your family.', img: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80' },
+  { icon: Star, title: 'Flexible Hours', body: 'We care about output, not hours. Work when you are most productive.', img: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&q=80' },
 ];
 
 const openings = [
-  { title: 'Quantitative Researcher', type: 'Full-time', location: 'Remote / Toronto', team: 'Research', description: 'Develop and validate systematic trading strategies across crypto markets. You\'ll work with historical data, build backtesting frameworks, and publish new strategies to the platform.', requirements: ['3+ years in quantitative finance or algorithmic trading', 'Strong Python skills (pandas, numpy, backtrader)', 'Experience with crypto market data', 'Familiarity with statistical testing and walk-forward validation'] },
-  { title: 'Full-Stack Engineer', type: 'Full-time', location: 'Remote', team: 'Engineering', description: 'Build and scale the CrowdPnL platform. You\'ll work across the React frontend and Node.js backend, shipping features that thousands of traders use daily.', requirements: ['3+ years with React and TypeScript', 'Experience with Node.js and PostgreSQL/Supabase', 'Familiarity with WebSockets and real-time data', 'Strong product sense and attention to detail'] },
-  { title: 'Community Manager', type: 'Part-time', location: 'Remote', team: 'Growth', description: 'Grow and nurture our trader community. You\'ll moderate discussions, create educational content, and be the voice of CrowdPnL across social channels.', requirements: ['Passion for trading and crypto markets', 'Experience managing online communities', 'Strong written communication skills', 'Familiarity with Discord, Twitter/X, and Telegram'] },
+  { title: 'Quantitative Researcher', type: 'Full-time', location: 'Remote / Toronto', team: 'Research', description: 'Develop and validate systematic trading strategies across crypto markets. You will work with historical data, build backtesting frameworks, and publish new strategies to the platform.', requirements: ['3+ years in quantitative finance or algorithmic trading', 'Strong Python skills (pandas, numpy, backtrader)', 'Experience with crypto market data', 'Familiarity with statistical testing and walk-forward validation'] },
+  { title: 'Full-Stack Engineer', type: 'Full-time', location: 'Remote', team: 'Engineering', description: 'Build and scale the CrowdPnL platform. You will work across the React frontend and Node.js backend, shipping features that thousands of traders use daily.', requirements: ['3+ years with React and TypeScript', 'Experience with Node.js and PostgreSQL/Supabase', 'Familiarity with WebSockets and real-time data', 'Strong product sense and attention to detail'] },
+  { title: 'Community Manager', type: 'Part-time', location: 'Remote', team: 'Growth', description: 'Grow and nurture our trader community. You will moderate discussions, create educational content, and be the voice of CrowdPnL across social channels.', requirements: ['Passion for trading and crypto markets', 'Experience managing online communities', 'Strong written communication skills', 'Familiarity with Discord, Twitter/X, and Telegram'] },
 ];
 
 interface ApplyForm { name: string; email: string; role: string; linkedin: string; message: string; }
@@ -50,11 +50,10 @@ export default function Careers() {
       <Header />
 
       {/* Hero */}
-      <section className="relative overflow-hidden min-h-[70vh] flex items-center">
+      <section className="relative overflow-hidden min-h-[80vh] flex items-center">
         <div className="absolute inset-0">
-          <img src="/img/about/Annotation 2026-04-04 230240.jpg" alt="Careers" className="w-full h-full object-cover opacity-[0.13]"
-            onError={(e) => { (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1400&q=80'; }} />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#0a0e1a]/50 via-[#0a0e1a]/75 to-[#0a0e1a]" />
+          <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1920&q=90" alt="Team" className="w-full h-full object-cover opacity-[0.14]" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#060a14]/50 via-[#0a0e1a]/75 to-[#0a0e1a]" />
         </div>
         <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
         <div className="absolute top-0 right-0 w-[600px] h-[500px] bg-emerald-500/[0.05] rounded-full blur-3xl pointer-events-none" />
@@ -66,20 +65,22 @@ export default function Careers() {
                 <div className="h-px w-8 bg-emerald-500" />
                 <span className="text-xs font-bold tracking-[0.25em] text-emerald-400 uppercase">Careers</span>
               </div>
-              <h1 className="text-6xl lg:text-7xl font-black tracking-tight text-white leading-[1.0] mb-6">
-                Join the team.<br /><span className="text-emerald-400">Build the edge.</span>
+              <h1 className="text-6xl lg:text-7xl font-black tracking-tight leading-[1.0] mb-6">
+                <span className="text-white">Join the team.</span><br />
+                <span className="bg-gradient-to-r from-emerald-400 to-emerald-300 bg-clip-text text-transparent">Build the edge.</span>
               </h1>
-              <p className="text-white/50 text-lg leading-relaxed mb-6 max-w-lg">We're a small, remote-first team building the best trading strategy platform in crypto. If you're passionate about markets and great products, we'd love to hear from you.</p>
-              <p className="text-white/30 text-sm">Don't see a role? <a href="mailto:hr@crowdpnl.com" className="text-emerald-400 hover:text-emerald-300 transition-colors">Email us directly</a></p>
+              <p className="text-white/50 text-lg leading-relaxed mb-6 max-w-lg">We are a small, remote-first team building the best trading strategy platform in crypto. If you are passionate about markets and great products, we would love to hear from you.</p>
+              <p className="text-white/30 text-sm">Do not see a role? <a href="mailto:hr@crowdpnl.com" className="text-emerald-400 hover:text-emerald-300 transition-colors">Email us directly</a></p>
             </RevealSection>
+
             <RevealSection variant="right">
-              <div className="relative h-[420px]">
-                <img src="/img/about/workers-it-company-working-computer.jpg" alt="Team" className="absolute top-0 left-0 w-3/4 h-[320px] object-cover rounded-xl"
-                  onError={(e) => { (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&q=80'; }} />
-                <img src="/img/about/serious-colleagues-office-talking-with-each-other.jpg" alt="Colleagues" className="absolute bottom-0 right-0 w-1/2 h-[220px] object-cover rounded-xl border-4 border-[#0a0e1a]"
-                  onError={(e) => { (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600&q=80'; }} />
-                <div className="absolute top-1/2 left-[55%] -translate-x-1/2 -translate-y-1/2 bg-[#060a14]/90 backdrop-blur border border-white/10 p-4 text-center z-10 rounded-xl">
-                  <div className="text-2xl font-black text-white">3<span className="text-emerald-400">+</span></div>
+              <div className="relative h-[440px]">
+                <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&q=80" alt="Team" className="absolute top-0 left-0 w-3/4 h-[340px] object-cover rounded-2xl" onError={(e) => { (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&q=80'; }} />
+                <div className="absolute top-0 left-0 w-3/4 h-[340px] rounded-2xl bg-gradient-to-t from-[#0a0e1a]/50 to-transparent pointer-events-none" />
+                <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600&q=80" alt="Office" className="absolute bottom-0 right-0 w-[55%] h-[240px] object-cover rounded-2xl border-4 border-[#0a0e1a]" onError={(e) => { (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1556761175-4b46a572b786?w=600&q=80'; }} />
+                <div className="absolute bottom-0 right-0 w-[55%] h-[240px] rounded-2xl bg-gradient-to-t from-[#0a0e1a]/50 to-transparent pointer-events-none" />
+                <div className="absolute top-[42%] left-[52%] -translate-x-1/2 -translate-y-1/2 z-10 bg-[#060a14]/90 backdrop-blur-md border border-white/[0.1] px-5 py-4 rounded-2xl text-center shadow-2xl">
+                  <div className="text-3xl font-black text-white">3<span className="text-emerald-400">+</span></div>
                   <div className="text-[10px] font-bold uppercase tracking-widest text-white/40 mt-1">Open Roles</div>
                 </div>
               </div>
@@ -93,22 +94,17 @@ export default function Careers() {
         <div className="container mx-auto px-6 max-w-6xl">
           <RevealSection variant="up">
             <div className="text-center mb-14">
-              <div className="flex items-center justify-center gap-3 mb-4">
-                <div className="h-px w-8 bg-emerald-500" />
-                <span className="text-xs font-bold tracking-[0.25em] text-emerald-400 uppercase">Our Culture</span>
-                <div className="h-px w-8 bg-emerald-500" />
-              </div>
+              <div className="flex items-center justify-center gap-3 mb-4"><div className="h-px w-8 bg-emerald-500" /><span className="text-xs font-bold tracking-[0.25em] text-emerald-400 uppercase">Our Culture</span><div className="h-px w-8 bg-emerald-500" /></div>
               <h2 className="text-5xl font-black text-white mb-4">How we work.</h2>
-              <p className="text-white/40 text-base max-w-xl mx-auto">We're building something meaningful. Here's what it's like to be part of the team.</p>
+              <p className="text-white/40 text-base max-w-xl mx-auto">We are building something meaningful. Here is what it is like to be part of the team.</p>
             </div>
           </RevealSection>
           <RevealSection variant="stagger">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
               {cultureValues.map(({ icon: Icon, title, body, img }) => (
                 <div key={title} className="rounded-2xl border border-white/[0.07] bg-white/[0.03] overflow-hidden hover:border-emerald-500/20 transition-all group">
-                  <div className="relative h-40 overflow-hidden">
-                    <img src={img} alt={title} className="w-full h-full object-cover opacity-60 group-hover:opacity-80 group-hover:scale-105 transition-all duration-500"
-                      onError={(e) => { (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&q=80'; }} />
+                  <div className="relative h-44 overflow-hidden">
+                    <img src={img} alt={title} className="w-full h-full object-cover opacity-60 group-hover:opacity-80 group-hover:scale-105 transition-all duration-500" onError={(e) => { (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&q=80'; }} />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#060a14] via-[#060a14]/40 to-transparent" />
                     <div className="absolute bottom-3 left-4">
                       <div className="w-8 h-8 rounded-lg bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center">
@@ -131,11 +127,7 @@ export default function Careers() {
       <section className="py-28 container mx-auto px-6 max-w-6xl">
         <RevealSection variant="up">
           <div className="text-center mb-14">
-            <div className="flex items-center justify-center gap-3 mb-4">
-              <div className="h-px w-8 bg-emerald-500" />
-              <span className="text-xs font-bold tracking-[0.25em] text-emerald-400 uppercase">Benefits & Perks</span>
-              <div className="h-px w-8 bg-emerald-500" />
-            </div>
+            <div className="flex items-center justify-center gap-3 mb-4"><div className="h-px w-8 bg-emerald-500" /><span className="text-xs font-bold tracking-[0.25em] text-emerald-400 uppercase">Benefits & Perks</span><div className="h-px w-8 bg-emerald-500" /></div>
             <h2 className="text-5xl font-black text-white">What we offer.</h2>
           </div>
         </RevealSection>
@@ -144,8 +136,7 @@ export default function Careers() {
             {perks.map(({ icon: Icon, title, body, img }) => (
               <div key={title} className="rounded-2xl border border-white/[0.07] bg-white/[0.03] overflow-hidden hover:border-emerald-500/20 hover:bg-white/[0.05] transition-all group">
                 <div className="relative h-36 overflow-hidden">
-                  <img src={img} alt={title} className="w-full h-full object-cover opacity-50 group-hover:opacity-70 group-hover:scale-105 transition-all duration-500"
-                    onError={(e) => { (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&q=80'; }} />
+                  <img src={img} alt={title} className="w-full h-full object-cover opacity-50 group-hover:opacity-70 group-hover:scale-105 transition-all duration-500" onError={(e) => { (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&q=80'; }} />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#0a0e1a] via-[#0a0e1a]/30 to-transparent" />
                 </div>
                 <div className="p-6">
@@ -166,10 +157,7 @@ export default function Careers() {
         <div className="container mx-auto px-6 max-w-5xl">
           <RevealSection variant="up">
             <div className="mb-12">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="h-px w-8 bg-emerald-500" />
-                <span className="text-xs font-bold tracking-[0.25em] text-emerald-400 uppercase">Open Roles</span>
-              </div>
+              <div className="flex items-center gap-3 mb-4"><div className="h-px w-8 bg-emerald-500" /><span className="text-xs font-bold tracking-[0.25em] text-emerald-400 uppercase">Open Roles</span></div>
               <h2 className="text-5xl font-black text-white">Current openings.</h2>
             </div>
           </RevealSection>
@@ -197,7 +185,7 @@ export default function Careers() {
                   <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {job.requirements.map(r => (
                       <li key={r} className="flex items-start gap-2 text-xs text-white/30">
-                        <span className="text-emerald-400 mt-0.5 shrink-0">✓</span>{r}
+                        <span className="text-emerald-400 mt-0.5 shrink-0">&#10003;</span>{r}
                       </li>
                     ))}
                   </ul>
@@ -212,13 +200,9 @@ export default function Careers() {
       <section id="apply" className="py-28 container mx-auto px-6 max-w-3xl">
         <RevealSection variant="up">
           <div className="text-center mb-12">
-            <div className="flex items-center justify-center gap-3 mb-4">
-              <div className="h-px w-8 bg-emerald-500" />
-              <span className="text-xs font-bold tracking-[0.25em] text-emerald-400 uppercase">Apply Now</span>
-              <div className="h-px w-8 bg-emerald-500" />
-            </div>
+            <div className="flex items-center justify-center gap-3 mb-4"><div className="h-px w-8 bg-emerald-500" /><span className="text-xs font-bold tracking-[0.25em] text-emerald-400 uppercase">Apply Now</span><div className="h-px w-8 bg-emerald-500" /></div>
             <h2 className="text-4xl font-black text-white mb-3">Ready to join us?</h2>
-            <p className="text-white/40 text-sm">Fill out the form below and we'll be in touch within a few days.</p>
+            <p className="text-white/40 text-sm">Fill out the form below and we will be in touch within a few days.</p>
           </div>
         </RevealSection>
         <RevealSection variant="up">
@@ -235,7 +219,7 @@ export default function Careers() {
               </button>
             </div>
           ) : (
-            <div className="p-8 rounded-2xl border border-white/[0.07] bg-white/[0.03]">
+            <div className="p-8 rounded-2xl border border-white/[0.07] bg-white/[0.03] backdrop-blur-sm">
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
@@ -252,8 +236,8 @@ export default function Careers() {
                 <div>
                   <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30 mb-2 block">Role</label>
                   <select required name="role" value={form.role} onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-white/[0.08] text-white text-sm focus:outline-none focus:border-emerald-500/40 transition-all appearance-none">
-                    <option value="" disabled className="bg-[#0a0e1a]">Select a role…</option>
+                    className="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-white/[0.08] text-white text-sm focus:outline-none focus:border-emerald-500/40 transition-all appearance-none cursor-pointer">
+                    <option value="" disabled className="bg-[#0a0e1a]">Select a role...</option>
                     {openings.map(j => <option key={j.title} value={j.title} className="bg-[#0a0e1a]">{j.title}</option>)}
                     <option value="General Application" className="bg-[#0a0e1a]">General Application</option>
                   </select>
@@ -265,14 +249,14 @@ export default function Careers() {
                 </div>
                 <div>
                   <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30 mb-2 block">Why CrowdPnL?</label>
-                  <textarea required rows={5} name="message" value={form.message} onChange={handleChange} placeholder="Tell us about yourself and why you'd be a great fit…"
+                  <textarea required rows={5} name="message" value={form.message} onChange={handleChange} placeholder="Tell us about yourself and why you would be a great fit..."
                     className="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-white/[0.08] text-white placeholder:text-white/20 text-sm focus:outline-none focus:border-emerald-500/40 transition-all resize-none" />
                 </div>
                 <div className="flex items-center justify-between pt-1">
-                  <p className="text-xs text-white/20">We'll review your application within a few days.</p>
+                  <p className="text-xs text-white/20">We will review your application within a few days.</p>
                   <button type="submit" disabled={sending}
-                    className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-emerald-500 hover:bg-emerald-400 disabled:opacity-60 text-white font-bold text-sm transition-all">
-                    {sending ? <><Loader2 className="w-4 h-4 animate-spin" /> Submitting…</> : <><Send className="w-4 h-4" /> Submit Application</>}
+                    className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-emerald-500 hover:bg-emerald-400 disabled:opacity-60 text-white font-bold text-sm transition-all shadow-lg shadow-emerald-500/20">
+                    {sending ? <><Loader2 className="w-4 h-4 animate-spin" /> Submitting...</> : <><Send className="w-4 h-4" /> Submit Application</>}
                   </button>
                 </div>
               </form>

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Activity, Zap, Circle, TrendingUp, TrendingDown, ExternalLink } from 'lucide-react';
+import { Activity, Zap, Circle, ExternalLink } from 'lucide-react';
 import { signalStore } from '@/lib/signalStore';
 
 interface Signal {
@@ -361,18 +361,6 @@ export default function LiveTradingTerminal() {
           <span className="px-2 py-0.5 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-[10px] font-bold">BETA</span>
         </div>
         <div className="flex items-center gap-4">
-          {currentPrice > 0 && (
-            <div className="flex items-center gap-2">
-              <span className="text-white font-bold text-sm">
-                ${currentPrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-              </span>
-              <span className={`flex items-center gap-1 text-xs font-semibold ${isUp ? 'text-emerald-400' : 'text-red-400'}`}>
-                {isUp ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
-                {priceChange >= 0 ? '+' : ''}{priceChange.toFixed(3)}%
-                <span className="text-[10px] font-normal opacity-60 ml-0.5">session</span>
-              </span>
-            </div>
-          )}
           <div className="flex items-center gap-1.5">
             <Circle className={`w-2 h-2 ${connected ? 'text-emerald-400 fill-emerald-400' : 'text-amber-400 fill-amber-400'}`} />
             <span className={`text-xs font-medium ${connected ? 'text-emerald-400' : 'text-amber-400'}`}>

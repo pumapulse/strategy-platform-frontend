@@ -27,7 +27,7 @@ export default function Privacy() {
       <section className="relative overflow-hidden border-b border-white/[0.06]">
         <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
         <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/10 via-[#0a0e1a] to-[#0a0e1a]" />
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-emerald-500/[0.05] rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-emerald-500/[0.06] rounded-full blur-3xl pointer-events-none" />
 
         <div className="relative z-10 container mx-auto px-6 pt-40 pb-16 max-w-3xl">
           <RevealSection variant="up">
@@ -41,10 +41,10 @@ export default function Privacy() {
               </div>
               <div>
                 <h1 className="text-5xl font-black tracking-tight text-white mb-2">Privacy Policy</h1>
-                <p className="text-white/30 text-sm">Effective date: January 1, 2025 · Last updated: January 1, 2025</p>
+                <p className="text-white/30 text-sm">Effective date: January 1, 2025 &middot; Last updated: January 1, 2025</p>
               </div>
             </div>
-            <p className="text-white/45 text-base leading-relaxed mt-6">Your privacy matters to us. This policy explains what data we collect, how we use it, and the choices you have. We keep it plain and honest — no legalese.</p>
+            <p className="text-white/45 text-base leading-relaxed mt-6">Your privacy matters to us. This policy explains what data we collect, how we use it, and the choices you have. We keep it plain and honest.</p>
           </RevealSection>
         </div>
       </section>
@@ -70,7 +70,7 @@ export default function Privacy() {
               </div>
               <div>
                 <p className="text-white font-bold text-sm mb-1">Questions about this policy?</p>
-                <p className="text-white/40 text-sm mb-3">We're happy to explain anything in plain language. Reach out any time.</p>
+                <p className="text-white/40 text-sm mb-3">We are happy to explain anything in plain language. Reach out any time.</p>
                 <a href="mailto:privacy@crowdpnl.com" className="inline-flex items-center gap-1.5 text-sm text-emerald-400 hover:text-emerald-300 font-semibold transition-colors">
                   privacy@crowdpnl.com <ArrowRight className="w-3.5 h-3.5" />
                 </a>
@@ -81,8 +81,8 @@ export default function Privacy() {
 
         <RevealSection variant="up">
           <div className="mt-6 flex items-center gap-4 flex-wrap">
-            <button onClick={() => navigate('/terms')} className="text-xs text-white/30 hover:text-white/60 transition-colors">Terms of Service →</button>
-            <button onClick={() => navigate('/contact')} className="text-xs text-white/30 hover:text-white/60 transition-colors">Contact Us →</button>
+            <button onClick={() => navigate('/terms')} className="text-xs text-white/30 hover:text-white/60 transition-colors">Terms of Service &rarr;</button>
+            <button onClick={() => navigate('/contact')} className="text-xs text-white/30 hover:text-white/60 transition-colors">Contact Us &rarr;</button>
           </div>
         </RevealSection>
       </div>
