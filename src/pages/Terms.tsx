@@ -36,7 +36,7 @@ export default function Terms() {
       {/* Hero */}
       <section className="relative overflow-hidden min-h-[60vh] flex items-end border-b border-white/[0.06]">
         <div className="absolute inset-0">
-          <img src="/img/security/Annotation 2026-04-04 221150.jpg" alt="Terms" className="w-full h-full object-cover opacity-[0.15]" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+          <img src="/img/security/Annotation 2026-04-04 221150.jpg" alt="Terms" className="w-full h-full object-cover opacity-35" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
           <div className="absolute inset-0 bg-gradient-to-b from-[#060a14]/70 via-[#0a0e1a]/85 to-[#0a0e1a]" />
         </div>
         <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)', backgroundSize: '60px 60px' }} />

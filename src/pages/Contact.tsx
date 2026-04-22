@@ -1,9 +1,13 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import RevealSection from '@/components/RevealSection';
 import { useNavigate } from 'react-router-dom';
 import { Mail, Phone, MapPin, Send, Loader2, MessageSquare, Clock, CheckCircle, ArrowRight } from 'lucide-react';
+
+const Divider = ({ topColor = '#0a0e1a', bottomColor = '#111827' }: { flip?: boolean; topColor?: string; bottomColor?: string }) => (
+  <div className="h-20" style={{ background: `linear-gradient(180deg, ${topColor} 0%, ${bottomColor} 100%)` }} />
+);
 
 const contactItems = [
   { icon: Mail, label: 'General Inquiries', value: 'hello@crowdpnl.com', href: 'mailto:hello@crowdpnl.com', sub: 'Questions, feedback, anything' },
@@ -39,7 +43,7 @@ export default function Contact() {
       {/* Hero */}
       <section className="relative overflow-hidden min-h-[65vh] flex items-center">
         <div className="absolute inset-0">
-          <img src="https://images.unsplash.com/photo-1423666639041-f56000c27a9a?w=1920&q=90" alt="Contact" className="w-full h-full object-cover opacity-[0.15]" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+          <img src="https://images.unsplash.com/photo-1423666639041-f56000c27a9a?w=1920&q=90" alt="Contact" className="w-full h-full object-cover opacity-35" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
           <div className="absolute inset-0 bg-gradient-to-b from-[#060a14]/60 via-[#0a0e1a]/80 to-[#0a0e1a]" />
         </div>
         <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
@@ -51,13 +55,16 @@ export default function Contact() {
               <span className="text-white">{"Let's"}</span><br />
               <span className="bg-gradient-to-r from-[#9966ff] to-[#cc99ff] bg-clip-text text-transparent">talk.</span>
             </h1>
-            <p className="text-white/50 text-xl leading-relaxed max-w-xl">We are a small team and we read every message. Whether it is a question, a partnership idea, or just feedback — we would love to hear from you.</p>
+            <p className="text-white/50 text-xl leading-relaxed max-w-xl">We are a small team and we read every message. Whether it is a question, a partnership idea, or just feedback â€” we would love to hear from you.</p>
           </RevealSection>
         </div>
       </section>
 
       {/* Main */}
-      <section className="container mx-auto px-6 pb-32 max-w-6xl">
+      <Divider topColor="#0a0e1a" bottomColor="#111827" />
+      <section className="relative pb-32 overflow-hidden" style={{ background: 'linear-gradient(180deg, #111827 0%, #0f172a 100%)' }}>
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#9966ff]/[0.04] rounded-full blur-3xl pointer-events-none animate-float" />
+        <div className="container mx-auto px-6 pt-16 max-w-6xl relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-10 items-start">
           <RevealSection variant="left" className="lg:col-span-2">
             <div>
@@ -137,7 +144,9 @@ export default function Contact() {
             )}
           </RevealSection>
         </div>
+        </div>
       </section>
+      <Divider flip={true} topColor="#111827" bottomColor="#0a0e1a" />
 
       <section className="border-t border-white/[0.06] bg-[#060a14] py-10">
         <div className="container mx-auto px-6 max-w-6xl flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -153,3 +162,5 @@ export default function Contact() {
     </div>
   );
 }
+
+

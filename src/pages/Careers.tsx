@@ -52,7 +52,7 @@ export default function Careers() {
       {/* Hero */}
       <section className="relative overflow-hidden min-h-[80vh] flex items-center">
         <div className="absolute inset-0">
-          <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1920&q=90" alt="Team" className="w-full h-full object-cover opacity-[0.14]" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+          <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1920&q=90" alt="Team" className="w-full h-full object-cover opacity-35" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
           <div className="absolute inset-0 bg-gradient-to-b from-[#060a14]/50 via-[#0a0e1a]/75 to-[#0a0e1a]" />
         </div>
         <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
