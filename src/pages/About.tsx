@@ -14,11 +14,12 @@ const values = [
 ];
 
 const timeline = [
-  { year: '2023', title: 'Founded', body: 'CrowdPnL was born in Toronto with a simple mission: democratize professional crypto trading strategies.' },
+  { year: '2023', title: 'Founded as CopyTradeX', body: 'Our journey began in Toronto under the name CopyTradeX — a platform built to democratize professional crypto trading strategies for everyday traders.' },
   { year: '2023', title: 'First Strategy', body: 'Launched our first systematic BTC momentum strategy, achieving a 71% win rate in live forward testing.' },
   { year: '2024', title: 'Community Launch', body: 'Opened the platform to the public. 500 traders joined in the first month. The community was alive.' },
   { year: '2024', title: 'Premium Launch', body: 'Introduced Premium and Elite tiers with advanced strategies, signals, and priority support.' },
-  { year: '2025', title: 'Desktop App', body: 'Shipped the CrowdPnL desktop app for Windows and macOS â€” real-time alerts, one-click setup.' },
+  { year: '2025', title: 'Rebranded to CrowdPnL', body: 'To reflect our expanded vision and growing community, we rebranded from CopyTradeX to CrowdPnL — a name that captures the collective edge we build together.' },
+  { year: '2025', title: 'Desktop App', body: 'Shipped the CrowdPnL desktop app for Windows and macOS - real-time alerts, one-click setup.' },
 ];
 
 const stats = [
@@ -103,9 +104,9 @@ export default function About() {
             </RevealSection>
             <RevealSection variant="left">
               <div className="relative h-[460px]">
-                <img src="/img/about/lines-code-running-computer-screens-tablet-data-center.jpg" alt="Analytics" className="absolute top-0 left-0 w-3/4 h-[340px] object-cover" onError={(e) => { (e.target as HTMLImageElement).src = '/img/about/workers-it-company-working-computer.jpg'; }} />
+                <img src="/img/1200+traders.png" alt="Analytics" className="absolute top-0 left-0 w-3/4 h-[340px] object-cover" onError={(e) => { (e.target as HTMLImageElement).src = '/img/about/workers-it-company-working-computer.jpg'; }} />
                 <div className="absolute top-0 left-0 w-3/4 h-[340px] bg-gradient-to-t from-[#0a0e1a]/60 to-transparent pointer-events-none" />
-                <img src="/img/about/team-admins-working-together-server-hub-analyzing-rigs-data.jpg" alt="Team" className="absolute bottom-0 right-0 w-[55%] h-[240px] object-cover border-4 border-[#0a0e1a]" onError={(e) => { (e.target as HTMLImageElement).src = '/img/about/serious-colleagues-office-talking-with-each-other.jpg'; }} />
+                <img src="/img/1200+traders-2.png" alt="Team" className="absolute bottom-0 right-0 w-[55%] h-[240px] object-cover border-4 border-[#0a0e1a]" onError={(e) => { (e.target as HTMLImageElement).src = '/img/about/serious-colleagues-office-talking-with-each-other.jpg'; }} />
                 <div className="absolute bottom-0 right-0 w-[55%] h-[240px] bg-gradient-to-t from-[#0a0e1a]/50 to-transparent pointer-events-none" />
                 <div className="absolute top-[42%] left-[52%] -translate-x-1/2 -translate-y-1/2 z-10 bg-[#0e0b1e] border border-[#9966ff]/30 px-5 py-4 text-center shadow-2xl">
                   <div className="text-3xl font-black text-white">1,200<span className="text-[#9966ff]">+</span></div>
@@ -208,9 +209,9 @@ export default function About() {
           <RevealSection variant="stagger">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               {[
-                { img: '/img/algo trading/Annotation 2026-04-04 214747.jpg', title: 'Algorithmic Precision', body: 'Every strategy is built on systematic rules — no guesswork, no emotion. Entry, exit, and risk parameters are defined before a single trade is placed.', tag: 'Strategy Design' },
-                { img: '/img/about/programmer-colleague-office-training-machine-learning-algorithms.jpg', title: 'Machine Learning Edge', body: 'Our ML Momentum Scanner uses gradient boosting trained on 3 years of 4H data to score each candle — giving you a quantified probability before you act.', tag: 'ML Research' },
-                { img: '/img/about/data-center-engineering-team-doing-brainstorming-monitoring-system-performance.jpg', title: 'Rigorous Backtesting', body: 'Walk-forward validation, out-of-sample testing, and drawdown analysis on every strategy. We only publish what survives real scrutiny.', tag: 'Validation' },
+                { img: '/img/Algorithmic Precision.png', title: 'Algorithmic Precision', body: 'Every strategy is built on systematic rules — no guesswork, no emotion. Entry, exit, and risk parameters are defined before a single trade is placed.', tag: 'Strategy Design' },
+                { img: '/img/Machine Learning Edge.png', title: 'Machine Learning Edge', body: 'Our ML Momentum Scanner uses gradient boosting trained on 3 years of 4H data to score each candle — giving you a quantified probability before you act.', tag: 'ML Research' },
+                { img: '/img/Rigorous Backtesting.png', title: 'Rigorous Backtesting', body: 'Walk-forward validation, out-of-sample testing, and drawdown analysis on every strategy. We only publish what survives real scrutiny.', tag: 'Validation' },
                 { img: '/img/blockchain/Annotation 2026-04-04 215528.jpg', title: 'Crypto-Native Infrastructure', body: 'Built specifically for crypto markets — on-chain signals, funding rate analysis, and exchange-native execution scripts included.', tag: 'Crypto Focus' },
               ].map(({ img, title, body, tag }) => (
                 <div key={title} className="border border-white/[0.08] bg-[#0a0e1a] hover:border-[#9966ff]/30 transition-all group overflow-hidden">
@@ -255,6 +256,8 @@ export default function About() {
     </div>
   );
 }
+
+
 
 
 

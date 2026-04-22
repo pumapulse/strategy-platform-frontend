@@ -92,15 +92,6 @@ export default function Contact() {
                   </div>
                 </div>
               ))}
-              <div className="pt-6 border-t border-white/[0.07]">
-                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/20 mb-4">Other contacts</p>
-                {[{ label: 'Business & Partnerships', email: 'sales@crowdpnl.com' }, { label: 'Careers', email: 'hr@crowdpnl.com' }, { label: 'Legal', email: 'legal@crowdpnl.com' }].map(({ label, email }) => (
-                  <div key={email} className="flex items-center justify-between py-3 border-b border-white/[0.05] last:border-0">
-                    <span className="text-xs text-white/35">{label}</span>
-                    <a href={`mailto:${email}`} className="text-xs text-emerald-400 hover:text-emerald-300 transition-colors">{email}</a>
-                  </div>
-                ))}
-              </div>
             </div>
           </RevealSection>
 

@@ -6,9 +6,9 @@ import { Briefcase, MapPin, ArrowRight, Zap, Users, TrendingUp, Code, Globe, Hea
 
 const cultureValues = [
   { icon: Globe, title: 'Remote-First', body: 'Work from anywhere. We have team members across 4 countries and async is our default.', img: '/img/about/remote2.jpg', pos: 'object-top' },
-  { icon: TrendingUp, title: 'Rapid Growth', body: 'We move fast, ship often, and learn from real users. Your work has direct impact from day one.', img: '/img/about/Annotation 2026-04-05 154912.jpg', pos: 'object-top' },
-  { icon: Heart, title: 'Real Impact', body: 'Every feature you build reaches thousands of active traders. You will see your work matter immediately.', img: '/img/about/young-employees-sitting-office-table-using-laptop-team-work-brainstorming-meeting-concept.jpg', pos: 'object-center' },
-  { icon: Users, title: 'Diverse Team', body: 'We hire for curiosity and craft, not credentials. Our team spans quants, engineers, and traders.', img: '/img/about/Annotation 2026-04-04 225503.jpg', pos: 'object-top' },
+  { icon: TrendingUp, title: 'Rapid Growth', body: 'We move fast, ship often, and learn from real users. Your work has direct impact from day one.', img: '/img/rapid growth.png', pos: 'object-[center_15%]' },
+  { icon: Heart, title: 'Real Impact', body: 'Every feature you build reaches thousands of active traders. You will see your work matter immediately.', img: '/img/real impact.png', pos: 'object-center' },
+  { icon: Users, title: 'Diverse Team', body: 'We hire for curiosity and craft, not credentials. Our team spans quants, engineers, and traders.', img: '/img/divers team.jpg', pos: 'object-[center_15%]' },
 ];
 
 const perks = [
@@ -21,9 +21,39 @@ const perks = [
 ];
 
 const openings = [
-  { title: 'Quantitative Researcher', type: 'Full-time', location: 'Remote / Toronto', team: 'Research', description: 'Develop and validate systematic trading strategies across crypto markets. You will work with historical data, build backtesting frameworks, and publish new strategies to the platform.', requirements: ['3+ years in quantitative finance or algorithmic trading', 'Strong Python skills (pandas, numpy, backtrader)', 'Experience with crypto market data', 'Familiarity with statistical testing and walk-forward validation'] },
-  { title: 'Full-Stack Engineer', type: 'Full-time', location: 'Remote', team: 'Engineering', description: 'Build and scale the CrowdPnL platform. You will work across the React frontend and Node.js backend, shipping features that thousands of traders use daily.', requirements: ['3+ years with React and TypeScript', 'Experience with Node.js and PostgreSQL/Supabase', 'Familiarity with WebSockets and real-time data', 'Strong product sense and attention to detail'] },
-  { title: 'Community Manager', type: 'Part-time', location: 'Remote', team: 'Growth', description: 'Grow and nurture our trader community. You will moderate discussions, create educational content, and be the voice of CrowdPnL across social channels.', requirements: ['Passion for trading and crypto markets', 'Experience managing online communities', 'Strong written communication skills', 'Familiarity with Discord, Twitter/X, and Telegram'] },
+  {
+    title: 'Blockchain Developer',
+    type: 'Full-time',
+    location: 'Remote',
+    team: 'Blockchain',
+    stack: 'Solidity · Web3.js · Ethers.js · ERC-20 · Token Standards · Node.js · Ethereum/BSC',
+    description: 'Lead the development of the CrowdPnL blockchain infrastructure — create and manage our native token, build crypto payment gateways for subscriptions and payouts, develop staking and governance contracts, and integrate on-chain data with our platform.',
+    responsibilities: ['Design and deploy ERC-20/BEP-20 token contracts', 'Build and maintain crypto payment gateway integrations', 'Develop staking, rewards, and governance smart contracts', 'Manage token supply, vesting schedules, and treasury', 'Integrate on-chain data with our platform APIs', 'Conduct security audits and ensure contract safety'],
+    requirements: ['3+ years blockchain/smart contract development', 'Deep knowledge of Solidity and token standards (ERC-20, ERC-721)', 'Experience with crypto payment gateways (Coinbase Commerce, NOWPayments, etc.)', 'Experience deploying on Ethereum, BSC, or similar chains'],
+    salary: '$100,000 – $140,000 / year',
+  },
+  {
+    title: 'Trading Bot Developer',
+    type: 'Full-time',
+    location: 'Remote',
+    team: 'Engineering',
+    stack: 'Python · Node.js · Exchange APIs · Real-time Systems · Market Data Feeds',
+    description: 'Build and optimize automated trading bots that interact with financial markets. You will integrate with exchange APIs, monitor bot performance, and ensure reliable execution across multiple exchanges.',
+    responsibilities: ['Build and optimize trading bots', 'Integrate exchange APIs', 'Monitor performance and troubleshoot issues'],
+    requirements: ['Python or Node.js experience', 'Familiarity with trading platforms and API integrations', 'Real-time systems experience', 'Market data feeds knowledge'],
+    salary: '$80,000 – $110,000 / year',
+  },
+  {
+    title: 'Quantitative Researcher',
+    type: 'Full-time',
+    location: 'Remote / Toronto',
+    team: 'Research',
+    stack: 'Python · pandas · numpy · backtrader · Statistical Analysis',
+    description: 'Develop and validate systematic trading strategies across crypto markets. You will work with historical data, build backtesting frameworks, and publish new strategies to the platform.',
+    responsibilities: ['Research and develop systematic strategies', 'Build backtesting frameworks', 'Validate strategies with walk-forward testing'],
+    requirements: ['3+ years in quantitative finance or algorithmic trading', 'Strong Python skills (pandas, numpy, backtrader)', 'Experience with crypto market data', 'Familiarity with statistical testing'],
+    salary: '$90,000 – $130,000 / year',
+  },
 ];
 
 interface ApplyForm { name: string; email: string; role: string; linkedin: string; message: string; }
@@ -109,9 +139,9 @@ export default function Careers() {
             </RevealSection>
             <RevealSection variant="right">
               <div className="relative h-[440px]">
-                <img src="/img/about/workers-it-company-working-computer (1).jpg" alt="Team" className="absolute top-0 left-0 w-3/4 h-[340px] object-cover object-[center_30%]" onError={(e) => { (e.target as HTMLImageElement).src = '/img/about/workers-it-company-working-computer.jpg'; }} />
+                <img src="/img/3+openrole.png" alt="Team" className="absolute top-0 left-0 w-3/4 h-[340px] object-cover object-top" onError={(e) => { (e.target as HTMLImageElement).src = '/img/about/workers-it-company-working-computer.jpg'; }} />
                 <div className="absolute top-0 left-0 w-3/4 h-[340px] bg-gradient-to-t from-[#0a0e1a]/50 to-transparent pointer-events-none" />
-                <img src="/img/about/serious-colleagues-office-talking-with-each-other.jpg" alt="Office" className="absolute bottom-0 right-0 w-[55%] h-[240px] object-cover border-4 border-[#0a0e1a]" onError={(e) => { (e.target as HTMLImageElement).src = '/img/about/Annotation 2026-04-05 001857.jpg'; }} />
+                <img src="/img/3+openrole2.png" alt="Office" className="absolute bottom-0 right-0 w-[55%] h-[240px] object-cover object-top border-4 border-[#0a0e1a]" onError={(e) => { (e.target as HTMLImageElement).src = '/img/about/Annotation 2026-04-05 001857.jpg'; }} />
                 <div className="absolute bottom-0 right-0 w-[55%] h-[240px] bg-gradient-to-t from-[#0a0e1a]/50 to-transparent pointer-events-none" />
                 <div className="absolute top-[42%] left-[52%] -translate-x-1/2 -translate-y-1/2 z-10 bg-[#060a14] border border-white/[0.12] px-5 py-4 text-center shadow-2xl">
                   <div className="text-3xl font-black text-white">3<span className="text-emerald-400">+</span></div>
@@ -189,7 +219,7 @@ export default function Careers() {
       {/* Open Roles — lighter again, clearly distinct */}
       <section className="relative py-24 overflow-hidden" style={{ background: 'linear-gradient(180deg, #111827 0%, #0f172a 100%)' }}>
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[300px] bg-emerald-500/[0.04] rounded-full blur-3xl pointer-events-none" />
-        <div className="container mx-auto px-6 max-w-5xl relative z-10">
+        <div className="container mx-auto px-6 max-w-6xl relative z-10">
           <RevealSection variant="up">
             <div className="mb-12">
               <div className="flex items-center gap-3 mb-4"><div className="h-px w-8 bg-emerald-500" /><span className="text-xs font-bold tracking-[0.25em] text-emerald-400 uppercase">Open Roles</span></div>
@@ -206,23 +236,43 @@ export default function Careers() {
                         <h3 className="text-white font-black text-xl group-hover:text-[#cc99ff] transition-colors">{job.title}</h3>
                         <span className="text-[10px] px-2.5 py-1 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-bold group-hover:bg-emerald-500/20 transition-colors">{job.type}</span>
                       </div>
-                      <div className="flex items-center gap-4 text-xs text-white/30 group-hover:text-white/50 transition-colors">
+                      <div className="flex items-center gap-4 text-xs text-white/30 group-hover:text-white/50 transition-colors flex-wrap">
                         <span className="flex items-center gap-1.5"><Briefcase className="w-3 h-3" />{job.team}</span>
                         <span className="flex items-center gap-1.5"><MapPin className="w-3 h-3" />{job.location}</span>
+                        <span className="text-emerald-400 font-semibold">{job.salary}</span>
                       </div>
                     </div>
                     <a href="#apply" onClick={() => setForm(prev => ({ ...prev, role: job.title }))} className="shrink-0 inline-flex items-center gap-1.5 px-5 py-2.5 bg-[#0f1420] border border-white/[0.10] hover:border-[#9966ff]/50 hover:bg-[#9966ff]/10 text-white/70 hover:text-[#9966ff] text-xs font-semibold transition-all">
                       Apply <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
                     </a>
                   </div>
+                  {'stack' in job && <p className="text-white/25 text-xs mb-3 font-mono">{(job as any).stack}</p>}
                   <p className="text-white/40 text-sm leading-relaxed mb-4 group-hover:text-white/55 transition-colors">{job.description}</p>
-                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    {job.requirements.map(r => (
-                      <li key={r} className="flex items-start gap-2 text-xs text-white/30">
-                        <span className="text-emerald-400 mt-0.5 shrink-0">&#10003;</span>{r}
-                      </li>
-                    ))}
-                  </ul>
+                  {'responsibilities' in job && (job as any).responsibilities?.length > 0 && (
+                    <div className="mb-4">
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-white/25 mb-2">Responsibilities</p>
+                      <ul className="space-y-1">
+                        {(job as any).responsibilities.map((r: string) => (
+                          <li key={r} className="flex items-start gap-2 text-xs text-white/35">
+                            <span className="text-[#9966ff] mt-0.5 shrink-0">→</span>{r}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  <div>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-white/25 mb-2">Requirements</p>
+                    <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      {job.requirements.map(r => (
+                        <li key={r} className="flex items-start gap-2 text-xs text-white/30">
+                          <span className="text-emerald-400 mt-0.5 shrink-0">&#10003;</span>{r}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="mt-4 h-px bg-white/[0.05] overflow-hidden">
+                    <div className="h-full bg-gradient-to-r from-[#9966ff] to-transparent w-0 group-hover:w-full transition-all duration-700" />
+                  </div>
                 </div>
               </RevealSection>
             ))}
@@ -233,14 +283,67 @@ export default function Careers() {
       {/* Apply Form — clean dark section */}
       <section id="apply" className="relative py-28 overflow-hidden" style={{ background: 'linear-gradient(180deg, #0a0e1a 0%, #0c0e18 100%)' }}>
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-emerald-500/[0.04] rounded-full blur-3xl pointer-events-none" />
-        <div className="container mx-auto px-6 max-w-3xl relative z-10">
+        <div className="container mx-auto px-6 max-w-6xl relative z-10">
         <RevealSection variant="up">
           <div className="mb-12">
             <div className="flex items-center gap-3 mb-4"><div className="h-px w-8 bg-emerald-500" /><span className="text-xs font-bold tracking-[0.25em] text-emerald-400 uppercase">Apply Now</span></div>
             <h2 className="text-4xl font-black text-white mb-3">Ready to join us?</h2>
-            <p className="text-white/40 text-sm">Fill out the form below and we will be in touch within a few days.</p>
           </div>
         </RevealSection>
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-10 items-start">
+
+          {/* Left: info + process */}
+          <RevealSection variant="left" className="lg:col-span-2">
+            <div className="lg:sticky lg:top-28 space-y-6">
+              <div>
+                <h3 className="text-white font-black text-2xl mb-3">Take the first step.</h3>
+                <p className="text-white/50 text-sm leading-relaxed">Send us your application and we will get back to you within 3 business days. We review every application personally — no automated rejections.</p>
+              </div>
+
+              {/* Contact channels */}
+              <div className="space-y-0 border border-white/[0.08]">
+                {[
+                  { label: 'Email', value: 'hr@crowdpnl.com', href: 'mailto:hr@crowdpnl.com' },
+                  { label: 'WhatsApp', value: '+1 (681) 553-4010', href: 'https://wa.me/16815534010' },
+                ].map(({ label, value, href }) => (
+                  <a key={label} href={href} target="_blank" rel="noopener noreferrer"
+                    className="flex items-center justify-between px-4 py-4 border-b border-white/[0.06] last:border-0 hover:bg-white/[0.03] transition-colors group">
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-white/30">{label}</span>
+                    <span className="text-sm font-bold text-emerald-400 group-hover:text-emerald-300 transition-colors">{value}</span>
+                  </a>
+                ))}
+              </div>
+
+              {/* Process steps */}
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/25 mb-4">Hiring Process</p>
+                <div className="space-y-0 border border-white/[0.08]">
+                  {[
+                    { n: '1', title: 'Application Review', sub: '1–3 business days' },
+                    { n: '2', title: '30-min Intro Call', sub: 'Meet the team, ask questions' },
+                    { n: '3', title: 'Technical Assessment', sub: '1–2 hour practical task' },
+                    { n: '4', title: 'Team Interview & Offer', sub: 'Meet your future colleagues' },
+                  ].map(({ n, title, sub }, i, arr) => (
+                    <div key={n} className={`flex items-start gap-4 px-4 py-4 ${i < arr.length - 1 ? 'border-b border-white/[0.06]' : ''} hover:bg-white/[0.02] transition-colors group`}>
+                      <div className="w-7 h-7 bg-[#9966ff]/20 border border-[#9966ff]/30 flex items-center justify-center shrink-0 text-[10px] font-black text-[#9966ff] group-hover:bg-[#9966ff]/30 transition-colors">{n}</div>
+                      <div>
+                        <p className="text-white text-sm font-bold group-hover:text-[#cc99ff] transition-colors">{title}</p>
+                        <p className="text-white/35 text-xs mt-0.5">{sub}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Quote */}
+              <div className="border-l-2 border-emerald-500 pl-4 py-1">
+                <p className="text-white/40 text-xs leading-relaxed italic">"We hire for curiosity and craft. If you are passionate about crypto and great products, we want to hear from you."</p>
+              </div>
+            </div>
+          </RevealSection>
+
+          {/* Right: form */}
+          <RevealSection variant="right" className="lg:col-span-3">
         <RevealSection variant="up">
           {sent ? (
             <div className="flex flex-col items-center justify-center text-center p-16 border border-emerald-500/20 bg-emerald-500/[0.04]">
@@ -299,6 +402,8 @@ export default function Careers() {
             </div>
           )}
         </RevealSection>
+          </RevealSection>
+        </div>
         </div>
       </section>
 
