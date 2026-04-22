@@ -29,10 +29,10 @@ const stats = [
 ];
 
 const team = [
-  { name: 'Marcus Chen', role: 'Co-Founder & Head of Quant', bio: 'Former prop trader at a Toronto hedge fund. Built systematic strategies for 8 years before founding CrowdPnL.', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80' },
-  { name: 'Sofia Reyes', role: 'Co-Founder & CEO', bio: 'Ex-fintech product lead. Passionate about making institutional tools accessible to every trader.', img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&q=80' },
-  { name: 'James Okafor', role: 'Lead Engineer', bio: 'Full-stack engineer with a background in real-time financial data systems and distributed architecture.', img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&q=80' },
-  { name: 'Priya Nair', role: 'Quantitative Researcher', bio: 'PhD in computational finance. Specializes in crypto market microstructure and ML-driven signal generation.', img: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&q=80' },
+  { name: 'Marcus Chen', role: 'Co-Founder & Head of Quant', bio: 'Former prop trader at a Toronto hedge fund. Built systematic strategies for 8 years before founding CrowdPnL.', img: '/img/team/me.PNG' },
+  { name: 'Sofia Reyes', role: 'Co-Founder & CEO', bio: 'Ex-fintech product lead. Passionate about making institutional tools accessible to every trader.', img: '/img/team/Erica_original.jpg' },
+  { name: 'James Okafor', role: 'Lead Engineer', bio: 'Full-stack engineer with a background in real-time financial data systems and distributed architecture.', img: '/img/team/Lead Full-Stack Developer.jpg' },
+  { name: 'Priya Nair', role: 'Quantitative Researcher', bio: 'PhD in computational finance. Specializes in crypto market microstructure and ML-driven signal generation.', img: '/img/team/Senior SEO Specialist.jpg' },
 ];
 
 
@@ -207,7 +207,7 @@ export default function About() {
               {team.map(({ name, role, bio, img }) => (
                 <div key={name} className="border border-white/[0.08] bg-[#0a0e1a] hover:border-[#9966ff]/30 transition-all group">
                   <div className="relative h-56 overflow-hidden">
-                    <img src={img} alt={name} className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500" onError={(e) => { (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80'; }} />
+                    <img src={img} alt={name} className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500" onError={(e) => { (e.target as HTMLImageElement).src = '/img/team/64a97d2ce2d36eaba4109be33f8a9638_compressed.png'; }} />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0a0e1a] via-[#0a0e1a]/20 to-transparent" />
                   </div>
                   <div className="p-5 border-t border-white/[0.06]">
