@@ -5,10 +5,10 @@ import RevealSection from '@/components/RevealSection';
 import { Briefcase, MapPin, ArrowRight, Zap, Users, TrendingUp, Code, Globe, Heart, Star, Send, Loader2, CheckCircle } from 'lucide-react';
 
 const cultureValues = [
-  { icon: Globe, title: 'Remote-First', body: 'Work from anywhere. We have team members across 4 countries and async is our default.', img: 'https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=600&q=80' },
-  { icon: TrendingUp, title: 'Rapid Growth', body: 'We move fast, ship often, and learn from real users. Your work has direct impact from day one.', img: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&q=80' },
-  { icon: Heart, title: 'Real Impact', body: 'Every feature you build reaches thousands of active traders. You will see your work matter immediately.', img: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=600&q=80' },
-  { icon: Users, title: 'Diverse Team', body: 'We hire for curiosity and craft, not credentials. Our team spans quants, engineers, and traders.', img: 'https://images.unsplash.com/photo-1556761175-4b46a572b786?w=600&q=80' },
+  { icon: Globe, title: 'Remote-First', body: 'Work from anywhere. We have team members across 4 countries and async is our default.', img: '/img/about/remote2.jpg', pos: 'object-top' },
+  { icon: TrendingUp, title: 'Rapid Growth', body: 'We move fast, ship often, and learn from real users. Your work has direct impact from day one.', img: '/img/about/Annotation 2026-04-05 154912.jpg', pos: 'object-top' },
+  { icon: Heart, title: 'Real Impact', body: 'Every feature you build reaches thousands of active traders. You will see your work matter immediately.', img: '/img/about/young-employees-sitting-office-table-using-laptop-team-work-brainstorming-meeting-concept.jpg', pos: 'object-center' },
+  { icon: Users, title: 'Diverse Team', body: 'We hire for curiosity and craft, not credentials. Our team spans quants, engineers, and traders.', img: '/img/about/Annotation 2026-04-04 225503.jpg', pos: 'object-top' },
 ];
 
 const perks = [
@@ -52,7 +52,7 @@ export default function Careers() {
       {/* Hero */}
       <section className="relative overflow-hidden min-h-[80vh] flex items-center">
         <div className="absolute inset-0">
-          <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1920&q=90" alt="Team" className="w-full h-full object-cover opacity-35" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+          <img src="/img/about/Annotation 2026-04-04 230240.jpg" alt="Team" className="w-full h-full object-cover opacity-35" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
           <div className="absolute inset-0 bg-gradient-to-b from-[#060a14]/50 via-[#0a0e1a]/75 to-[#0a0e1a]" />
         </div>
         <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
@@ -65,14 +65,14 @@ export default function Careers() {
                 <span className="text-white">Join the team.</span><br />
                 <span className="bg-gradient-to-r from-[#9966ff] to-[#cc99ff] bg-clip-text text-transparent">Build the edge.</span>
               </h1>
-              <p className="text-white/50 text-lg leading-relaxed mb-6 max-w-lg">We are a small, remote-first team building the best trading strategy platform in crypto. If you are passionate about markets and great products, we would love to hear from you.</p>
+              <p className="text-white/50 text-lg leading-relaxed mb-6 max-w-lg">We are a small, remote-first team building trading strategy platform in crypto. If you are passionate about markets and great products, we would love to hear from you.</p>
               <p className="text-white/30 text-sm">{"Don't"} see a role? <a href="mailto:hr@crowdpnl.com" className="text-emerald-400 hover:text-emerald-300 transition-colors">Email us directly</a></p>
             </RevealSection>
             <RevealSection variant="right">
               <div className="relative h-[440px]">
-                <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&q=80" alt="Team" className="absolute top-0 left-0 w-3/4 h-[340px] object-cover" onError={(e) => { (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&q=80'; }} />
+                <img src="/img/about/workers-it-company-working-computer (1).jpg" alt="Team" className="absolute top-0 left-0 w-3/4 h-[340px] object-cover object-[center_30%]" onError={(e) => { (e.target as HTMLImageElement).src = '/img/about/workers-it-company-working-computer.jpg'; }} />
                 <div className="absolute top-0 left-0 w-3/4 h-[340px] bg-gradient-to-t from-[#0a0e1a]/50 to-transparent pointer-events-none" />
-                <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600&q=80" alt="Office" className="absolute bottom-0 right-0 w-[55%] h-[240px] object-cover border-4 border-[#0a0e1a]" onError={(e) => { (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1556761175-4b46a572b786?w=600&q=80'; }} />
+                <img src="/img/about/serious-colleagues-office-talking-with-each-other.jpg" alt="Office" className="absolute bottom-0 right-0 w-[55%] h-[240px] object-cover border-4 border-[#0a0e1a]" onError={(e) => { (e.target as HTMLImageElement).src = '/img/about/Annotation 2026-04-05 001857.jpg'; }} />
                 <div className="absolute bottom-0 right-0 w-[55%] h-[240px] bg-gradient-to-t from-[#0a0e1a]/50 to-transparent pointer-events-none" />
                 <div className="absolute top-[42%] left-[52%] -translate-x-1/2 -translate-y-1/2 z-10 bg-[#060a14] border border-white/[0.12] px-5 py-4 text-center shadow-2xl">
                   <div className="text-3xl font-black text-white">3<span className="text-emerald-400">+</span></div>
@@ -84,9 +84,11 @@ export default function Careers() {
         </div>
       </section>
 
-      {/* Culture */}
-      <section className="py-28 bg-[#060a14] border-t border-b border-white/[0.05]">
-        <div className="container mx-auto px-6 max-w-6xl">
+      {/* Culture — lighter bg, clearly different from hero */}
+      <section className="relative py-28 overflow-hidden" style={{ background: 'linear-gradient(180deg, #111827 0%, #0f172a 100%)' }}>
+        <div className="absolute top-0 left-0 w-[500px] h-[400px] bg-[#9966ff]/[0.04] rounded-full blur-3xl pointer-events-none animate-float" />
+        <div className="absolute bottom-0 right-0 w-[400px] h-[300px] bg-emerald-500/[0.03] rounded-full blur-3xl pointer-events-none" />
+        <div className="container mx-auto px-6 max-w-6xl relative z-10">
           <RevealSection variant="up">
             <div className="mb-14">
               <div className="flex items-center gap-3 mb-4"><div className="h-px w-8 bg-emerald-500" /><span className="text-xs font-bold tracking-[0.25em] text-emerald-400 uppercase">Our Culture</span></div>
@@ -96,19 +98,19 @@ export default function Careers() {
           </RevealSection>
           <RevealSection variant="stagger">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-              {cultureValues.map(({ icon: Icon, title, body, img }) => (
-                <div key={title} className="border border-white/[0.08] bg-[#0f1420] hover:border-white/[0.15] transition-colors group">
+              {cultureValues.map(({ icon: Icon, title, body, img, pos }) => (
+                <div key={title} className="border border-white/[0.08] bg-[#0f1420] hover:border-[#9966ff]/30 hover:-translate-y-1 transition-all duration-300 group">
                   <div className="relative h-44 overflow-hidden">
-                    <img src={img} alt={title} className="w-full h-full object-cover opacity-60 group-hover:opacity-80 group-hover:scale-105 transition-all duration-500" onError={(e) => { (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&q=80'; }} />
+                    <img src={img} alt={title} className={`w-full h-full object-cover ${pos} opacity-60 group-hover:opacity-90 group-hover:scale-105 transition-all duration-500`} onError={(e) => { (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&q=80'; }} />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0f1420] via-[#0f1420]/40 to-transparent" />
                     <div className="absolute bottom-3 left-4">
-                      <div className="w-8 h-8 bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center">
+                      <div className="w-8 h-8 bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center group-hover:bg-emerald-500/40 group-hover:scale-110 transition-all duration-300">
                         <Icon className="w-4 h-4 text-emerald-400" />
                       </div>
                     </div>
                   </div>
                   <div className="p-5 border-t border-white/[0.06]">
-                    <h3 className="text-white font-black text-base mb-2">{title}</h3>
+                    <h3 className="text-white font-black text-base mb-2 group-hover:text-emerald-400 transition-colors">{title}</h3>
                     <p className="text-white/40 text-xs leading-relaxed">{body}</p>
                   </div>
                 </div>
@@ -118,9 +120,11 @@ export default function Careers() {
         </div>
       </section>
 
-      {/* Perks */}
-      <section className="py-28 bg-[#060a14] border-b border-white/[0.05]">
-        <div className="container mx-auto px-6 max-w-6xl">
+      {/* Perks — back to very dark with purple tint */}
+      <section className="relative py-28 overflow-hidden" style={{ background: 'linear-gradient(135deg, #0a0e1a 0%, #0e0b1e 50%, #0a0e1a 100%)' }}>
+        <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'linear-gradient(rgba(153,102,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(153,102,255,0.02) 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
+        <div className="absolute top-1/2 right-0 w-[500px] h-[500px] bg-[#9966ff]/[0.04] rounded-full blur-3xl pointer-events-none animate-float" style={{ animationDelay: '1.5s' }} />
+        <div className="container mx-auto px-6 max-w-6xl relative z-10">
           <RevealSection variant="up">
             <div className="mb-14">
               <div className="flex items-center gap-3 mb-4"><div className="h-px w-8 bg-emerald-500" /><span className="text-xs font-bold tracking-[0.25em] text-emerald-400 uppercase">Benefits & Perks</span></div>
@@ -130,11 +134,11 @@ export default function Careers() {
           <RevealSection variant="stagger">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-white/[0.05]">
               {perks.map(({ icon: Icon, title, body }) => (
-                <div key={title} className="bg-[#060a14] p-7 hover:bg-[#0f1420] transition-colors group">
-                  <div className="w-10 h-10 bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-5 group-hover:bg-emerald-500/15 transition-colors">
-                    <Icon className="w-5 h-5 text-emerald-400" />
+                <div key={title} className="bg-[#0a0e1a] p-7 border-l-2 border-[#9966ff]/30 hover:border-[#9966ff] hover:bg-[#0e0b1e] hover:-translate-y-0.5 transition-all duration-300 group">
+                  <div className="w-10 h-10 bg-[#9966ff]/10 border border-[#9966ff]/20 flex items-center justify-center mb-5 group-hover:bg-[#9966ff]/20 group-hover:scale-110 transition-all duration-300">
+                    <Icon className="w-5 h-5 text-[#9966ff]" />
                   </div>
-                  <h3 className="text-white font-black text-base mb-2">{title}</h3>
+                  <h3 className="text-white font-black text-base mb-2 group-hover:text-[#cc99ff] transition-colors">{title}</h3>
                   <p className="text-white/40 text-sm leading-relaxed">{body}</p>
                 </div>
               ))}
@@ -143,9 +147,10 @@ export default function Careers() {
         </div>
       </section>
 
-      {/* Open Roles */}
-      <section className="py-24 bg-[#0a0e1a] border-b border-white/[0.05]">
-        <div className="container mx-auto px-6 max-w-5xl">
+      {/* Open Roles — lighter again, clearly distinct */}
+      <section className="relative py-24 overflow-hidden" style={{ background: 'linear-gradient(180deg, #111827 0%, #0f172a 100%)' }}>
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[300px] bg-emerald-500/[0.04] rounded-full blur-3xl pointer-events-none" />
+        <div className="container mx-auto px-6 max-w-5xl relative z-10">
           <RevealSection variant="up">
             <div className="mb-12">
               <div className="flex items-center gap-3 mb-4"><div className="h-px w-8 bg-emerald-500" /><span className="text-xs font-bold tracking-[0.25em] text-emerald-400 uppercase">Open Roles</span></div>
@@ -155,7 +160,7 @@ export default function Careers() {
           <div>
             {openings.map((job, i) => (
               <RevealSection key={job.title} variant="up">
-                <div className={`py-8 ${i < openings.length - 1 ? 'border-b border-white/[0.07]' : ''}`}>
+                <div className={`py-8 px-4 hover:bg-white/[0.02] hover:pl-6 transition-all duration-300 ${i < openings.length - 1 ? 'border-b border-white/[0.07]' : ''}`}>
                   <div className="flex items-start justify-between gap-4 mb-4">
                     <div>
                       <div className="flex items-center gap-3 mb-2 flex-wrap">
@@ -186,8 +191,11 @@ export default function Careers() {
         </div>
       </section>
 
-      {/* Apply Form */}
-      <section id="apply" className="py-28 container mx-auto px-6 max-w-3xl">
+      {/* Apply Form — strong purple gradient, clearly the final CTA section */}
+      <section id="apply" className="relative py-28 overflow-hidden" style={{ background: 'linear-gradient(135deg, #0d0a1e 0%, #130d28 40%, #0a0e1a 100%)' }}>
+        <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'linear-gradient(rgba(153,102,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(153,102,255,0.03) 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-[#9966ff]/[0.08] rounded-full blur-3xl pointer-events-none" />
+        <div className="container mx-auto px-6 max-w-3xl relative z-10">
         <RevealSection variant="up">
           <div className="mb-12">
             <div className="flex items-center gap-3 mb-4"><div className="h-px w-8 bg-emerald-500" /><span className="text-xs font-bold tracking-[0.25em] text-emerald-400 uppercase">Apply Now</span></div>
