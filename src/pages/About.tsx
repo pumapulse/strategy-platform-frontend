@@ -28,12 +28,6 @@ const stats = [
   { value: '2023', suffix: '', label: 'Founded' },
 ];
 
-const team = [
-  { name: 'Marcus Chen', role: 'Co-Founder & Head of Quant', bio: 'Former prop trader at a Toronto hedge fund. Built systematic strategies for 8 years before founding CrowdPnL.', img: '/img/team/me.PNG' },
-  { name: 'Sofia Reyes', role: 'Co-Founder & CEO', bio: 'Ex-fintech product lead. Passionate about making institutional tools accessible to every trader.', img: '/img/team/Erica_original.jpg' },
-  { name: 'James Okafor', role: 'Lead Engineer', bio: 'Full-stack engineer with a background in real-time financial data systems and distributed architecture.', img: '/img/team/Lead Full-Stack Developer.jpg' },
-  { name: 'Priya Nair', role: 'Quantitative Researcher', bio: 'PhD in computational finance. Specializes in crypto market microstructure and ML-driven signal generation.', img: '/img/team/Senior SEO Specialist.jpg' },
-];
 
 
 export default function About() {
@@ -197,23 +191,31 @@ export default function About() {
         <div className="container mx-auto px-6 max-w-6xl relative z-10">
           <RevealSection variant="up">
             <div className="mb-14">
-              <div className="flex items-center gap-3 mb-4"><div className="h-px w-8 bg-emerald-500" /><span className="text-xs font-bold tracking-[0.25em] text-emerald-400 uppercase">The Team</span></div>
-              <h2 className="text-5xl font-black text-white">The people behind it.</h2>
-              <p className="text-white/40 text-base mt-3 max-w-xl">A small, focused team of traders, quants, and engineers obsessed with building the best strategy platform in crypto.</p>
+              <div className="flex items-center gap-3 mb-4"><div className="h-px w-8 bg-[#9966ff]" /><span className="text-xs font-bold tracking-[0.25em] text-[#9966ff] uppercase">Why CrowdPnL</span></div>
+              <h2 className="text-5xl font-black text-white">Built different.</h2>
+              <p className="text-white/40 text-base mt-3 max-w-xl">Every decision we make is driven by one goal — giving traders a real, verifiable edge.</p>
             </div>
           </RevealSection>
           <RevealSection variant="stagger">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-              {team.map(({ name, role, bio, img }) => (
-                <div key={name} className="border border-white/[0.08] bg-[#0a0e1a] hover:border-[#9966ff]/30 transition-all group">
-                  <div className="relative h-56 overflow-hidden">
-                    <img src={img} alt={name} className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500" onError={(e) => { (e.target as HTMLImageElement).src = '/img/team/64a97d2ce2d36eaba4109be33f8a9638_compressed.png'; }} />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0a0e1a] via-[#0a0e1a]/20 to-transparent" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              {[
+                { img: '/img/algo trading/Annotation 2026-04-04 214747.jpg', title: 'Algorithmic Precision', body: 'Every strategy is built on systematic rules — no guesswork, no emotion. Entry, exit, and risk parameters are defined before a single trade is placed.', tag: 'Strategy Design' },
+                { img: '/img/about/programmer-colleague-office-training-machine-learning-algorithms.jpg', title: 'Machine Learning Edge', body: 'Our ML Momentum Scanner uses gradient boosting trained on 3 years of 4H data to score each candle — giving you a quantified probability before you act.', tag: 'ML Research' },
+                { img: '/img/about/data-center-engineering-team-doing-brainstorming-monitoring-system-performance.jpg', title: 'Rigorous Backtesting', body: 'Walk-forward validation, out-of-sample testing, and drawdown analysis on every strategy. We only publish what survives real scrutiny.', tag: 'Validation' },
+                { img: '/img/blockchain/Annotation 2026-04-04 215528.jpg', title: 'Crypto-Native Infrastructure', body: 'Built specifically for crypto markets — on-chain signals, funding rate analysis, and exchange-native execution scripts included.', tag: 'Crypto Focus' },
+              ].map(({ img, title, body, tag }) => (
+                <div key={title} className="border border-white/[0.08] bg-[#0a0e1a] hover:border-[#9966ff]/30 transition-all group overflow-hidden">
+                  <div className="relative h-52 overflow-hidden">
+                    <img src={img} alt={title} className="w-full h-full object-cover opacity-70 group-hover:opacity-90 group-hover:scale-105 transition-all duration-500"
+                      onError={(e) => { (e.target as HTMLImageElement).src = '/img/about/workers-it-company-working-computer.jpg'; }} />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0a0e1a] via-[#0a0e1a]/30 to-transparent" />
+                    <div className="absolute bottom-3 left-4">
+                      <span className="text-[10px] font-black text-[#9966ff] bg-[#9966ff]/15 border border-[#9966ff]/30 px-2 py-0.5">{tag}</span>
+                    </div>
                   </div>
-                  <div className="p-5 border-t border-white/[0.06]">
-                    <h3 className="text-white font-black text-base mb-0.5">{name}</h3>
-                    <p className="text-[#9966ff] text-xs font-bold mb-3">{role}</p>
-                    <p className="text-white/40 text-xs leading-relaxed">{bio}</p>
+                  <div className="p-6 border-t border-white/[0.06]">
+                    <h3 className="text-white font-black text-lg mb-2">{title}</h3>
+                    <p className="text-white/45 text-sm leading-relaxed">{body}</p>
                   </div>
                 </div>
               ))}
