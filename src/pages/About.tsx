@@ -49,7 +49,7 @@ export default function About() {
           <div className="absolute inset-0 bg-gradient-to-b from-[#060a14]/70 via-[#0a0e1a]/80 to-[#0a0e1a]" />
         </div>
         <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[500px] bg-emerald-500/[0.07] rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[500px] bg-purple-500/[0.10] rounded-full blur-3xl pointer-events-none" />
 
         <div className="relative z-10 container mx-auto px-6 pt-36 pb-24 max-w-5xl text-center">
           <RevealSection variant="up">
@@ -60,7 +60,7 @@ export default function About() {
             </div>
             <h1 className="text-6xl lg:text-8xl font-black tracking-tight leading-[1.0] mb-6">
               <span className="text-white">Built by traders,</span><br />
-              <span className="bg-gradient-to-r from-emerald-400 to-emerald-300 bg-clip-text text-transparent">for traders.</span>
+              <span className="bg-gradient-to-r from-[#9966ff] to-[#cc99ff] bg-clip-text text-transparent">for traders.</span>
             </h1>
             <p className="text-white/50 text-xl leading-relaxed mb-10 max-w-2xl mx-auto">
               CrowdPnL was founded with one goal: give every trader access to institutional-grade crypto strategies without the institutional price tag.
@@ -115,7 +115,7 @@ export default function About() {
             </div>
             <h2 className="text-5xl font-black text-white leading-tight mb-6">
               A quant team that<br />
-              <span className="bg-gradient-to-r from-emerald-400 to-emerald-300 bg-clip-text text-transparent">ships real edge.</span>
+              <span className="bg-gradient-to-r from-[#9966ff] to-[#cc99ff] bg-clip-text text-transparent">ships real edge.</span>
             </h2>
             <p className="text-white/50 text-base leading-relaxed mb-5">We are a small, remote-first team of quantitative researchers, engineers, and traders. Every strategy on CrowdPnL is built in-house, rigorously backtested, and validated on live markets before it ever reaches you.</p>
             <p className="text-white/50 text-base leading-relaxed mb-8">Systematic trading has always been the domain of hedge funds and prop desks. We are changing that. With the right tools and data, any trader can develop an edge.</p>

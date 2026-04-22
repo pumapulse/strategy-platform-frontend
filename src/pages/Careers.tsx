@@ -56,7 +56,7 @@ export default function Careers() {
           <div className="absolute inset-0 bg-gradient-to-b from-[#060a14]/50 via-[#0a0e1a]/75 to-[#0a0e1a]" />
         </div>
         <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
-        <div className="absolute top-0 right-0 w-[600px] h-[500px] bg-emerald-500/[0.05] rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-0 right-0 w-[600px] h-[500px] bg-purple-500/[0.10] rounded-full blur-3xl pointer-events-none" />
 
         <div className="relative z-10 container mx-auto px-6 pt-36 pb-20 max-w-6xl">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -67,7 +67,7 @@ export default function Careers() {
               </div>
               <h1 className="text-6xl lg:text-7xl font-black tracking-tight leading-[1.0] mb-6">
                 <span className="text-white">Join the team.</span><br />
-                <span className="bg-gradient-to-r from-emerald-400 to-emerald-300 bg-clip-text text-transparent">Build the edge.</span>
+                <span className="bg-gradient-to-r from-[#9966ff] to-[#cc99ff] bg-clip-text text-transparent">Build the edge.</span>
               </h1>
               <p className="text-white/50 text-lg leading-relaxed mb-6 max-w-lg">We are a small, remote-first team building the best trading strategy platform in crypto. If you are passionate about markets and great products, we would love to hear from you.</p>
               <p className="text-white/30 text-sm">Do not see a role? <a href="mailto:hr@crowdpnl.com" className="text-emerald-400 hover:text-emerald-300 transition-colors">Email us directly</a></p>
