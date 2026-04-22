@@ -88,7 +88,7 @@ export default function About() {
         <div className="container mx-auto px-6 max-w-6xl relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <RevealSection variant="right">
-              <div className="flex items-center gap-3 mb-5"><div className="h-px w-8 bg-[#9966ff]" /><span className="text-xs font-bold tracking-[0.25em] text-[#9966ff] uppercase">Our Mission</span></div>
+              <div className="flex items-center gap-3 mb-5"><div className="h-px w-8 bg-emerald-500" /><span className="text-xs font-bold tracking-[0.25em] text-emerald-400 uppercase">Our Mission</span></div>
               <h2 className="text-5xl font-black text-white leading-tight mb-6">A quant team that<br /><span className="bg-gradient-to-r from-[#9966ff] to-[#cc99ff] bg-clip-text text-transparent">ships real edge.</span></h2>
               <p className="text-white/50 text-base leading-relaxed mb-5">We are a small, remote-first team of quantitative researchers, engineers, and traders. Every strategy on CrowdPnL is built in-house, rigorously backtested, and validated on live markets before it ever reaches you.</p>
               <p className="text-white/50 text-base leading-relaxed mb-8">Systematic trading has always been the domain of hedge funds and prop desks. We are changing that. With the right tools and data, any trader can develop an edge.</p>
@@ -118,9 +118,9 @@ export default function About() {
       </section>
 
       {/* â”€â”€ VALUES â€” clearly lighter section â”€â”€ */}
-      <section className="relative py-28 overflow-hidden" style={{ background: 'linear-gradient(180deg, #141020 0%, #111827 100%)' }}>
-        <div className="absolute top-0 left-0 w-[600px] h-[400px] bg-emerald-500/[0.04] rounded-full blur-3xl pointer-events-none animate-float" />
-        <div className="absolute bottom-0 right-0 w-[400px] h-[300px] bg-[#9966ff]/[0.04] rounded-full blur-3xl pointer-events-none" />
+      <section className="relative py-28 overflow-hidden" style={{ background: 'linear-gradient(180deg, #060a14 0%, #080e18 100%)' }}>
+        <div className="absolute top-0 left-0 w-[500px] h-[400px] bg-emerald-500/[0.05] rounded-full blur-3xl pointer-events-none animate-float" />
+        <div className="absolute bottom-0 right-0 w-[400px] h-[300px] bg-emerald-400/[0.03] rounded-full blur-3xl pointer-events-none" />
         <div className="container mx-auto px-6 max-w-6xl relative z-10">
           <RevealSection variant="up">
             <div className="mb-14">
@@ -129,9 +129,9 @@ export default function About() {
             </div>
           </RevealSection>
           <RevealSection variant="stagger">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-white/[0.06]">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-white/[0.05]">
               {values.map(({ icon: Icon, title, body }) => (
-                <div key={title} className="relative bg-[#141020] p-7 border-l-2 border-[#9966ff] hover:bg-[#1a1530] transition-all group cursor-default overflow-hidden">
+                <div key={title} className="relative bg-[#060a14] p-7 border-l-2 border-[#9966ff] hover:bg-[#0e0b1e] transition-all group cursor-default overflow-hidden">
                   <div className="absolute inset-0 bg-gradient-to-br from-[#9966ff]/[0.05] to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
                   <div className="relative z-10">
                     <div className="w-10 h-10 bg-[#9966ff]/10 border border-[#9966ff]/20 flex items-center justify-center mb-5 group-hover:bg-[#9966ff]/20 transition-colors">
@@ -154,27 +154,36 @@ export default function About() {
         <div className="container mx-auto px-6 max-w-4xl relative z-10">
           <RevealSection variant="up">
             <div className="mb-16">
-              <div className="flex items-center gap-3 mb-4"><div className="h-px w-8 bg-[#9966ff]" /><span className="text-xs font-bold tracking-[0.25em] text-[#9966ff] uppercase">Our Journey</span></div>
+              <div className="flex items-center gap-3 mb-4"><div className="h-px w-8 bg-emerald-500" /><span className="text-xs font-bold tracking-[0.25em] text-emerald-400 uppercase">Our Journey</span></div>
               <h2 className="text-5xl font-black text-white">How we got here.</h2>
             </div>
           </RevealSection>
           <div className="relative">
-            <div className="absolute left-[18px] top-0 bottom-0 w-px" style={{ background: 'linear-gradient(180deg, #9966ff40, #9966ff20, transparent)' }} />
+            {/* Animated vertical line */}
+            <div className="absolute left-[18px] top-0 bottom-0 w-px" style={{ background: 'linear-gradient(180deg, #9966ff80, #9966ff40, #9966ff10, transparent)' }} />
             <div className="space-y-0">
-              {timeline.map((item) => (
+              {timeline.map((item, i) => (
                 <RevealSection key={item.title} variant="left">
-                  <div className="flex items-start gap-8 pb-10">
+                  <div className="flex items-start gap-8 pb-10 group">
+                    {/* Animated node */}
                     <div className="relative z-10 shrink-0 mt-1">
-                      <div className="w-9 h-9 bg-[#9966ff]/20 border border-[#9966ff]/40 flex items-center justify-center">
-                        <span className="text-[#9966ff] text-[10px] font-black">{item.year.slice(2)}</span>
+                      {/* Pulse ring */}
+                      <div className="absolute inset-0 w-9 h-9 bg-[#9966ff]/20 animate-ping rounded-sm opacity-0 group-hover:opacity-100 transition-opacity" style={{ animationDuration: '1.5s' }} />
+                      <div className="w-9 h-9 bg-[#9966ff]/20 border border-[#9966ff]/50 flex items-center justify-center group-hover:bg-[#9966ff]/40 group-hover:border-[#9966ff] group-hover:shadow-lg group-hover:shadow-[#9966ff]/20 transition-all duration-300">
+                        <span className="text-[#9966ff] text-[10px] font-black group-hover:text-white transition-colors">{item.year.slice(2)}</span>
                       </div>
                     </div>
-                    <div className="flex-1 border border-[#9966ff]/15 bg-[#9966ff]/[0.03] p-6 hover:border-[#9966ff]/30 hover:bg-[#9966ff]/[0.06] transition-all">
+                    {/* Card with slide + glow on hover */}
+                    <div className="flex-1 border border-[#9966ff]/15 bg-[#9966ff]/[0.03] p-6 hover:border-[#9966ff]/40 hover:bg-[#9966ff]/[0.07] hover:translate-x-1 hover:shadow-lg hover:shadow-[#9966ff]/10 transition-all duration-300">
                       <div className="flex items-center gap-3 mb-2">
-                        <span className="text-[10px] font-black text-[#9966ff] bg-[#9966ff]/10 px-2 py-0.5">{item.year}</span>
-                        <h3 className="text-white font-black text-lg">{item.title}</h3>
+                        <span className="text-[10px] font-black text-[#9966ff] bg-[#9966ff]/10 px-2 py-0.5 group-hover:bg-[#9966ff]/20 transition-colors">{item.year}</span>
+                        <h3 className="text-white font-black text-lg group-hover:text-[#cc99ff] transition-colors">{item.title}</h3>
                       </div>
-                      <p className="text-white/40 text-sm leading-relaxed">{item.body}</p>
+                      <p className="text-white/40 text-sm leading-relaxed group-hover:text-white/60 transition-colors">{item.body}</p>
+                      {/* Progress indicator */}
+                      <div className="mt-4 h-px bg-white/[0.05] overflow-hidden">
+                        <div className="h-full bg-gradient-to-r from-[#9966ff] to-transparent w-0 group-hover:w-full transition-all duration-700" />
+                      </div>
                     </div>
                   </div>
                 </RevealSection>
@@ -191,7 +200,7 @@ export default function About() {
         <div className="container mx-auto px-6 max-w-6xl relative z-10">
           <RevealSection variant="up">
             <div className="mb-14">
-              <div className="flex items-center gap-3 mb-4"><div className="h-px w-8 bg-[#9966ff]" /><span className="text-xs font-bold tracking-[0.25em] text-[#9966ff] uppercase">Why CrowdPnL</span></div>
+              <div className="flex items-center gap-3 mb-4"><div className="h-px w-8 bg-emerald-500" /><span className="text-xs font-bold tracking-[0.25em] text-emerald-400 uppercase">Why CrowdPnL</span></div>
               <h2 className="text-5xl font-black text-white">Built different.</h2>
               <p className="text-white/40 text-base mt-3 max-w-xl">Every decision we make is driven by one goal — giving traders a real, verifiable edge.</p>
             </div>
@@ -231,7 +240,7 @@ export default function About() {
         <div className="absolute bottom-0 left-0 w-[400px] h-[300px] bg-emerald-500/[0.05] rounded-full blur-3xl pointer-events-none animate-float" />
         <div className="relative z-10 container mx-auto px-6 max-w-4xl text-center">
           <RevealSection variant="up">
-            <div className="flex items-center justify-center gap-3 mb-5"><div className="h-px w-8 bg-[#9966ff]" /><span className="text-xs font-bold tracking-[0.25em] text-[#9966ff] uppercase">Get Started</span><div className="h-px w-8 bg-[#9966ff]" /></div>
+            <div className="flex items-center justify-center gap-3 mb-5"><div className="h-px w-8 bg-emerald-500" /><span className="text-xs font-bold tracking-[0.25em] text-emerald-400 uppercase">Get Started</span><div className="h-px w-8 bg-emerald-500" /></div>
             <h2 className="text-5xl lg:text-6xl font-black text-white mb-4">Ready to trade smarter?</h2>
             <p className="text-white/50 text-lg mb-10 max-w-md mx-auto">Join 1,200+ traders using CrowdPnL strategies to find their edge in crypto markets.</p>
             <div className="flex items-center justify-center gap-4 flex-wrap">
@@ -246,6 +255,8 @@ export default function About() {
     </div>
   );
 }
+
+
 
 
 

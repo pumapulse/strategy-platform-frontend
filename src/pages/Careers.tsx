@@ -120,10 +120,10 @@ export default function Careers() {
         </div>
       </section>
 
-      {/* Perks — back to very dark with purple tint */}
-      <section className="relative py-28 overflow-hidden" style={{ background: 'linear-gradient(135deg, #0a0e1a 0%, #0e0b1e 50%, #0a0e1a 100%)' }}>
-        <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'linear-gradient(rgba(153,102,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(153,102,255,0.02) 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
-        <div className="absolute top-1/2 right-0 w-[500px] h-[500px] bg-[#9966ff]/[0.04] rounded-full blur-3xl pointer-events-none animate-float" style={{ animationDelay: '1.5s' }} />
+      {/* Perks — back to very dark with subtle tint */}
+      <section className="relative py-28 overflow-hidden" style={{ background: 'linear-gradient(135deg, #0a0e1a 0%, #0c0e18 50%, #0a0e1a 100%)' }}>
+        <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
+        <div className="absolute top-1/2 right-0 w-[400px] h-[400px] bg-emerald-500/[0.03] rounded-full blur-3xl pointer-events-none animate-float" style={{ animationDelay: '1.5s' }} />
         <div className="container mx-auto px-6 max-w-6xl relative z-10">
           <RevealSection variant="up">
             <div className="mb-14">
@@ -160,23 +160,23 @@ export default function Careers() {
           <div>
             {openings.map((job, i) => (
               <RevealSection key={job.title} variant="up">
-                <div className={`py-8 px-4 hover:bg-white/[0.02] hover:pl-6 transition-all duration-300 ${i < openings.length - 1 ? 'border-b border-white/[0.07]' : ''}`}>
+                <div className={`py-8 px-4 hover:bg-[#9966ff]/[0.04] hover:pl-6 hover:border-l-2 hover:border-[#9966ff] transition-all duration-300 group ${i < openings.length - 1 ? 'border-b border-white/[0.07]' : ''}`}>
                   <div className="flex items-start justify-between gap-4 mb-4">
                     <div>
                       <div className="flex items-center gap-3 mb-2 flex-wrap">
-                        <h3 className="text-white font-black text-xl">{job.title}</h3>
-                        <span className="text-[10px] px-2.5 py-1 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-bold">{job.type}</span>
+                        <h3 className="text-white font-black text-xl group-hover:text-[#cc99ff] transition-colors">{job.title}</h3>
+                        <span className="text-[10px] px-2.5 py-1 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-bold group-hover:bg-emerald-500/20 transition-colors">{job.type}</span>
                       </div>
-                      <div className="flex items-center gap-4 text-xs text-white/30">
+                      <div className="flex items-center gap-4 text-xs text-white/30 group-hover:text-white/50 transition-colors">
                         <span className="flex items-center gap-1.5"><Briefcase className="w-3 h-3" />{job.team}</span>
                         <span className="flex items-center gap-1.5"><MapPin className="w-3 h-3" />{job.location}</span>
                       </div>
                     </div>
-                    <a href="#apply" onClick={() => setForm(prev => ({ ...prev, role: job.title }))} className="shrink-0 inline-flex items-center gap-1.5 px-5 py-2.5 bg-[#0f1420] border border-white/[0.10] hover:border-emerald-500/30 hover:bg-emerald-500/10 text-white/70 hover:text-emerald-400 text-xs font-semibold transition-all">
-                      Apply <ArrowRight className="w-3 h-3" />
+                    <a href="#apply" onClick={() => setForm(prev => ({ ...prev, role: job.title }))} className="shrink-0 inline-flex items-center gap-1.5 px-5 py-2.5 bg-[#0f1420] border border-white/[0.10] hover:border-[#9966ff]/50 hover:bg-[#9966ff]/10 text-white/70 hover:text-[#9966ff] text-xs font-semibold transition-all">
+                      Apply <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
                     </a>
                   </div>
-                  <p className="text-white/40 text-sm leading-relaxed mb-4">{job.description}</p>
+                  <p className="text-white/40 text-sm leading-relaxed mb-4 group-hover:text-white/55 transition-colors">{job.description}</p>
                   <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {job.requirements.map(r => (
                       <li key={r} className="flex items-start gap-2 text-xs text-white/30">
@@ -191,10 +191,9 @@ export default function Careers() {
         </div>
       </section>
 
-      {/* Apply Form — strong purple gradient, clearly the final CTA section */}
-      <section id="apply" className="relative py-28 overflow-hidden" style={{ background: 'linear-gradient(135deg, #0d0a1e 0%, #130d28 40%, #0a0e1a 100%)' }}>
-        <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'linear-gradient(rgba(153,102,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(153,102,255,0.03) 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-[#9966ff]/[0.08] rounded-full blur-3xl pointer-events-none" />
+      {/* Apply Form — clean dark section */}
+      <section id="apply" className="relative py-28 overflow-hidden" style={{ background: 'linear-gradient(180deg, #0a0e1a 0%, #0c0e18 100%)' }}>
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-emerald-500/[0.04] rounded-full blur-3xl pointer-events-none" />
         <div className="container mx-auto px-6 max-w-3xl relative z-10">
         <RevealSection variant="up">
           <div className="mb-12">
@@ -250,6 +249,7 @@ export default function Careers() {
             </div>
           )}
         </RevealSection>
+        </div>
       </section>
 
       <Footer />
