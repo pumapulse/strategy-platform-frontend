@@ -5,10 +5,6 @@ import RevealSection from '@/components/RevealSection';
 import { useNavigate } from 'react-router-dom';
 import { Mail, Phone, MapPin, Send, Loader2, MessageSquare, Clock, CheckCircle, ArrowRight } from 'lucide-react';
 
-const Divider = ({ topColor = '#0a0e1a', bottomColor = '#111827' }: { flip?: boolean; topColor?: string; bottomColor?: string }) => (
-  <div className="h-20" style={{ background: `linear-gradient(180deg, ${topColor} 0%, ${bottomColor} 100%)` }} />
-);
-
 const contactItems = [
   { icon: Mail, label: 'General Inquiries', value: 'hello@crowdpnl.com', href: 'mailto:hello@crowdpnl.com', sub: 'Questions, feedback, anything' },
   { icon: Phone, label: 'Phone', value: '+1 (681) 553-4010', href: 'tel:+16815534010', sub: 'Mon-Fri, 9am-5pm EST' },
@@ -61,7 +57,6 @@ export default function Contact() {
       </section>
 
       {/* Main */}
-      <Divider topColor="#0a0e1a" bottomColor="#111827" />
       <section className="relative pb-32 overflow-hidden" style={{ background: 'linear-gradient(180deg, #111827 0%, #0f172a 100%)' }}>
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#9966ff]/[0.04] rounded-full blur-3xl pointer-events-none animate-float" />
         <div className="container mx-auto px-6 pt-16 max-w-6xl relative z-10">
@@ -146,7 +141,6 @@ export default function Contact() {
         </div>
         </div>
       </section>
-      <Divider flip={true} topColor="#111827" bottomColor="#0a0e1a" />
 
       <section className="border-t border-white/[0.06] bg-[#060a14] py-10">
         <div className="container mx-auto px-6 max-w-6xl flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -162,5 +156,6 @@ export default function Contact() {
     </div>
   );
 }
+
 
 

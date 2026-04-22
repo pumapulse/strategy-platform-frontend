@@ -71,7 +71,6 @@ export default function About() {
       </section>
 
       {/* â”€â”€ STATS â€” noticeably lighter bg â”€â”€ */}
-      <Divider topColor="#0a0e1a" bottomColor="#111827" />
       <section className="relative" style={{ background: 'linear-gradient(180deg, #111827 0%, #0f172a 100%)' }}>
         <RevealSection variant="stagger">
           <div className="container mx-auto px-6 max-w-6xl">
@@ -87,7 +86,6 @@ export default function About() {
           </div>
         </RevealSection>
       </section>
-      <Divider topColor="#111827" bottomColor="#0a0e1a" />
 
       {/* â”€â”€ MISSION â€” back to dark with purple tint â”€â”€ */}
       <section className="relative py-32 overflow-hidden" style={{ background: 'linear-gradient(135deg, #0a0e1a 0%, #0e0b1e 50%, #0a0e1a 100%)' }}>
@@ -126,7 +124,6 @@ export default function About() {
       </section>
 
       {/* â”€â”€ VALUES â€” clearly lighter section â”€â”€ */}
-      <Divider topColor="#0a0e1a" bottomColor="#111827" />
       <section className="relative py-28 overflow-hidden" style={{ background: 'linear-gradient(180deg, #141020 0%, #111827 100%)' }}>
         <div className="absolute top-0 left-0 w-[600px] h-[400px] bg-emerald-500/[0.04] rounded-full blur-3xl pointer-events-none animate-float" />
         <div className="absolute bottom-0 right-0 w-[400px] h-[300px] bg-[#9966ff]/[0.04] rounded-full blur-3xl pointer-events-none" />
@@ -155,7 +152,6 @@ export default function About() {
           </RevealSection>
         </div>
       </section>
-      <Divider topColor="#111827" bottomColor="#0a0e1a" />
 
       {/* â”€â”€ TIMELINE â€” back to very dark â”€â”€ */}
       <section className="relative py-32 overflow-hidden" style={{ background: 'linear-gradient(180deg, #070510 0%, #0a0e1a 100%)' }}>
@@ -195,7 +191,6 @@ export default function About() {
       </section>
 
       {/* â”€â”€ TEAM â€” lighter section again â”€â”€ */}
-      <Divider topColor="#0a0e1a" bottomColor="#111827" />
       <section className="relative py-28 overflow-hidden" style={{ background: 'linear-gradient(135deg, #0f1420 0%, #111827 60%, #0f1420 100%)' }}>
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#9966ff]/[0.04] rounded-full blur-3xl pointer-events-none animate-float" style={{ animationDelay: '2s' }} />
         <div className="absolute bottom-0 left-0 w-[400px] h-[300px] bg-emerald-500/[0.03] rounded-full blur-3xl pointer-events-none" />
@@ -226,7 +221,6 @@ export default function About() {
           </RevealSection>
         </div>
       </section>
-      <Divider topColor="#111827" bottomColor="#0a0e1a" />
 
       {/* â”€â”€ CTA â€” strong purple gradient bg â”€â”€ */}
       <section className="relative py-28 overflow-hidden" style={{ background: 'linear-gradient(135deg, #0d0a1e 0%, #130d28 40%, #0a0e1a 100%)' }}>
@@ -250,6 +244,7 @@ export default function About() {
     </div>
   );
 }
+
 
 
 
