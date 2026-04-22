@@ -49,6 +49,8 @@ const Community = () => {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [newDiscussion, setNewDiscussion] = useState({ title: '', content: '', category: 'Strategy' });
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 8;
 
   const token = localStorage.getItem('token') || '';
 
@@ -100,6 +102,13 @@ const Community = () => {
     return matchSearch && matchCat;
   });
 
+  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
+  const paginated = filtered.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+
+  // Reset to page 1 when filters change
+  const handleSearch = (q: string) => { setSearchQuery(q); setCurrentPage(1); };
+  const handleCategory = (cat: string) => { setSelectedCategory(cat); setCurrentPage(1); };
+
   const replyCount = (d: Discussion) => d.replies?.[0]?.count ?? 0;
   const isHot = (d: Discussion) => d.likes > 20 || replyCount(d) > 10;
 
@@ -144,7 +153,7 @@ const Community = () => {
             <input
               placeholder="Search discussions..."
               value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
+              onChange={e => handleSearch(e.target.value)}
               className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/[0.05] border border-white/[0.08] text-white placeholder:text-white/30 text-sm focus:outline-none focus:border-emerald-500/50 transition-colors"
             />
           </div>
@@ -210,7 +219,7 @@ const Community = () => {
         {/* Category filter */}
         <div className="flex flex-wrap gap-2 mb-8">
           {categories.map(cat => (
-            <button key={cat} onClick={() => setSelectedCategory(cat)}
+            <button key={cat} onClick={() => handleCategory(cat)}
               className={`px-4 py-1.5 rounded-full text-xs font-semibold border transition-all ${
                 selectedCategory === cat
                   ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400'
@@ -234,7 +243,7 @@ const Community = () => {
             </div>
           ) : (
             <div className="space-y-3">
-              {filtered.map(d => (
+              {paginated.map(d => (
                 <div key={d.id} onClick={() => navigate(`/discussion/${d.id}`)}
                   className="p-4 rounded-xl border border-white/[0.05] hover:bg-emerald-500/10 hover:border-emerald-500/30 cursor-pointer transition-all group">
                   <div className="flex items-start gap-4">
@@ -267,6 +276,46 @@ const Community = () => {
                   <p>No discussions found. Be the first to start one!</p>
                 </div>
               )}
+            </div>
+          )}
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between mt-8 pt-6 border-t border-white/[0.06]">
+              <p className="text-xs text-white/30">
+                Showing {(currentPage - 1) * ITEMS_PER_PAGE + 1}–{Math.min(currentPage * ITEMS_PER_PAGE, filtered.length)} of {filtered.length} discussions
+              </p>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  disabled={currentPage === 1}
+                  className="px-4 py-2 rounded-xl border border-white/[0.08] text-white/50 hover:text-white hover:border-white/20 text-xs font-semibold transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                >
+                  ← Prev
+                </button>
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                    <button
+                      key={page}
+                      onClick={() => setCurrentPage(page)}
+                      className={`w-8 h-8 rounded-lg text-xs font-bold transition-all ${
+                        page === currentPage
+                          ? 'bg-emerald-500 text-white'
+                          : 'text-white/40 hover:text-white hover:bg-white/[0.06]'
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  ))}
+                </div>
+                <button
+                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                  disabled={currentPage === totalPages}
+                  className="px-4 py-2 rounded-xl border border-white/[0.08] text-white/50 hover:text-white hover:border-white/20 text-xs font-semibold transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                >
+                  Next →
+                </button>
+              </div>
             </div>
           )}
         </div>
