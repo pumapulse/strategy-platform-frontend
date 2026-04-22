@@ -27,9 +27,25 @@ export default function Contact() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSending(true);
-    await new Promise(r => setTimeout(r, 1400));
-    setSent(true);
-    setSending(false);
+    try {
+      // @ts-ignore
+      await window.emailjs.send('service_n03hir9', 'template_uhqzlgm', {
+        applicantName: form.name,
+        firstName: form.name.split(' ')[0],
+        lastName: form.name.split(' ').slice(1).join(' ') || '',
+        email: form.email,
+        phone: 'N/A',
+        position: form.subject,
+        experience: form.message,
+        resumeUrl: 'N/A - Contact Form',
+        submissionDate: new Date().toLocaleDateString(),
+      }, 'IbD_xKw-X-D5Dy5Rc');
+      setSent(true);
+    } catch {
+      alert('Failed to send. Please email us at hello@crowdpnl.com');
+    } finally {
+      setSending(false);
+    }
   };
 
   return (

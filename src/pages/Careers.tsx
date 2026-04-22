@@ -32,6 +32,8 @@ export default function Careers() {
   const [form, setForm] = useState<ApplyForm>({ name: '', email: '', role: '', linkedin: '', message: '' });
   const [sent, setSent] = useState(false);
   const [sending, setSending] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState('');
+  const [resumeFile, setResumeFile] = useState<File | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -39,10 +41,47 @@ export default function Careers() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!resumeFile) { alert('Please upload your resume (PDF only).'); return; }
+    if (resumeFile.type !== 'application/pdf') { alert('Please upload a PDF file only.'); return; }
+
     setSending(true);
-    await new Promise(r => setTimeout(r, 1400));
-    setSent(true);
-    setSending(false);
+    setUploadProgress('Uploading resume...');
+
+    try {
+      // Upload resume to Cloudinary
+      const fd = new FormData();
+      fd.append('file', resumeFile);
+      fd.append('upload_preset', 'ml_default');
+      fd.append('resource_type', 'raw');
+
+      const uploadRes = await fetch('https://api.cloudinary.com/v1_1/dtvnifa3t/raw/upload', { method: 'POST', body: fd });
+      const uploadData = await uploadRes.json();
+
+      if (!uploadData.secure_url) throw new Error('Upload failed');
+
+      setUploadProgress('Sending application...');
+
+      // Send via EmailJS
+      // @ts-ignore
+      await window.emailjs.send('service_n03hir9', 'template_uhqzlgm', {
+        applicantName: form.name,
+        firstName: form.name.split(' ')[0],
+        lastName: form.name.split(' ').slice(1).join(' ') || '',
+        email: form.email,
+        phone: form.linkedin || 'N/A',
+        position: form.role,
+        experience: form.message,
+        resumeUrl: uploadData.secure_url,
+        submissionDate: new Date().toLocaleDateString(),
+      }, 'IbD_xKw-X-D5Dy5Rc');
+
+      setSent(true);
+    } catch {
+      alert('Failed to submit. Please email us at hr@crowdpnl.com');
+    } finally {
+      setSending(false);
+      setUploadProgress('');
+    }
   };
 
   return (
@@ -236,13 +275,24 @@ export default function Careers() {
                   <input name="linkedin" value={form.linkedin} onChange={handleChange} placeholder="https://linkedin.com/in/yourprofile" className="w-full px-4 py-3 bg-[#060a14] border border-white/[0.08] text-white placeholder:text-white/20 text-sm focus:outline-none focus:border-emerald-500/40 transition-all" />
                 </div>
                 <div>
+                  <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30 mb-2 block">Resume / CV <span className="text-emerald-400">*</span></label>
+                  <div
+                    className={`border border-white/[0.08] bg-[#060a14] px-4 py-4 cursor-pointer hover:border-emerald-500/40 transition-all text-center ${resumeFile ? 'border-emerald-500/40' : ''}`}
+                    onClick={() => document.getElementById('resumeUpload')?.click()}
+                  >
+                    <p className="text-sm text-white/50">{resumeFile ? `✓ ${resumeFile.name}` : 'Click to upload PDF resume'}</p>
+                    <p className="text-xs text-white/25 mt-1">PDF only · max 5MB</p>
+                    <input id="resumeUpload" type="file" accept=".pdf" className="hidden" onChange={e => setResumeFile(e.target.files?.[0] || null)} />
+                  </div>
+                </div>
+                <div>
                   <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30 mb-2 block">Why CrowdPnL?</label>
                   <textarea required rows={5} name="message" value={form.message} onChange={handleChange} placeholder="Tell us about yourself and why you would be a great fit..." className="w-full px-4 py-3 bg-[#060a14] border border-white/[0.08] text-white placeholder:text-white/20 text-sm focus:outline-none focus:border-emerald-500/40 transition-all resize-none" />
                 </div>
                 <div className="flex items-center justify-between pt-1">
                   <p className="text-xs text-white/20">We will review your application within a few days.</p>
                   <button type="submit" disabled={sending} className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-500 hover:bg-emerald-400 disabled:opacity-60 text-white font-bold text-sm transition-all">
-                    {sending ? <><Loader2 className="w-4 h-4 animate-spin" /> Submitting...</> : <><Send className="w-4 h-4" /> Submit Application</>}
+                    {sending ? <><Loader2 className="w-4 h-4 animate-spin" /> {uploadProgress || 'Submitting...'}</> : <><Send className="w-4 h-4" /> Submit Application</>}
                   </button>
                 </div>
               </form>
