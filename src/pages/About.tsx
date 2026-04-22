@@ -39,7 +39,7 @@ export default function About() {
       {/* â”€â”€ HERO â€” dark image bg â”€â”€ */}
       <section className="relative overflow-hidden min-h-screen flex items-center">
         <div className="absolute inset-0">
-          <img src="https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=1920&q=90" alt="Crypto" className="w-full h-full object-cover opacity-40" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+          <img src="/img/crypto/Annotation 2026-04-04 232105.jpg" alt="Crypto trading" className="w-full h-full object-cover opacity-40" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
           <div className="absolute inset-0 bg-gradient-to-b from-[#060a14]/70 via-[#0a0e1a]/80 to-[#0a0e1a]" />
         </div>
         <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
@@ -103,9 +103,9 @@ export default function About() {
             </RevealSection>
             <RevealSection variant="left">
               <div className="relative h-[460px]">
-                <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80" alt="Analytics" className="absolute top-0 left-0 w-3/4 h-[340px] object-cover" onError={(e) => { (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800&q=80'; }} />
+                <img src="/img/about/lines-code-running-computer-screens-tablet-data-center.jpg" alt="Analytics" className="absolute top-0 left-0 w-3/4 h-[340px] object-cover" onError={(e) => { (e.target as HTMLImageElement).src = '/img/about/workers-it-company-working-computer.jpg'; }} />
                 <div className="absolute top-0 left-0 w-3/4 h-[340px] bg-gradient-to-t from-[#0a0e1a]/60 to-transparent pointer-events-none" />
-                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&q=80" alt="Charts" className="absolute bottom-0 right-0 w-[55%] h-[240px] object-cover border-4 border-[#0a0e1a]" onError={(e) => { (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&q=80'; }} />
+                <img src="/img/about/team-admins-working-together-server-hub-analyzing-rigs-data.jpg" alt="Team" className="absolute bottom-0 right-0 w-[55%] h-[240px] object-cover border-4 border-[#0a0e1a]" onError={(e) => { (e.target as HTMLImageElement).src = '/img/about/serious-colleagues-office-talking-with-each-other.jpg'; }} />
                 <div className="absolute bottom-0 right-0 w-[55%] h-[240px] bg-gradient-to-t from-[#0a0e1a]/50 to-transparent pointer-events-none" />
                 <div className="absolute top-[42%] left-[52%] -translate-x-1/2 -translate-y-1/2 z-10 bg-[#0e0b1e] border border-[#9966ff]/30 px-5 py-4 text-center shadow-2xl">
                   <div className="text-3xl font-black text-white">1,200<span className="text-[#9966ff]">+</span></div>
