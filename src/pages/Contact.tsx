@@ -67,7 +67,7 @@ export default function Contact() {
               <span className="text-white">{"Let's"}</span><br />
               <span className="bg-gradient-to-r from-[#9966ff] to-[#cc99ff] bg-clip-text text-transparent">talk.</span>
             </h1>
-            <p className="text-white/50 text-xl leading-relaxed max-w-xl">We are a small team and we read every message. Whether it is a question, a partnership idea, or just feedback â€” we would love to hear from you.</p>
+            <p className="text-white/50 text-xl leading-relaxed max-w-xl">We are a small team and we read every message. Whether it is a question, a partnership idea, or just feedback - we would love to hear from you.</p>
           </RevealSection>
         </div>
       </section>
@@ -163,6 +163,9 @@ export default function Contact() {
     </div>
   );
 }
+
+
+
 
 
 

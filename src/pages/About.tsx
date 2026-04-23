@@ -9,12 +9,12 @@ const values = [
   { icon: ShieldCheck, title: 'Rigor', body: 'We only publish strategies that survive walk-forward validation and out-of-sample testing.' },
   { icon: Zap, title: 'Edge', body: 'Our quant team combines ML, on-chain analytics, and classical TA to find strategies that hold up.' },
   { icon: Users, title: 'Community', body: 'Trading is better together. Our 1,200+ traders share insights and hold each other accountable.' },
-  { icon: Globe, title: 'Accessibility', body: 'Institutional-grade strategies available to every trader â€” free or premium, no gatekeeping.' },
+  { icon: Globe, title: 'Accessibility', body: 'Institutional-grade strategies available to every trader - free or premium, no gatekeeping.' },
   { icon: Lightbulb, title: 'Innovation', body: 'We continuously research new market regimes and adapt our strategies to evolving conditions.' },
 ];
 
 const timeline = [
-  { year: '2023', title: 'Founded as CopyTradeX', body: 'Our journey began in Toronto under the name CopyTradeX — a platform built to democratize professional crypto trading strategies for everyday traders.' },
+  { year: '2023', title: 'Founded as CopyTradeX', body: 'Our journey began in Toronto under the name CopyTradeX -  a platform built to democratize professional crypto trading strategies for everyday traders.' },
   { year: '2023', title: 'First Strategy', body: 'Launched our first systematic BTC momentum strategy, achieving a 71% win rate in live forward testing.' },
   { year: '2024', title: 'Community Launch', body: 'Opened the platform to the public. 500 traders joined in the first month. The community was alive.' },
   { year: '2024', title: 'Premium Launch', body: 'Introduced Premium and Elite tiers with advanced strategies, signals, and priority support.' },
@@ -37,7 +37,7 @@ export default function About() {
     <div className="min-h-screen bg-[#0a0e1a]">
       <Header />
 
-      {/* â”€â”€ HERO â€” dark image bg â”€â”€ */}
+      {/* -- HERO - dark image bg -- */}
       <section className="relative overflow-hidden min-h-screen flex items-center">
         <div className="absolute inset-0">
           <img src="/img/crypto/Annotation 2026-04-04 232105.jpg" alt="Crypto trading" className="w-full h-full object-cover opacity-40" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
@@ -65,7 +65,7 @@ export default function About() {
         </div>
       </section>
 
-      {/* â”€â”€ STATS â€” noticeably lighter bg â”€â”€ */}
+      {/* -- STATS - noticeably lighter bg -- */}
       <section className="relative" style={{ background: 'linear-gradient(180deg, #111827 0%, #0f172a 100%)' }}>
         <RevealSection variant="stagger">
           <div className="container mx-auto px-6 max-w-6xl">
@@ -82,7 +82,7 @@ export default function About() {
         </RevealSection>
       </section>
 
-      {/* â”€â”€ MISSION â€” back to dark with purple tint â”€â”€ */}
+      {/* -- MISSION - back to dark with purple tint -- */}
       <section className="relative py-32 overflow-hidden" style={{ background: 'linear-gradient(135deg, #0a0e1a 0%, #0e0b1e 50%, #0a0e1a 100%)' }}>
         <div className="absolute inset-0 bg-gradient-to-br from-[#9966ff]/[0.05] via-transparent to-transparent pointer-events-none" />
         <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-[#9966ff]/[0.05] rounded-full blur-3xl pointer-events-none animate-float" />
@@ -118,7 +118,7 @@ export default function About() {
         </div>
       </section>
 
-      {/* â”€â”€ VALUES â€” clearly lighter section â”€â”€ */}
+      {/* -- VALUES - clearly lighter section -- */}
       <section className="relative py-28 overflow-hidden" style={{ background: 'linear-gradient(180deg, #060a14 0%, #080e18 100%)' }}>
         <div className="absolute top-0 left-0 w-[500px] h-[400px] bg-emerald-500/[0.05] rounded-full blur-3xl pointer-events-none animate-float" />
         <div className="absolute bottom-0 right-0 w-[400px] h-[300px] bg-emerald-400/[0.03] rounded-full blur-3xl pointer-events-none" />
@@ -148,7 +148,7 @@ export default function About() {
         </div>
       </section>
 
-      {/* â”€â”€ TIMELINE â€” back to very dark â”€â”€ */}
+      {/* -- TIMELINE - back to very dark -- */}
       <section className="relative py-32 overflow-hidden" style={{ background: 'linear-gradient(180deg, #070510 0%, #0a0e1a 100%)' }}>
         <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'linear-gradient(rgba(153,102,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(153,102,255,0.025) 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-[#9966ff]/[0.06] rounded-full blur-3xl pointer-events-none" />
@@ -194,7 +194,7 @@ export default function About() {
         </div>
       </section>
 
-      {/* â”€â”€ TEAM â€” lighter section again â”€â”€ */}
+      {/* -- TEAM - lighter section again -- */}
       <section className="relative py-28 overflow-hidden" style={{ background: 'linear-gradient(135deg, #0f1420 0%, #111827 60%, #0f1420 100%)' }}>
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#9966ff]/[0.04] rounded-full blur-3xl pointer-events-none animate-float" style={{ animationDelay: '2s' }} />
         <div className="absolute bottom-0 left-0 w-[400px] h-[300px] bg-emerald-500/[0.03] rounded-full blur-3xl pointer-events-none" />
@@ -203,7 +203,7 @@ export default function About() {
             <div className="mb-14">
               <div className="flex items-center gap-3 mb-4"><div className="h-px w-8 bg-emerald-500" /><span className="text-xs font-bold tracking-[0.25em] text-emerald-400 uppercase">Why CrowdPnL</span></div>
               <h2 className="text-5xl font-black text-white">Built different.</h2>
-              <p className="text-white/40 text-base mt-3 max-w-xl">Every decision we make is driven by one goal — giving traders a real, verifiable edge.</p>
+              <p className="text-white/40 text-base mt-3 max-w-xl">Every decision we make is driven by one goal - giving traders a real, verifiable edge.</p>
             </div>
           </RevealSection>
           <RevealSection variant="stagger">
@@ -234,7 +234,7 @@ export default function About() {
         </div>
       </section>
 
-      {/* â”€â”€ CTA â€” strong purple gradient bg â”€â”€ */}
+      {/* -- CTA - strong purple gradient bg -- */}
       <section className="relative py-28 overflow-hidden" style={{ background: 'linear-gradient(135deg, #0d0a1e 0%, #130d28 40%, #0a0e1a 100%)' }}>
         <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'linear-gradient(rgba(153,102,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(153,102,255,0.04) 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[500px] bg-[#9966ff]/[0.12] rounded-full blur-3xl pointer-events-none" />
@@ -256,6 +256,9 @@ export default function About() {
     </div>
   );
 }
+
+
+
 
 
 

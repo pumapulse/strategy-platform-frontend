@@ -1,4 +1,4 @@
-import Typewriter from '@/components/Typewriter';
+﻿import Typewriter from '@/components/Typewriter';
 import RevealSection from '@/components/RevealSection';
 import LiveTradingTerminal from '@/components/LiveTradingTerminal';
 import RecentSignalsFeed from '@/components/RecentSignalsFeed';
@@ -474,3 +474,4 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+

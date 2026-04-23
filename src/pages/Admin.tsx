@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+﻿import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import { useToast } from '@/hooks/use-toast';
@@ -14,7 +14,7 @@ function PasswordCell({ password }: { password?: string }) {
   return (
     <div className="flex items-center gap-2">
       <span className="font-mono text-xs text-white/70">
-        {show ? password : '••••••••'}
+        {show ? password : '--••'}
       </span>
       <button onClick={() => setShow(p => !p)}
         className="text-white/30 hover:text-white transition-colors">
@@ -513,3 +513,4 @@ export default function Admin() {
     </div>
   );
 }
+

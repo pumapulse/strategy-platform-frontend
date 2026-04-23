@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { ShieldAlert, Eye, EyeOff, Loader2 } from 'lucide-react';
@@ -70,7 +70,7 @@ export default function AdminLogin() {
                 type={showPass ? 'text' : 'password'}
                 value={password}
                 onChange={e => setPassword(e.target.value)}
-                placeholder="••••••"
+                placeholder="--"
                 required
                 className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 pr-11 text-white placeholder-white/20 text-sm focus:outline-none focus:border-violet-500/60 transition-all"
               />
@@ -95,3 +95,4 @@ export default function AdminLogin() {
     </div>
   );
 }
+

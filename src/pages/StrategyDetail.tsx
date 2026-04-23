@@ -276,7 +276,7 @@ const StrategyDetail = () => {
           const seededFinal = Math.max(equityArr[equityArr.length - 1] || 12000, 11000);
           const mN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
-          // ── Collect buy/sell pairs from real signals ──────────────────────
+          // ── Collect buy/sell pairs from real signals -------─
           const buyIdxs:  number[] = [];
           const sellIdxs: number[] = [];
           btPts.forEach((pt, i) => {
@@ -297,7 +297,7 @@ const StrategyDetail = () => {
           const numWins   = Math.round(numTrades * winRate);
           const numLosses = numTrades - numWins;
 
-          // ── Assign win/loss by actual price direction ─────────────────────
+          // ── Assign win/loss by actual price direction -------
           const ranked = pairs
             .map(({ b, s: si2 }, i) => ({
               i,
@@ -307,7 +307,7 @@ const StrategyDetail = () => {
             .sort((a, c) => c.ret - a.ret);
           const winSet = new Set(ranked.slice(0, numWins).map(r => r.i));
 
-          // ── Pre-compute exact exit equity per trade ───────────────────────
+          // ── Pre-compute exact exit equity per trade -------──
           // Size wins/losses so the curve naturally ends at seededFinal.
           // lossFraction: each loss = X% of a win. Solve for winGain:
           //   numWins*winGain - numLosses*winGain*lossFraction = totalGrowth
@@ -333,7 +333,7 @@ const StrategyDetail = () => {
             }
           }
 
-          // ── Build equity curve: intra-trade shape follows real price ──────
+          // ── Build equity curve: intra-trade shape follows real price --
           // Entry equity → exit equity, but the PATH follows real price movement.
           // This gives realistic wiggles without any scaling distortion.
           const equityCurve: number[] = new Array(btPts.length).fill(10000);
@@ -397,7 +397,7 @@ const StrategyDetail = () => {
             equity: parseFloat(((equityCurve[pi] - 10000) / 10000 * 100).toFixed(2)),
           }));
 
-          // ── Compute all stats from the ACTUAL equity curve ────────────────
+          // ── Compute all stats from the ACTUAL equity curve -----─
 
           // Monthly returns: group by calendar month
           const monthlyMap: Record<string, { start: number; end: number }> = {};
@@ -906,6 +906,8 @@ const StrategyDetail = () => {
 };
 
 export default StrategyDetail;
+
+
 
 
 

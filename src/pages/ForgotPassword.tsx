@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+﻿import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { Eye, EyeOff, Mail, ArrowLeft, Clock, ShieldCheck } from 'lucide-react';
@@ -245,7 +245,7 @@ export default function ForgotPassword() {
                 <div className="relative">
                   <input type={showPass ? 'text' : 'password'} value={newPassword}
                     onChange={e => setNewPassword(e.target.value)}
-                    placeholder="••••••••" required minLength={6} className={`${inputClass} pr-11`} />
+                    placeholder="--••" required minLength={6} className={`${inputClass} pr-11`} />
                   <button type="button" onClick={() => setShowPass(p => !p)} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors">
                     {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
@@ -257,7 +257,7 @@ export default function ForgotPassword() {
                 <div className="relative">
                   <input type={showConfirm ? 'text' : 'password'} value={confirmPassword}
                     onChange={e => setConfirmPassword(e.target.value)}
-                    placeholder="••••••••" required
+                    placeholder="--••" required
                     className={`${inputClass} pr-11 ${
                       confirmPassword && confirmPassword !== newPassword ? 'border-red-500/60' :
                       confirmPassword && confirmPassword === newPassword ? 'border-emerald-500/60' : ''
@@ -303,3 +303,5 @@ export default function ForgotPassword() {
     </div>
   );
 }
+
+
