@@ -218,3 +218,22 @@ All colors MUST be HSL.
 .animate-bounce-x {
   animation: bounceX 1s ease-in-out infinite;
 }
+
+/* Custom scrollbar — signal feed and overflow-y-auto elements */
+.overflow-y-auto::-webkit-scrollbar,
+.overflow-y-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+.overflow-y-auto::-webkit-scrollbar-track,
+.overflow-y-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.overflow-y-auto::-webkit-scrollbar-thumb,
+.overflow-y-scroll::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #9966ff60, #10b98160);
+  border-radius: 99px;
+}
+.overflow-y-auto::-webkit-scrollbar-thumb:hover,
+.overflow-y-scroll::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #9966ff, #10b981);
+}
